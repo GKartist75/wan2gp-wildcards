@@ -1,6 +1,6 @@
 {
   "name": "Wildcards",
-  "author": "Pi Agent",
+  "author": "GKartist75",
   "version": "1.0.0",
   "description": "Dynamic wildcard expansion for prompts. Use __name__ syntax for random picks from .txt files and {opt1|opt2} for inline choices.",
   "type": ["extension"],

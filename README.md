@@ -1,7 +1,7 @@
 # wan2gp-wildcards
 
-Wildcard prompt expansion plugin for [Wan2GP](https://github.com/deepbeepmeep/Wan2GP). Randomize prompts with `__wildcard__` and `{opt1|opt2}` syntax.  
-35,000+ terms across 280 files in 17+ categories.
+Wildcard prompt expansion plugin for [Wan2GP](https://github.com/deepbeepmeep/Wan2GP).  
+**34,000+ terms** across **190 files** in **17 subdirectory categories** + **101 flat wildcards**.
 
 ## Install
 
@@ -36,69 +36,75 @@ Arrow keys / Enter / Tab / Click to insert. Escape to dismiss.
 
 ## Library
 
-### Subdirectory categories (17)
+### Subdirectory categories (17 dirs, 89 files)
 
-`action` `aesthetic` `camera` `character` `clothing` `color` `composition` `effect` `emotion` `environment` `lighting` `material` `motion` `quality` `time` `transition` `weather`
+| Directory | Files | What's inside |
+|---|---|---|
+| `action/` | combat, dance, interaction, movement | actions, gestures, combat moves |
+| `aesthetic/` | art-movement, cultural, vibe, punk, trippy | art movements, cultural themes, vibes |
+| `camera/` | angle, lens, shot, movement, technique, phrase, focal-length, f-stop, iso-stop, manufacturer, photoshoot, portrait | camera angles, lens types, shot types, camera specs |
+| `character/` | age, archetype, body, gender, identity, profession, species, phrase | character traits, body types, jobs, species, classes |
+| `clothing/` | accessory, bottom, fabric, footwear, garment, style, top | clothing items, accessories, fabrics, styles |
+| `color/` | named, palette, skin | named colors, palettes, skin tones |
+| `composition/` | framing, layout | shot composition, framing techniques |
+| `effect/` | distortion, postprocess, vfx | visual effects, post-processing |
+| `emotion/` | atmosphere, expression, horror, mood, phrase | emotions, facial expressions, moods |
+| `environment/` | fantasy, interior, nature, scifi, urban, water, cosmic, background, setting, phrase | environments, landscapes, locations, biomes |
+| `lighting/` | direction, quality, source, style, temp, phrase | lighting setups, qualities, sources |
+| `material/` | gem, organic, substance, surface | materials, surfaces, substances |
+| `motion/` | character, pose, quality, speed | motion types, poses, motion qualities |
+| `quality/` | film, render, resolution, technique | render/film quality, art techniques |
+| `time/` | day, decade, era, season, time | times of day, seasons, eras |
+| `transition/` | cut, dissolve, wipe | video transitions |
+| `weather/` | extreme, fog, precipitation, sky | weather conditions, sky types |
 
-### Flat wildcards (211 files, sourced from [sd-wildcards](https://github.com/mattjaybe/sd-wildcards))
+### Flat wildcards (101 files)
 
-| Group | Files |
-|---|---|
-| **Adjective** | adj-architecture, adj-beauty, adj-general, adj-horror |
-| **Animal** | animal, bird, cat, dog, fish, dinosaur |
-| **Artist** | artist (general), artist-anime, artist-cartoon, artist-concept, artist-csv, artist-dig1/2/3, artist-fantasy, artist-fareast, artist-fineart, artist-horror, artist-nudity, artist-scifi, artist-scribbles, artist-surreal, artist-ukioe, artist-weird, artist-black-white, artist-botanical, artist-c, artist-director, artist-n, artist-photographer, artist-special |
-| **Body** | body-fit, body-shape, body-shape2, body-tall, body-short, body-heavy, body-light, body-poor, body-framing |
-| **Camera** | camera, camera-manu, angle, focal-length, f-stop, iso-stop |
-| **Character** | class, gender, gender-ext, race, nationality, occupation, identity, age (female-adult, female-young, male-adult, male-young) |
-| **Clothing/Accessory** | clothing, clothing-female, clothing-male, costume-female, costume-male, suit-female, suit-male, dress, swimwear, high-heels, belt, choker, earrings, eyeliner, hair-accessory, headwear-f/m, legwear, neckwear, purse, bangs, braid, makeup, lipstick, lipstick-shade |
-| **Color** | color, background-color, eye-color, hair-color, skin-color |
-| **Cosmic** | cosmic-galaxy, cosmic-nebula, cosmic-star, cosmic-term, planet |
-| **Emotion/Expression** | expression |
-| **Environment** | landscape, biome, forest-type, national-park, interior, location, water, underwater, wave, background, setting |
-| **Fantasy/Horror/Scifi** | fantasy, fantasy-creature, fantasy-setting, horror, monster, alien, robot, scifi, deity, angel, demon |
-| **Food/Plant** | food, fruit, flower, tree |
-| **Hair** | hair-female, hair-female-short, hair-male, hair-length, hair-color |
-| **Media/Style** | style, genre, film-genre, technique, pose, portrait-type, photoshoot-type, still-life, oil-painting, watercolor, sculpture, photo-term, 3d-term |
-| **Name** | name-female, name-male |
-| **Nature** | biome, landscape, forest-type, national-park, tree, flower, fruit, water, wave, underwater |
-| **Noun** | noun-general, noun-beauty, noun-fantasy, noun-horror, noun-landscape, noun-romance, noun-scifi |
-| **NSFW** | nsfw-bdsm, nsfw-bdsm-type, nsfw-bra, nsfw-breastsize, nsfw-clothing-state, nsfw-corset, nsfw-cumplay, nsfw-expression, nsfw-fetish, nsfw-gag, nsfw-lingerie, nsfw-lingerie-state, nsfw-panties, nsfw-position, nsfw-publicity, nsfw-sex-act, nsfw-sex-position, nsfw-sex-toy, nsfw-subreddit |
-| **Pop Culture** | pop-culture, pop-location, game, rpg-Item, superhero, punk, trippy |
-| **Quality** | render, render-engine, hd, detail, neg-weight |
-| **Scenario** | scenario, scenario2, scenario-fantasy, scenario-romance, scenario-scifi |
-| **Subject** | subject, subject-fantasy, subject-horror, subject-romance, subject-scifi |
-| **Time** | time, decade |
-| **Other** | actor, actress, celeb, supermodel, civilization, tribe, ship, train, furniture, gem, nationality, race, quantity, site, public, background, detail, setting, aspect-ratio, gen-modifier, emoji, emoji-combo |
+| Group | Files | Lines |
+|---|---|---|
+| **Adjective** | adj-architecture, adj-beauty, adj-general, adj-horror | 1,637 |
+| **Animal** | animal, bird, cat, dog, fish, dinosaur | 4,109 |
+| **Artist** | artist + 25 artist-* files (anime, fineart, cartoon, csv, scribbles, etc.) | 9,543 |
+| **Hair** | hair-color, hair-female, hair-female-short, hair-length, hair-male | 160 |
+| **Name** | name-female, name-male | 415 |
+| **Noun** | noun-general, noun-beauty, noun-fantasy, noun-horror, noun-landscape, noun-romance, noun-scifi | 2,069 |
+| **NSFW** | 19 nsfw-* files (bdsm, bra, lingerie, sex-act, position, toy, etc.) | 697 |
+| **Scenario** | scenario, scenario2, scenario-fantasy, scenario-romance, scenario-scifi | 398 |
+| **Subject** | subject, subject-fantasy, subject-horror, subject-romance, subject-scifi | 405 |
+| **Pop Culture** | pop-culture, pop-location, game, rpg-Item, superhero | 1,281 |
+| **Actor/Celeb** | actor, actress, celeb, supermodel | 1,107 |
+| **Emoji** | emoji, emoji-combo | 1,101 |
+| **Other** | style, genre, civilization, tribe, ship, train, aspect-ratio, gen-modifier, neg-weight, public, site, quantity, hair-color | — |
 
-## Files
+## File Tree
 
 ```
 wan2gp-wildcards/
 ├── __init__.py
-├── plugin.py          # WAN2GPPlugin + monkey-patch + autocomplete
+├── plugin.py          # plugin + monkey-patch + autocomplete JS
 ├── expander.py        # expansion engine
-├── plugin_info.json   # metadata
+├── plugin_info.json
 ├── README.md
 └── wildcards/
     ├── __index__.txt
-    ├── action/        # 3 files (combat, dance, ...)
-    ├── aesthetic/     # 3 files (art-movement, cultural, vibe)
-    ├── camera/        # 5 files (angle, lens, shot, ...)
-    ├── character/     # 5 files (age, archetype, body, ...)
-    ├── clothing/      # 6 files (accessory, bottom, ...)
-    ├── color/         # 3 files (named, palette, skin)
-    ├── composition/   # 2 files (framing, layout)
-    ├── effect/        # 3 files (distortion, postprocess, vfx)
-    ├── emotion/       # 3 files (atmosphere, expression, mood)
-    ├── environment/   # 6 files (fantasy, interior, nature, ...)
-    ├── lighting/      # 5 files (direction, quality, source, ...)
-    ├── material/      # 3 files (organic, substance, surface)
-    ├── motion/        # 3 files (character, quality, speed)
-    ├── quality/       # 3 files (film, render, resolution)
-    ├── time/          # 3 files (day, era, season)
-    ├── transition/    # 3 files (cut, dissolve, wipe)
-    ├── weather/       # 4 files (extreme, fog, ...)
-    └── 211 flat .txt files (see Library section)
+    ├── action/        (4 files)
+    ├── aesthetic/     (5 files)
+    ├── camera/        (12 files)
+    ├── character/     (8 files)
+    ├── clothing/      (7 files)
+    ├── color/         (3 files)
+    ├── composition/   (2 files)
+    ├── effect/        (3 files)
+    ├── emotion/       (5 files)
+    ├── environment/   (10 files)
+    ├── lighting/      (6 files)
+    ├── material/      (4 files)
+    ├── motion/        (4 files)
+    ├── quality/       (4 files)
+    ├── time/          (5 files)
+    ├── transition/    (3 files)
+    ├── weather/       (4 files)
+    └── 101 flat .txt files
 ```
 
 ## Credits

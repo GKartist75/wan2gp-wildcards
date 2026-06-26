@@ -23,7 +23,7 @@ WILDCARDS_SUBDIR = "wildcards"  # under plugin dir
 
 # state kept on the plugin instance for the monkey-patch
 _original_process_template = prompt_parser.process_template
-_expansion_enabled = False
+_expansion_enabled = False  # set True in setup_ui when plugin is loaded
 _expansion_seed: int | None = None
 
 
@@ -56,6 +56,10 @@ class WildcardsPlugin(WAN2GPPlugin):
         plugin_dir = os.path.dirname(os.path.abspath(__file__))
         wildcards_path = os.path.join(plugin_dir, WILDCARDS_SUBDIR)
         expander.set_wildcards_dir(wildcards_path)
+
+        # always active when plugin is enabled in Plugin Manager
+        global _expansion_enabled
+        _expansion_enabled = True
 
         # monkey-patch
         prompt_parser.process_template = _patched_process_template
@@ -116,13 +120,9 @@ class WildcardsPlugin(WAN2GPPlugin):
         def _refresh_list() -> gr.update:
             return gr.update(choices=_list_wc_files(), value=None)
 
-        def _toggle_expansion(enabled: bool, seed_val: int):
-            global _expansion_enabled, _expansion_seed
-            _expansion_enabled = enabled
+        def _set_seed(seed_val: int):
+            global _expansion_seed
             _expansion_seed = seed_val if seed_val >= 0 else None
-            status = "ON" if enabled else "OFF"
-            seed_msg = f" (seed: {_expansion_seed})" if enabled and _expansion_seed is not None else ""
-            return f"Wildcards: {status}{seed_msg}"
 
         def _test_expand(prompt: str, seed_val: int) -> str:
             rng = random.Random(seed_val if seed_val >= 0 else None)
@@ -160,22 +160,11 @@ Check `__index__.txt` for full file map. Quick categories:
 """.strip()
             gr.Markdown(guide)
 
-            with gr.Row():
-                toggle = gr.Checkbox(label="Enable Expansion", value=False)
-                seed_input = gr.Number(label="Seed (-1 = random)", value=-1, precision=0)
+            seed_input = gr.Number(label="Seed (-1 = random)", value=-1, precision=0)
 
-            status_text = gr.Textbox(label="Status", value="Wildcards: OFF", interactive=False)
+            seed_input.change(fn=_set_seed, inputs=[seed_input])
 
-            toggle.change(
-                fn=_toggle_expansion,
-                inputs=[toggle, seed_input],
-                outputs=[status_text],
-            )
-            seed_input.change(
-                fn=_toggle_expansion,
-                inputs=[toggle, seed_input],
-                outputs=[status_text],
-            )
+            gr.Markdown("> Expansion is active when this plugin is enabled in the **Plugins** tab.")
 
             gr.Markdown("---")
             gr.Markdown("### Wildcard File Manager")
@@ -290,4 +279,4 @@ Check `__index__.txt` for full file map. Quick categories:
             )
 
         # return components for lifecycle
-        self.on_tab_outputs = [status_text]
+        self.on_tab_outputs = []

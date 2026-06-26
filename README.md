@@ -104,8 +104,7 @@ wan2gp-wildcards/
 ## Credits
 
 Author: GKartist75 (with PI Agent)  
-Built in collaboration with [PI Agent](https://github.com/earendil-works/pi-coding-agent).  
-Flat wildcard library sourced from [sd-wildcards](https://github.com/mattjaybe/sd-wildcards).
+Built in collaboration with [PI Agent](https://github.com/earendil-works/pi-coding-agent).
 
 ## Requirements
 

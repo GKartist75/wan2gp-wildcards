@@ -21,6 +21,25 @@ PLUGIN_ID = "wildcards"
 PLUGIN_LABEL = "Wildcards"
 WILDCARDS_SUBDIR = "wildcards"  # under plugin dir
 
+
+def _get_wildcard_keys() -> list[str]:
+    """All valid wildcard keys for autocomplete, e.g. __camera__, __camera/shot__."""
+    wc_dir = expander.WILDCARDS_DIR
+    if not os.path.isdir(wc_dir):
+        return []
+    keys: set[str] = set()
+    for entry in sorted(os.listdir(wc_dir)):
+        sub = os.path.join(wc_dir, entry)
+        if os.path.isdir(sub) and not entry.startswith("_"):
+            keys.add(f"__{entry}__")
+    for root, dirs, fnames in os.walk(wc_dir):
+        for fname in sorted(fnames):
+            if not fname.endswith(".txt") or fname == "__index__.txt":
+                continue
+            rel = os.path.relpath(os.path.join(root, fname), wc_dir)
+            keys.add(f"__{rel[:-4]}__")  # strip .txt
+    return sorted(keys)
+
 # state kept on the plugin instance for the monkey-patch
 _original_process_template = prompt_parser.process_template
 _expansion_enabled = False  # set True in setup_ui when plugin is loaded
@@ -63,6 +82,99 @@ class WildcardsPlugin(WAN2GPPlugin):
 
         # monkey-patch
         prompt_parser.process_template = _patched_process_template
+
+        # inject autocomplete JS (bake wildcard list into the script)
+        wc_keys = _get_wildcard_keys()
+        js = f"""
+(function() {{
+  const KEYS = {json.dumps(wc_keys)};
+
+  function findTextarea(id) {{
+    const el = document.getElementById(id);
+    return el && el.querySelector('textarea');
+  }}
+
+  function setupAutocomplete(ta, ddClass) {{
+    const dd = document.createElement('div');
+    dd.className = ddClass || 'wc-dd';
+    dd.style.cssText = 'position:fixed;background:#fff;border:1px solid #d0d0d0;border-radius:6px;max-height:220px;overflow-y:auto;z-index:99999;display:none;width:320px;font-family:monospace;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,0.15);';
+    document.body.appendChild(dd);
+    function pos() {{ const r=ta.getBoundingClientRect(); dd.style.left=r.left+'px'; dd.style.top=(r.bottom)+'px'; dd.style.width=Math.max(r.width,200)+'px'; }}
+    ta.addEventListener('scroll', pos);
+    window.addEventListener('scroll', pos, true);
+    let sel = -1, opening = -1;
+
+    function ins(w) {{
+      const cur = ta.selectionStart;
+      const val = ta.value;
+      const before = val.substring(0, cur);
+      const after = val.substring(cur);
+      const op = before.lastIndexOf('__');
+      if (op === -1) return;
+      ta.value = before.substring(0, op) + w + after;
+      const pos = op + w.length;
+      ta.setSelectionRange(pos, pos);
+      ta.dispatchEvent(new Event('input', {{bubbles:true}}));
+      dd.style.display = 'none';
+    }}
+
+    ta.addEventListener('input', function() {{
+      const cur = this.selectionStart;
+      const before = this.value.substring(0, cur);
+      const op = before.lastIndexOf('__');
+      if (op === -1) {{ dd.style.display = 'none'; return; }}
+      opening = op;
+      const between = before.substring(op + 2);
+      if (between.includes('__')) {{ dd.style.display = 'none'; return; }}
+      if (op > 0 && !/^[\s\n\r\t(,:]$/.test(before[op-1])) {{
+        dd.style.display = 'none'; return;
+      }}
+      const q = between.toLowerCase();
+      if (q.length === 0) {{ dd.style.display = 'none'; return; }}
+      const matches = KEYS.filter(k => k.substring(2, k.length-2).toLowerCase().startsWith(q));
+      if (matches.length === 0) {{ dd.style.display = 'none'; return; }}
+      sel = -1;
+      dd.innerHTML = matches.map((k, i) => {{
+        const inner = k.substring(2, k.length-2);
+        const idx = inner.toLowerCase().indexOf(q);
+        const hl = idx !== -1
+          ? inner.substring(0,idx) + '<strong>' + inner.substring(idx, idx+q.length) + '</strong>' + inner.substring(idx+q.length)
+          : inner;
+        const dir = k.includes('/') ? k.split('/')[0].substring(2) : '';
+        const cls = i === sel ? 'wc-sel' : '';
+        return `<div class="wc-item" data-w="${{k}}" style="padding:3px 10px;cursor:pointer;display:flex;gap:8px;${{i===sel?'background:#e8f0fe':''}}"><span style="color:#666;min-width:60px;">${{dir ? dir : '—'}}</span><span>${{hl}}</span></div>`;
+      }}).join('');
+      pos();
+      dd.style.display = 'block';
+
+      dd.querySelectorAll('.wc-item').forEach(el => {{
+        el.addEventListener('mousedown', function(e) {{ e.preventDefault(); ins(this.dataset.w); }});
+        el.addEventListener('mouseenter', function() {{ dd.querySelectorAll('.wc-item').forEach(x=>x.style.background=''); this.style.background='#e8f0fe'; }});
+      }});
+    }});
+
+    ta.addEventListener('keydown', function(e) {{
+      if (dd.style.display === 'none') return;
+      const items = dd.querySelectorAll('.wc-item');
+      if (e.key === 'ArrowDown') {{ e.preventDefault(); sel = Math.min(sel+1, items.length-1); items.forEach((x,i)=>x.style.background=i===sel?'#e8f0fe':''); }}
+      else if (e.key === 'ArrowUp') {{ e.preventDefault(); sel = Math.max(sel-1, -1); items.forEach((x,i)=>x.style.background=i===sel?'#e8f0fe':''); }}
+      else if (e.key === 'Enter' || e.key === 'Tab') {{ if (sel>=0 && items[sel]) {{ e.preventDefault(); ins(items[sel].dataset.w); }} }}
+      else if (e.key === 'Escape') {{ dd.style.display = 'none'; }}
+    }});
+
+    ta.addEventListener('blur', function() {{ setTimeout(()=>dd.style.display='none', 200); }});
+  }}
+
+  function init() {{
+    const ta1 = findTextarea('wc-test-input');
+    if (ta1) setupAutocomplete(ta1, 'wc-dd');
+    const ta2 = findTextarea('wc-batch-prompt');
+    if (ta2) setupAutocomplete(ta2, 'wc-dd');
+  }}
+  if (document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
+}})();
+"""
+        self.add_custom_js(js)
 
     def create_ui(self, api_session):
 
@@ -220,6 +332,7 @@ Check `__index__.txt` for full file map. Quick categories:
                 label="Test Prompt",
                 lines=3,
                 placeholder="e.g. A __color__ {sunlit|moody|dramatic} scene",
+                elem_id="wc-test-input",
             )
             test_seed = gr.Number(label="Test Seed (-1 = random)", value=-1, precision=0)
             test_btn = gr.Button("Expand")
@@ -234,6 +347,7 @@ Check `__index__.txt` for full file map. Quick categories:
                 label="Prompt Template",
                 lines=3,
                 placeholder="e.g. A __camera_shot__ of a __character_archetype__, __lighting_style__",
+                elem_id="wc-batch-prompt",
             )
 
             with gr.Row():

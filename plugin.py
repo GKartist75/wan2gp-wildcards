@@ -114,8 +114,7 @@ d.innerHTML=mt.map(function(k,i){
 var inn=k.substring(2,k.length-2);
 var ix=inn.toLowerCase().indexOf(q);
 var hl=ix!==-1?inn.substring(0,ix)+'<strong>'+inn.substring(ix,ix+q.length)+'</strong>'+inn.substring(ix+q.length):inn;
-var dr=k.includes('/')?k.split('/')[0].substring(2):'';
-return '<div class="wc-item" data-w="'+k+'" style="padding:3px 10px;cursor:pointer;display:flex;gap:8px;color:#222"><span style="color:#666;min-width:60px">'+(dr||'\u2014')+'</span><span style="color:#222">'+hl+'</span></div>'
+return '<div class="wc-item" data-w="'+k+'" style="padding:3px 8px;cursor:pointer;color:#222;white-space:nowrap">'+hl+'</div>'
 }).join('');
 pv();d.style.display='block';
 d.querySelectorAll('.wc-item').forEach(function(e){

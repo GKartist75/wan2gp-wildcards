@@ -85,95 +85,58 @@ class WildcardsPlugin(WAN2GPPlugin):
 
         # inject autocomplete JS (bake wildcard list into the script)
         wc_keys = _get_wildcard_keys()
-        js = f"""
-(function() {{
-  const KEYS = {json.dumps(wc_keys)};
-
-  function findTextarea(id) {{
-    const el = document.getElementById(id);
-    return el && el.querySelector('textarea');
-  }}
-
-  function setupAutocomplete(ta, ddClass) {{
-    const dd = document.createElement('div');
-    dd.className = ddClass || 'wc-dd';
-    dd.style.cssText = 'position:fixed;background:#fff;border:1px solid #d0d0d0;border-radius:6px;max-height:220px;overflow-y:auto;z-index:99999;display:none;width:320px;font-family:monospace;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,0.15);';
-    document.body.appendChild(dd);
-    function pos() {{ const r=ta.getBoundingClientRect(); dd.style.left=r.left+'px'; dd.style.top=(r.bottom)+'px'; dd.style.width=Math.max(r.width,200)+'px'; }}
-    ta.addEventListener('scroll', pos);
-    window.addEventListener('scroll', pos, true);
-    let sel = -1, opening = -1;
-
-    function ins(w) {{
-      const cur = ta.selectionStart;
-      const val = ta.value;
-      const before = val.substring(0, cur);
-      const after = val.substring(cur);
-      const op = before.lastIndexOf('__');
-      if (op === -1) return;
-      ta.value = before.substring(0, op) + w + after;
-      const pos = op + w.length;
-      ta.setSelectionRange(pos, pos);
-      ta.dispatchEvent(new Event('input', {{bubbles:true}}));
-      dd.style.display = 'none';
-    }}
-
-    ta.addEventListener('input', function() {{
-      const cur = this.selectionStart;
-      const before = this.value.substring(0, cur);
-      const op = before.lastIndexOf('__');
-      if (op === -1) {{ dd.style.display = 'none'; return; }}
-      opening = op;
-      const between = before.substring(op + 2);
-      if (between.includes('__')) {{ dd.style.display = 'none'; return; }}
-      if (op > 0 && !/^[\s\n\r\t(,:]$/.test(before[op-1])) {{
-        dd.style.display = 'none'; return;
-      }}
-      const q = between.toLowerCase();
-      if (q.length === 0) {{ dd.style.display = 'none'; return; }}
-      const matches = KEYS.filter(k => k.substring(2, k.length-2).toLowerCase().startsWith(q));
-      if (matches.length === 0) {{ dd.style.display = 'none'; return; }}
-      sel = -1;
-      dd.innerHTML = matches.map((k, i) => {{
-        const inner = k.substring(2, k.length-2);
-        const idx = inner.toLowerCase().indexOf(q);
-        const hl = idx !== -1
-          ? inner.substring(0,idx) + '<strong>' + inner.substring(idx, idx+q.length) + '</strong>' + inner.substring(idx+q.length)
-          : inner;
-        const dir = k.includes('/') ? k.split('/')[0].substring(2) : '';
-        const cls = i === sel ? 'wc-sel' : '';
-        return `<div class="wc-item" data-w="${{k}}" style="padding:3px 10px;cursor:pointer;display:flex;gap:8px;${{i===sel?'background:#e8f0fe':''}}"><span style="color:#666;min-width:60px;">${{dir ? dir : '—'}}</span><span>${{hl}}</span></div>`;
-      }}).join('');
-      pos();
-      dd.style.display = 'block';
-
-      dd.querySelectorAll('.wc-item').forEach(el => {{
-        el.addEventListener('mousedown', function(e) {{ e.preventDefault(); ins(this.dataset.w); }});
-        el.addEventListener('mouseenter', function() {{ dd.querySelectorAll('.wc-item').forEach(x=>x.style.background=''); this.style.background='#e8f0fe'; }});
-      }});
-    }});
-
-    ta.addEventListener('keydown', function(e) {{
-      if (dd.style.display === 'none') return;
-      const items = dd.querySelectorAll('.wc-item');
-      if (e.key === 'ArrowDown') {{ e.preventDefault(); sel = Math.min(sel+1, items.length-1); items.forEach((x,i)=>x.style.background=i===sel?'#e8f0fe':''); }}
-      else if (e.key === 'ArrowUp') {{ e.preventDefault(); sel = Math.max(sel-1, -1); items.forEach((x,i)=>x.style.background=i===sel?'#e8f0fe':''); }}
-      else if (e.key === 'Enter' || e.key === 'Tab') {{ if (sel>=0 && items[sel]) {{ e.preventDefault(); ins(items[sel].dataset.w); }} }}
-      else if (e.key === 'Escape') {{ dd.style.display = 'none'; }}
-    }});
-
-    ta.addEventListener('blur', function() {{ setTimeout(()=>dd.style.display='none', 200); }});
-  }}
-
-  function init() {{
-    const ta1 = findTextarea('wc-test-input');
-    if (ta1) setupAutocomplete(ta1, 'wc-dd');
-    const ta2 = findTextarea('wc-batch-prompt');
-    if (ta2) setupAutocomplete(ta2, 'wc-dd');
-  }}
-  if (document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
-}})();
-"""
+        KEYS_JSON = json.dumps(wc_keys)
+        # raw string template for JS (no f-string escaping issues)
+        # %s gets replaced with JSON array literal (valid JS)
+        js = r"""(function(){
+var K=%s;
+function ft(i){var e=document.getElementById(i);return e&&e.querySelector('textarea')}
+function sa(t){
+var d=document.createElement('div');
+d.style.cssText='position:fixed;background:#fff;border:1px solid #d0d0d0;border-radius:6px;max-height:220px;overflow-y:auto;z-index:99999;display:none;width:320px;font-family:monospace;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,0.15);';
+document.body.appendChild(d);
+function pv(){var r=t.getBoundingClientRect();d.style.left=r.left+'px';d.style.top=(r.bottom)+'px';d.style.width=Math.max(r.width,200)+'px'}
+t.addEventListener('scroll',pv);window.addEventListener('scroll',pv,true);
+var s=-1;
+function iw(w){var c=t.selectionStart,v=t.value,b=v.substring(0,c),a=v.substring(c),o=b.lastIndexOf('__');if(o===-1)return;t.value=b.substring(0,o)+w+a;var n=o+w.length;t.setSelectionRange(n,n);t.dispatchEvent(new Event('input',{bubbles:true}));d.style.display='none'}
+t.addEventListener('input',function(){
+var c=this.selectionStart,b=this.value.substring(0,c),o=b.lastIndexOf('__');
+if(o===-1){d.style.display='none';return}
+var bt=b.substring(o+2);
+if(bt.includes('__')){d.style.display='none';return}
+if(o>0&&!/^[\s\n\r\t(,:]$/.test(b[o-1])){d.style.display='none';return}
+var q=bt.toLowerCase();
+if(q.length===0){d.style.display='none';return}
+var mt=K.filter(function(k){return k.substring(2,k.length-2).toLowerCase().startsWith(q)});
+if(mt.length===0){d.style.display='none';return}
+s=-1;
+d.innerHTML=mt.map(function(k,i){
+var inn=k.substring(2,k.length-2);
+var ix=inn.toLowerCase().indexOf(q);
+var hl=ix!==-1?inn.substring(0,ix)+'<strong>'+inn.substring(ix,ix+q.length)+'</strong>'+inn.substring(ix+q.length):inn;
+var dr=k.includes('/')?k.split('/')[0].substring(2):'';
+return '<div class=wc-item data-w="'+k+'" style=padding:3px 10px;cursor:pointer;display:flex;gap:8px><span style=color:#666;min-width:60px>'+(dr||'\u2014')+'</span><span>'+hl+'</span></div>'
+}).join('');
+pv();d.style.display='block';
+d.querySelectorAll('.wc-item').forEach(function(e){
+e.addEventListener('mousedown',function(e){e.preventDefault();iw(this.dataset.w)});
+e.addEventListener('mouseenter',function(){d.querySelectorAll('.wc-item').forEach(function(x){x.style.background=''});this.style.background='#e8f0fe'})
+})
+});
+t.addEventListener('keydown',function(e){
+if(d.style.display==='none')return;
+var is=d.querySelectorAll('.wc-item');
+if(e.key==='ArrowDown'){e.preventDefault();s=Math.min(s+1,is.length-1);is.forEach(function(x,i){x.style.background=i===s?'#e8f0fe':''})}
+else if(e.key==='ArrowUp'){e.preventDefault();s=Math.max(s-1,-1);is.forEach(function(x,i){x.style.background=i===s?'#e8f0fe':''})}
+else if(e.key==='Enter'||e.key==='Tab'){if(s>=0&&is[s]){e.preventDefault();iw(is[s].dataset.w)}}
+else if(e.key==='Escape'){d.style.display='none'}
+});
+t.addEventListener('blur',function(){setTimeout(function(){d.style.display='none'},200)})
+}
+function init(){['wc-test-input','wc-batch-prompt'].forEach(function(i){var t=ft(i);if(t)sa(t)})}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+""" % (KEYS_JSON,)
         self.add_custom_js(js)
 
     def create_ui(self, api_session):

@@ -42,6 +42,10 @@ wan2gp-wildcards/
 └── wildcards/         # 71 .txt files
 ```
 
+## Credits
+
+Built in collaboration with [PI Agent](https://github.com/earendil-works/pi-coding-agent).
+
 ## Requirements
 
 Wan2GP only. No external dependencies.

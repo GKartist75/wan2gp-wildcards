@@ -27,27 +27,43 @@ def set_wildcards_dir(path: str) -> None:
 
 
 def resolve_wildcard_files(name: str) -> list[str]:
-    """Find .txt files matching wildcard name in WILDCARDS_DIR."""
+    """Find .txt files matching wildcard name in WILDCARDS_DIR.
+
+    Supports three forms:
+      __camera_shot__  (underscore -> slash fallback)
+      __camera/shot__  (direct path)
+      __camera__       (directory pool)
+    """
     base = name.replace("\\", "/").lstrip("/")
     paths = []
 
-    # direct match: wildcards/name.txt
-    direct = os.path.join(WILDCARDS_DIR, base + ".txt")
-    if os.path.isfile(direct):
-        paths.append(direct)
+    def _try_resolve(b: str) -> list[str]:
+        result: list[str] = []
+        # direct match: wildcards/name.txt
+        direct = os.path.join(WILDCARDS_DIR, b + ".txt")
+        if os.path.isfile(direct):
+            result.append(direct)
+        # directory match: wildcards/name/*.txt
+        dirpath = os.path.join(WILDCARDS_DIR, b)
+        if os.path.isdir(dirpath):
+            for f in sorted(os.listdir(dirpath)):
+                if f.endswith(".txt"):
+                    result.append(os.path.join(dirpath, f))
+        # glob match: wildcards/name*.txt
+        if not result:
+            for f in sorted(globmod.glob(os.path.join(WILDCARDS_DIR, b))):
+                if f.endswith(".txt") and os.path.isfile(f):
+                    result.append(f)
+        return result
 
-    # directory match: wildcards/name/*.txt
-    dirpath = os.path.join(WILDCARDS_DIR, base)
-    if os.path.isdir(dirpath):
-        for f in sorted(os.listdir(dirpath)):
-            if f.endswith(".txt"):
-                paths.append(os.path.join(dirpath, f))
+    paths = _try_resolve(base)
 
-    # glob match: wildcards/name*.txt etc
-    if not paths:
-        for f in sorted(globmod.glob(os.path.join(WILDCARDS_DIR, base))):
-            if f.endswith(".txt") and os.path.isfile(f):
-                paths.append(f)
+    # fallback: convert underscores to slashes
+    # __camera_shot__ -> try camera/shot as well
+    if not paths and "_" in base:
+        slash_version = base.replace("_", "/")
+        if slash_version != base:
+            paths = _try_resolve(slash_version)
 
     return paths
 

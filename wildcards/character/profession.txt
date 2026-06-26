@@ -103,7 +103,6 @@ pastor
 priest
 imam
 rabbi
-monk
 diplomat
 politician
 senator
@@ -113,7 +112,6 @@ governor
 ambassador
 soldier
 marine
-sailor
 airman
 spy
 detective
@@ -140,3 +138,111 @@ zoologist
 entomologist
 ornithologist
 paleontologist
+able-bodied seaman
+activist
+air force intelligence
+air force security forces
+air force weather
+air traffic controllers
+aircraft maintenance technicians
+aircrew
+airman,annalist
+anarchist
+artillery
+artilleryman
+artist
+bicyclist
+bus driver
+businessmen
+calvary
+cashier
+cavalryman
+client
+colonel
+commander
+communications
+communications specialist
+communist
+commuter
+consumer
+corporal
+customer service representative
+democrat
+department manager
+driver
+employer
+garbage collector
+general
+gunner's mate
+housekeeper
+infantry
+infantryman
+intelligence
+intelligence analyst
+janitor
+landscaper
+lawyers
+leader
+liaison officer
+libertarian
+lieutenant
+listener
+lobbyist
+logisticics
+mail carrier
+maintenance
+medic
+merchandiser
+nanny
+navigator
+officer
+ordnance
+pararescuemen
+passenger
+patient
+pedestrian
+plitician
+private
+progressive
+protester
+psychic
+quartermaster
+radarman
+recon
+reconnaissance specialist
+registered nurse
+republican
+retail associate
+retail clerk
+retail sales associate
+retail stocker
+retail supervisor
+seaman
+sergeant
+shopper
+sniper
+socialist
+software engineer
+sonarman
+speaker
+specialist
+specops
+store manager
+storekeeper
+strategist
+student
+supply
+tactician
+tank crewman
+tanker
+taxi driver
+terrorist
+traditionalist
+trooper
+uber driver
+waiter
+waitress
+web developer
+wingman
+worker
+yeoman

@@ -95,7 +95,6 @@ merman
 kraken
 sea serpent
 cerberus
-chimera
 manticore
 sphinx
 gorgon
@@ -118,7 +117,6 @@ boggart
 brownie
 leprechaun
 gremlin
-sprite
 nixie
 kelpie
 selkie
@@ -162,3 +160,284 @@ aberrant
 eldritch
 cosmic
 primordial
+abaddon
+achilles
+adonis
+amaterasu
+ana
+anansi
+anhur
+anubis
+aphrodite
+apollo
+ares
+arjuna
+artemis
+astarte
+athena
+bacchus
+baldr
+baphomet
+baron samedi
+bastet
+beelzebub
+brahma
+brigid
+calypso
+cernunnos
+cerridwen
+chaos
+cronus
+dagon
+demeter
+dionysus
+durga
+epona
+eros
+fenrir
+freya
+gaia
+ganesha
+green man
+hades
+hecate
+hel
+hera
+hercules
+hermes
+horus
+indra
+ishtar
+isis
+jehovah
+kali
+kali ma
+krishna
+kwan yin
+lady of the lake
+loki
+lucifer
+maat
+marduk
+mars
+mefistofele
+mercury
+mermaids
+mithra
+monkey king
+morrigan
+nephthys
+neptune
+norse gods
+nyx
+odin
+oya
+persephone
+peter
+poseidon
+prometheus
+quan yin
+ra
+rajah
+rama
+raven
+set
+seth
+shiva
+sif
+sirtis
+skadi
+soul
+talos
+taurus
+thor
+tiamat
+typhon
+uranus
+venus
+vishnu
+vyasa
+xochiquetzal
+xolotl
+yahweh
+yemoja
+yggdrasil
+yhwh
+zeus
+angel of death
+angel of destruction
+angel of healing
+angel of light
+angel of love
+angel of mercy
+angel of peace
+angel of power
+angel of prosperity
+angel of protection
+archai
+archangel of death
+archangel of destruction
+archangel of light
+archangel of love
+archangel of mercy
+archangel of peace
+archangel of power
+archangel of prosperity
+archangel of protection
+archangels of healing
+archangels of the elements
+archangels of the zodiac
+archon
+archon of the presence
+ascended master
+ascended master angel
+ascending angel
+cherub
+cherubim angel
+dominion
+dominion angel
+dominions
+elohim
+elohim angel
+guardian angel
+guardian angels of the element
+guardian seraphim
+healing angel
+malakhim
+malakhim angel
+principalities
+principalities angel
+seraph
+seraphim angel
+throne angel
+virtue angel
+abominable snowman
+alien
+ammit
+arachne
+aswang
+atlas
+bennu
+blob
+bloodsucker
+bogeyman
+bronze dragon
+calydonian boar
+changeling
+charybdis
+chimaera
+chupacabra
+clown
+cobra
+cockatrice
+crocotta
+cryptid
+cyclops
+daimon
+deity
+direwolf
+divine being
+djinn
+drakon
+drowned ghost
+eclipse dragon
+efreet
+elder thing
+endbringer
+erinyes
+fangtooth
+fates
+fire dragon
+flicker
+gargoyle
+genie
+ghoul
+god
+goddess
+godzilla
+hag
+half-demon
+hatchling
+hecatoncheires
+hellhound
+horla
+ice dragon
+jinn
+kudzu
+labrador retriever
+lamashtu
+loch ness monster
+monster
+mothman
+mummy
+necromancer
+ork
+pooka
+quasit
+rakshasa
+rat king
+reaper
+roc
+sasquatch
+shaman
+sorcerer
+tentacle monster
+titan
+valkyrie
+warlock
+witch
+wizard
+yowie
+yuki-onna
+ancients
+andromedan
+angelic being
+annunaki
+ant people
+aquatic alien
+arcturian
+cenobite
+centauroid
+crystalline being
+four-armed being
+fungoid
+gaseous being
+grey alien
+hive-mind
+interdimensional being
+jellyfish alien
+kaulder
+light being
+little green men
+lizard people
+martian
+mechanical alien
+mothmen
+multi-dimensional being
+nephilim
+non-human entity
+parasitic entity
+phantom entity
+pleiadian
+reptilian
+reptilian alien
+saurian
+shape-shifter
+ultraterrestrial
+vault dweller
+wormhole dweller
+xenomorph
+zeta reticuli
+automaton
+autonomous robot
+bipedal robot
+cleaning robot
+combat robot
+drones
+exoskeleton
+humanoid robot
+microbot
+military robot
+nanobot
+personal robot
+quadruped robot

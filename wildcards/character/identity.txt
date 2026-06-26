@@ -1,0 +1,579 @@
+afghan
+african
+arab
+assamese
+bengali
+bhutanese
+bihari
+british
+bruneian
+burmese
+cambodian
+european
+filipino
+french
+german
+greek
+gujarati
+han chinese
+indo-aryan
+indonesian
+iranian
+irish
+italian
+japanese
+javanese
+korean
+lao
+malay
+malaysian
+maldivian
+marathi
+mestizo
+mexican
+nepalese
+nepali
+oriya
+pakistani
+polish
+portuguese
+punjabi
+russian
+scottish
+sindhi
+singaporean
+spanish
+sri lankan
+tamil
+telugu
+thai
+turkish
+ukrainian
+vietnamese
+welsh
+abjurer
+acrobat
+alchemist
+anchorite
+apocalyptist
+arcane archer
+archmage
+armiger
+astromancer
+auspex
+avenger
+barbarian
+barbarian chieftain
+battle priest
+battlemage
+beast warrior
+beastlord
+berserker
+binder
+black belt
+black knight
+blackguard
+bladesinger
+blizzard mage
+blood magus
+bloodrager
+blue mage
+bounty hunter
+brawler
+brewmaster
+builder
+cannoneer
+cavalier
+chaplain
+chi monk
+child of the moon
+chosen of the spider queen
+chronomancer
+chrononaut
+cleric
+commando
+corsair
+courtier
+cryomancer
+cultist of the dark lady
+daemonhost
+dancer
+dawnstrider
+deadwalker
+death dealer
+death knight
+demon beast
+demon-in-flesh
+demonbinder
+demonologist
+devastator
+devotee of the goblin king
+diabolist
+divine born
+diviner
+doomseeker
+dragon knight
+dragon rider
+dragoon
+dreadnaught
+druid
+duelist
+dust walker
+eclipse
+edgewalker
+elementalist
+enchanter
+enforcer
+engineer
+evangelist
+executioner
+exorcist
+explorer
+far seer
+fencer
+firebrand
+flagellant
+forgeborn
+gambler
+geomancer
+ghoststrider
+gladiator
+grudge bearer
+gunner
+gunslinger
+halberdier
+harrower
+hellion
+herald of endings
+hexer
+high cleric
+highlander
+holy matron
+horned one
+horse archer
+hunter
+hydromancer
+ice apostle
+illusionist
+inquisitor
+investigator
+invoker
+jack-of-all-trades
+jester
+juggernaut
+justiciar
+keeper of the flame
+kineticist
+knight
+lawbreaker
+legalist
+librarian
+machinist
+mage knight
+mage of the tower
+mageblade
+magic knight
+magician
+magister
+magus
+maleficant
+marauder
+mariner
+martial artist
+mask
+mechanic
+medic
+mentalist
+mercenary
+mesmerist
+metallurgist
+mime
+mindwitch
+minstrel
+monk
+monster hunter
+mountebank
+musketeer
+myrmidon
+mystic knight
+mystic navigator
+necromancer
+nightmare
+nightstalker
+ninja
+occultist
+oracle
+orb master
+outlander
+paladin
+paragon
+phantasmist
+pharmacist
+phaseshifter
+pirate
+pit fighter
+preacher
+priest
+priest of father death
+priest of old man winter
+priest of revel
+priest of summer
+priest of the dark gods
+priest of the demon lord
+priest of the devil
+priest of the honored dead
+priest of the horned king
+priest of the maiden
+priest of the new god
+priest of the old faith
+priest of the radiant one
+priest of the seer
+priest of the spider queen
+priest of the world mother
+priest of witchcraft
+prince of darkness
+privateer
+psion
+psyblade
+psychic warrior
+psychokinetic
+puppetmaster
+pyroclast
+pyromancer
+pyromaniac
+raider
+ranger
+ravager
+reaver
+red cloak
+red mage
+road warrior
+rogue thief
+ruiner
+runecaster
+runepriest
+runewright
+saboteur
+saint
+samurai
+sapper
+satyr
+scholar
+scout
+sea captain
+seeker
+sentinel
+shadow
+shadowdancer
+shadowmancer
+shaman
+sharpshooter
+shroud
+silencer
+skindancer
+skirmisher
+skydancer
+slayer
+slayer of the dead
+sleuth
+sniper
+soldier
+sorcerer
+spellbinder
+spellguard
+spellmaster
+spellsinger
+spellsniper
+spellweaver
+spider rider
+spider savant
+spidermage
+spiritualist
+stormbringer
+summoner
+swashbuckler
+sword dancer
+swordmage
+sylvan ranger
+tactician
+taskmaster
+technomancer
+tempest
+templar
+tenebrist
+thaumaturge
+thief
+thrallbinder
+trapper
+tree shepherd
+trickster
+troll hunter
+trooper
+valkyrie
+vampire
+vampire hunter
+vancian magician
+vigilante
+void thrall
+warden
+wardscribe
+warlock
+warpriest
+warrior
+warrior spirit
+weapon master
+weather mage
+white mage
+winged warrior
+witch
+witch doctor
+witch hunter
+witchdoctor
+witchhunter
+wizard
+world-breaker
+Afghan
+Albanian
+Algerian
+American
+Andorran
+Angolan
+Anguillan
+Citizen of Antigua
+Barbuda
+Argentine
+Armenian
+Australian
+Austrian
+Azerbaijani
+Bahamian
+Bahraini
+Bangladeshi
+Barbadian
+Belarusian
+Belgian
+Belizean
+Beninese
+Bermudian
+Bhutanese
+Bolivian
+Citizen of Bosnia
+Herzegovina
+Botswanan
+Brazilian
+British
+British Virgin Islander
+Bruneian
+Bulgarian
+Burkinan
+Burmese
+Burundian
+Cambodian
+Cameroonian
+Canadian
+Cape Verdean
+Cayman Islander
+Central African
+Chadian
+Chilean
+Chinese
+Colombian
+Comoran
+Congolese (Congo)
+Congolese (DRC)
+Cook Islander
+Costa Rican
+Croatian
+Cuban
+Cymraes
+Cymro
+Cypriot
+Czech
+Danish
+Djiboutian
+Dominican
+Citizen of the Dominican Republic
+Dutch
+East Timorese
+Ecuadorean
+Egyptian
+Emirati
+English
+Equatorial Guinean
+Eritrean
+Estonian
+Ethiopian
+Faroese
+Fijian
+Filipino
+Finnish
+French
+Gabonese
+Gambian
+Georgian
+German
+Ghanaian
+Gibraltarian
+Greek
+Greenlandic
+Grenadian
+Guamanian
+Guatemalan
+Citizen of Guinea-Bissau
+Guinean
+Guyanese
+Haitian
+Honduran
+Hong Konger
+Hungarian
+Icelandic
+Indian
+Indonesian
+Iranian
+Iraqi
+Irish
+Israeli
+Italian
+Ivorian
+Jamaican
+Japanese
+Jordanian
+Kazakh
+Kenyan
+Kittitian
+Citizen of Kiribati
+Kosovan
+Kuwaiti
+Kyrgyz
+Lao
+Latvian
+Lebanese
+Liberian
+Libyan
+Liechtenstein citizen
+Lithuanian
+Luxembourger
+Macanese
+Macedonian
+Malagasy
+Malawian
+Malaysian
+Maldivian
+Malian
+Maltese
+Marshallese
+Martiniquais
+Mauritanian
+Mauritian
+Mexican
+Micronesian
+Moldovan
+Monegasque
+Mongolian
+Montenegrin
+Montserratian
+Moroccan
+Mosotho
+Mozambican
+Namibian
+Nauruan
+Nepalese
+New Zealander
+Nicaraguan
+Nigerian
+Nigerien
+Niuean
+North Korean
+Northern Irish
+Norwegian
+Omani
+Pakistani
+Palauan
+Palestinian
+Panamanian
+Papua New Guinean
+Paraguayan
+Peruvian
+Pitcairn Islander
+Polish
+Portuguese
+Prydeinig
+Puerto Rican
+Qatari
+Romanian
+Russian
+Rwandan
+Salvadorean
+Sammarinese
+Samoan
+Sao Tomean
+Saudi Arabian
+Scottish
+Senegalese
+Serbian
+Citizen of Seychelles
+Sierra Leonean
+Singaporean
+Slovak
+Slovenian
+Solomon Islander
+Somali
+South African
+South Korean
+South Sudanese
+Spanish
+Sri Lankan
+St Helenian
+St Lucian
+Stateless
+Sudanese
+Surinamese
+Swazi
+Swedish
+Swiss
+Syrian
+Taiwanese
+Tajik
+Tanzanian
+Thai
+Togolese
+Tongan
+Trinidadian
+Tristanian
+Tunisian
+Turkish
+Turkmen
+Turks
+Caicos Islander
+Tuvaluan
+Ugandan
+Ukrainian
+Uruguayan
+Uzbek
+Vatican citizen
+Citizen of Vanuatu
+Venezuelan
+Vietnamese
+Vincentian
+Wallisian
+Welsh
+Yemeni
+Zambian
+Zimbabwean
+old woman
+old man
+older woman
+older man
+middle-aged woman
+middle-aged man
+woman
+man
+young woman
+young man
+teenage girl
+teenage boy
+girl
+boy
+young girl
+young boy
+baby

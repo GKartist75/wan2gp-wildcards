@@ -73,3 +73,69 @@ global illumination
 path tracing
 ray tracing
 denoising
+3d rendering
+cell shading render
+cgi render
+flat design render
+gouache render
+hyper-realism render
+isometric render
+line art render
+matte painting render
+mosaic render
+painterly render
+pixel art render
+realism render
+sculpted render
+stylized render
+technical drawing render
+toon shading render
+vector art render
+corona renderer
+fstorm render
+luxcore render
+mantra
+octane
+thea render
+2k resolution
+4k resolution
+8k resolution
+12k resolution
+16k resolution
+32k resolution
+High resolution
+High definition
+HD
+HDR
+Blu-ray
+HD-DVD
+Elaborate
+Ornate
+Intricate
+Detailed
+Fine
+Refined
+Complicated
+Convoluted
+Extensive
+Exhaustive
+Far-reaching
+Informative
+In-depth
+Thorough
+Step-by-step
+Exact
+Precise
+Exquisite
+Lavish
+Sumptuous
+opulent
+luxurious
+Intricately designed
+Grandiose
+Stately
+Splendid
+Magnificent
+Precious
+Dazzling
+Imperceptible detail

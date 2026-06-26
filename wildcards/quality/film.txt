@@ -8,7 +8,6 @@ cinemascope
 vistaVision
 techniscope
 technicolor
-technicolor
 3-strip technicolor
 2-strip technicolor
 eastmancolor
@@ -69,3 +68,22 @@ fixer residue
 hypo clearing
 washing marks
 drying marks
+action
+adventure
+animation
+comedy
+crime
+documentary
+drama
+family
+fantasy
+film noir
+historical
+horror
+musical
+mystery
+romance
+science fiction
+thriller
+war
+western

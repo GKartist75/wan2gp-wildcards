@@ -73,3 +73,30 @@ glare
 bloom
 glow
 halation
+backlighting
+blending
+caustics
+chiaroscuro
+chromatic aberration abuse
+diffraction spikes
+depth of field
+dithering
+drop shadow
+emphasis lines
+foreshortening
+gradient
+halftone
+image_fill
+lens flare abuse
+motion lines
+multiple monochrome
+optical illusion
+anaglyph
+exif thumbnail surprise
+open in internet explorer
+open in winamp
+stereogram
+scanlines
+silhouette
+speed lines
+vignetting

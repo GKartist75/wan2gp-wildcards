@@ -83,17 +83,12 @@ veranda
 sun deck
 rooftop terrace
 courtyard
-atrium
 indoor garden
 solarium
-conservatory
-greenhouse
-atrium
 lobby
 lounge
 waiting room
 reception
-foyer
 entrance
 vestibule
 mudroom
@@ -103,8 +98,6 @@ boiler room
 furnace room
 storage room
 closet
-pantry
-cellar
 vault
 strong room
 panic room
@@ -128,3 +121,74 @@ apse
 choir loft
 crypt
 catacomb
+art deco interior
+art nouveau interior
+asian interior
+beach house interior
+bohemian interior
+boho chic interior
+cabin interior
+chic interior
+coastal interior
+colonial interior
+contemporary interior
+cottage interior
+country interior
+craftsman interior
+eclectic interior
+english country interior
+farmhouse interior
+french country interior
+futuristic interior
+glam interior
+gothic interior
+greek interior
+hippie chic interior
+hollywood regency interior
+industrial interior
+japanese interior
+luxury interior
+medieval interior
+mediterranean interior
+mid-century modern interior
+minimalist interior
+modern interior
+moroccan interior
+nautical interior
+old hollywood interior
+parisian interior
+provence interior
+romantic interior
+rustic interior
+scandinavian interior
+shabby chic interior
+shaker interior
+spanish interior
+steampunk interior
+traditional interior
+tropical interior
+tudor interior
+urban modern interior
+victorian interior
+armchair
+bookcase
+cabinet
+chair
+chest
+coffee table
+console table
+couch
+credenza
+desk
+dining table
+dresser
+end table
+futon
+headboard
+ottoman
+sofa
+stool
+storage bench
+table
+tv stand
+wardrobe

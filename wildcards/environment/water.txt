@@ -76,3 +76,136 @@ ice hummock
 bergy bit
 growler
 bergy water
+Dead Sea
+Caspian Sea
+Atlantic Ocean
+Pacific Ocean
+The Great Lakes
+Indian Ocean
+Salton Sea
+Arctic Ocean
+Mediterranean Sea
+Baltic Sea
+Black Sea
+Beaufort Sea
+Sea of Marmara
+Sea of Azov
+Red Sea
+Lake Natron
+Lake Michigan
+Lake Superior
+Great Salt Lake
+Don Juan Pond
+Lac Assal
+Garabogazkol Basin
+Aral Sea
+Lacul Sarat
+Lake Pikrolimni
+Issyk Kul
+Lake Techirghiol
+Qinghai Lake
+Lough Hyne
+Little Manitou Lake
+Great Bitter Lake
+Lake Urmia
+Chilika Lake
+Kati Thanda-Lake Eyre
+Lake Retba
+Lake Vanda
+Lake Tuz
+Sarygamysh Lake
+Lake Abert
+Van Lake
+Mono Lake
+Lake Baskunchak
+Nile
+Missouri River
+Lake Baikal
+Lake Huron
+Great Bear Lake
+Lake Tanganyika
+Mackenzie River
+Yangtze River
+Lena River
+ammonite
+anemone
+anglerfish
+barnacle
+black mamba
+clam
+crab
+cthulhu
+cuttlefish
+dolphin
+eel
+electric eel
+fish
+giant clam
+giant octopus
+giant squid
+great white shark
+hippocampus
+hydra
+jellyfish
+killer whale
+komodo dragon
+kraken
+leatherback turtle
+leviathan
+lobster
+manta ray
+megalodon
+mermaid
+narwhal
+nessie
+octopus
+octopus beast
+octopus kraken
+orca
+otter
+oyster
+pufferfish
+rays
+sailfish
+sea horse
+sea serpent
+sea turtle
+sea urchin
+seal
+shrimp
+siren
+sperm whale
+sponge
+squid
+squid giant
+starfish
+stingray
+swordfish
+turtle sea
+walrus
+whale
+whale shark
+chillwave
+cloud rap
+cyberpunk
+darkwave
+dream pop
+dreampunk
+electroclash
+electro-industrial
+electropop
+future funk
+futuresynth
+glitch
+glitch hop
+hypnagogic pop
+indietronica
+italo disco
+lo-fi
+new rave
+outrun
+post-disco
+post-punk
+retrowave
+synthwave
+vaporwave

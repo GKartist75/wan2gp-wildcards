@@ -1,0 +1,266 @@
+baroque oil painting
+cubism oil painting
+expressionism oil painting
+fauvism oil painting
+hyperrealism oil painting
+impressionism oil painting
+mannerism oil painting
+modernism oil painting
+pointillism oil painting
+realism oil painting
+renaissance oil painting
+romanticism oil painting
+surrealism oil painting
+tenebrism oil painting
+tonalism oil painting
+ubiquitous oil painting
+vanguardism oil painting
+aquarelle watercolor
+color wash watercolor
+dry brush watercolor
+flowing watercolor
+gouache watercolor
+impressionistic watercolor
+loose watercolor
+mosaic watercolor
+naturalistic watercolor
+opaque watercolor
+painterly watercolor
+realistic watercolor
+saturate watercolor
+staining watercolor
+transparent watercolor
+wash watercolor
+wet-on-wet watercolor
+assembled
+bas-relief
+bust
+bustrine
+busts
+carved
+carving
+cast
+chiseled
+column
+engraving
+etched
+figurine
+fountains
+glyph
+headstone
+hieroglyph
+high relief
+inscription
+intaglio
+low relief
+modelled
+molded
+monument
+obelisk
+petroglyph
+pictogram
+plaques
+relief
+runestone
+scrimshaw
+sculpted
+sculpture
+stamped
+statuary
+statue
+tombstone
+apples
+art supplies
+baskets
+bell peppers
+bookends
+books
+bottles
+bowls
+bowls of fruit
+boxes
+branches
+bread
+cacti
+candles
+cans
+cards
+carpet
+carrots
+cheese
+chicken
+chocolate bars
+clocks
+clothes
+clothing
+coffee beans
+coffee cups
+cookbooks
+corks
+crayons
+crystal glasses
+cups
+curling irons
+decanters
+desk lamps
+dictionaries
+dishes
+dried flowers
+egg timers
+eggcups
+eggs
+feathers
+figures
+fish
+fishing lures
+flip flops
+flowers
+fruit bowls
+fruits
+furniture
+garden tools
+glasses
+globes
+gloves
+grapes
+hairbrushes
+hand mirrors
+handbags
+hats
+houseplants
+instruments
+jars
+jugs
+keys
+kitchen tools
+knick-knacks
+knives
+lamps
+leaves
+lemons
+letters
+light fixtures
+lightbulbs
+lighters
+liquor bottles
+lobster
+magazines
+magnifying glasses
+mangoes
+maps
+matches
+melons
+microscopes
+milk bottles
+milk jug
+mint
+model airplanes
+model cars
+model ships
+mugs
+mushrooms
+napkins
+newspapers
+nickels
+notebooks
+onions
+oranges
+paint brushes
+paint markers
+paint mixer
+paint palette knife
+paint rollers
+paint spatula
+paint tubes
+pears
+pencils
+photo frames
+photographic film
+photographic paper
+pipes
+pumpkins
+radishes
+ribbons
+salt and pepper shakers
+shoes
+socks
+spoons
+tea cups
+teapots
+vases
+walnuts
+asymmetry
+balance
+bokeh
+converging lines
+depth of field
+diagonal lines
+digital camera
+dof
+emphasis
+fill the frame
+focal point
+focused
+foreground interest
+frame within a frame
+golden ratio
+golden triangle
+implied lines
+isolation
+leading lines
+light and shadow
+long exposure
+negative space
+odd numbers
+optical camera
+over exposed
+patterns
+perspective
+proximity
+radial balance
+repetition
+rule of thirds
+s-curve
+short exposure
+simplicity
+symmetry
+triangles
+viewpoint
+2d sprite
+ambient lighting
+ambient occlusion
+anti-aliasing
+augmented reality
+bitmap
+cel shading
+chromatic abberation
+direct lighting
+flat shading
+fxaa
+global illumination
+indirect illumination
+lumen global illumination
+manhattan distance
+microdisplacement
+nanite geometry
+path traced
+pbr material
+phong shading
+physically based rendering (pbr)
+post processed
+procedural generation
+procedural texture
+raster graphics
+ray traced
+screen space ambient occlusion
+skybox
+terrain rendering
+tesselation
+virtual reality
+volumetric lighting
+voronoi manhattan
+voronoi minkowski
+voxel engine
+voxel geometry
+wireframe model
+wireframe rendering

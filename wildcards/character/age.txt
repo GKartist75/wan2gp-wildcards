@@ -34,13 +34,19 @@ timeless
 immature
 mature
 grown
-aged
 weathered
 wrinkled
 smooth-faced
 baby-faced
 boyish
 girlish
-youthful
 venerable
 centenarian
+older woman
+middle-aged woman
+woman
+little girl
+older man
+middle-aged man
+man
+boy

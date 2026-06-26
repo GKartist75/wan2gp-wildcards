@@ -1,0 +1,78 @@
+ocean surface
+open ocean
+deep sea
+abyssal plain
+midnight zone
+twilight zone
+sunlight zone
+trench
+submarine canyon
+seamount
+hydrothermal vent
+cold seep
+underwater volcano
+coral reef
+barrier reef
+fringing reef
+atoll
+lagoon
+kelp forest
+seaweed meadow
+seagrass bed
+mangrove forest
+estuary
+delta
+salt marsh
+mudflat
+tide pool
+rock pool
+intertidal zone
+splash zone
+surf zone
+breaker zone
+shore break
+beach
+sandy beach
+pebble beach
+shingle beach
+shell beach
+black sand beach
+white sand beach
+pink sand beach
+rocky shore
+cliff coast
+sea cave
+blowhole
+sea arch
+sea stack
+sea mount
+pinnacle
+wall
+drop-off
+shelf
+continental shelf
+continental slope
+basin
+ridge
+mid-ocean ridge
+rift valley
+underwater lake
+brine pool
+subglacial lake
+ice shelf
+ice floe
+pack ice
+drift ice
+polynya
+lead
+frazil ice
+grease ice
+nilas
+pancake ice
+first-year ice
+multi-year ice
+pressure ridge
+ice hummock
+bergy bit
+growler
+bergy water

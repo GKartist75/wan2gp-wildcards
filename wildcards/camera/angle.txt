@@ -1,0 +1,41 @@
+eye level
+low angle
+high angle
+dutch angle
+canted angle
+oblique angle
+bird's eye view
+worm's eye view
+overhead angle
+top-down
+bottom-up
+frontal angle
+three-quarter front
+three-quarter back
+profile
+side angle
+rear angle
+reverse angle
+subjective angle
+objective angle
+wide angle
+extreme wide angle
+close angle
+extreme close angle
+dutch tilt
+rolling angle
+aerial angle
+ground level angle
+hip level
+knee level
+chest level
+shoulder level
+straight-on
+angled up
+angled down
+canted left
+canted right
+overhead ninety
+underslung
+low oblique
+high oblique

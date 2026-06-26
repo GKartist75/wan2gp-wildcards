@@ -1,0 +1,115 @@
+starship bridge
+spaceship interior
+space station
+orbital station
+space colony
+dyson sphere
+ringworld
+generation ship
+cryo bay
+holographic deck
+simulation room
+virtual reality
+cyber deck
+neural interface
+data center
+server room
+mainframe core
+quantum computer
+ai core
+android factory
+robot assembly line
+cyborg lab
+biotech lab
+genetics laboratory
+cloning facility
+cryogenics lab
+nanotech lab
+clean room
+sterile laboratory
+research station
+science outpost
+observation deck
+viewing dome
+space observatory
+astronomy dome
+telescope array
+radio telescope
+satellite array
+launch pad
+space elevator
+starship dock
+hangar bay
+landing platform
+tarmac
+runway
+control tower
+traffic control
+mission control
+command center
+bridge
+captain's quarters
+crew quarters
+galley
+mess hall
+hydroponics bay
+aeroponics garden
+artificial garden
+recreation deck
+holosuite
+simulator
+training room
+gymnasium
+armory
+weapons bay
+cargo hold
+storage bay
+engineering bay
+reactor core
+warp core
+antimatter containment
+power distribution
+shield generator
+weapons system
+turret emplacement
+laser battery
+railgun array
+missile silo
+escape pod bay
+shuttle bay
+docking bay
+airlock
+decompression chamber
+zero-gravity chamber
+artificial gravity
+force field
+energy barrier
+teleportation pad
+transporter room
+replicator room
+matter synthesizer
+medical bay
+sickbay
+infirmary
+autodoc
+surgery suite
+morgue
+cryo chamber
+stasis pod
+suspended animation
+cybernetics lab
+prosthetics workshop
+brain-computer interface
+neural implant lab
+biodome
+terrarium
+ecosystem dome
+atmospheric processor
+weather control
+climate control
+life support
+environmental control
+air filtration
+water reclamation
+waste processing
+recycling center

@@ -1,0 +1,29 @@
+dissolve
+cross dissolve
+fade
+fade in
+fade out
+fade to black
+fade to white
+fade to color
+fade up
+fade down
+dissolve to black
+dissolve to white
+iris in
+iris out
+iris dissolve
+defocus dissolve
+soft dissolve
+hard dissolve
+dip to black
+dip to white
+dip to color
+additive dissolve
+subtractive dissolve
+non-additive dissolve
+luminance dissolve
+chroma dissolve
+edge dissolve
+overlap dissolve
+ripple dissolve

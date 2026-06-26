@@ -1,0 +1,9 @@
+{
+  "name": "Wildcards",
+  "author": "Pi Agent",
+  "version": "1.0.0",
+  "description": "Dynamic wildcard expansion for prompts. Use __name__ syntax for random picks from .txt files and {opt1|opt2} for inline choices.",
+  "type": ["extension"],
+  "date": "2026-06-26",
+  "wan2gp_version": ""
+}

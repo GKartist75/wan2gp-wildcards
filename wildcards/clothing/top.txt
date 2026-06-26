@@ -1,0 +1,67 @@
+t-shirt
+polo shirt
+button-down shirt
+dress shirt
+blouse
+tunic
+tank top
+camisole
+crop top
+halter top
+tube top
+off-shoulder top
+one-shoulder top
+sweater
+cardigan
+pullover
+hoodie
+sweatshirt
+vest
+waistcoat
+tank top
+jersey
+jumper
+leotard
+bodysuit
+corset top
+bustier
+blazer
+jacket
+leather jacket
+denim jacket
+bomber jacket
+flight jacket
+motorcycle jacket
+trucker jacket
+blazer
+sport coat
+suit jacket
+tuxedo jacket
+tailcoat
+morning coat
+frock coat
+peacoat
+trench coat
+overcoat
+greatcoat
+duster coat
+cape
+cloak
+robe
+hooded cloak
+shrug
+bolero
+cardigan
+gilet
+vest
+waistcoat
+doublet
+jerkin
+tabard
+surcoat
+toga
+chiton
+himation
+stole
+stola
+palla

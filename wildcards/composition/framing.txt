@@ -1,0 +1,59 @@
+tight framing
+loose framing
+extreme close framing
+intimate framing
+claustrophobic framing
+expansive framing
+open framing
+closed framing
+centered framing
+off-center framing
+asymmetric framing
+symmetric framing
+balanced framing
+unbalanced framing
+dynamic framing
+static framing
+vertical framing
+horizontal framing
+square framing
+widescreen framing
+cinemascope framing
+letterbox framing
+frame within a frame
+foreground framing
+background framing
+negative space
+positive space
+lead room
+head room
+nose room
+walking room
+breathing room
+looking room
+depth
+layers
+foreground
+midground
+background
+vanishing point
+focal point
+thirds grid
+golden spiral
+golden triangle
+diagonal line
+horizontal line
+vertical line
+converging lines
+leading lines
+s-curve
+c-curve
+figure eight
+triangular composition
+circular composition
+rectangular composition
+radial composition
+symmetrical balance
+asymmetrical balance
+formal balance
+informal balance

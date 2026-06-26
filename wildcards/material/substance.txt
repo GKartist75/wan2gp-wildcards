@@ -1,0 +1,136 @@
+metal
+steel
+stainless steel
+carbon steel
+wrought iron
+cast iron
+iron
+copper
+brass
+bronze
+aluminum
+titanium
+chrome
+nickel
+zinc
+tin
+lead
+silver
+gold
+platinum
+palladium
+rhodium
+pewter
+german silver
+damascus steel
+pattern-welded steel
+wood
+oak
+maple
+cherry
+walnut
+mahogany
+teak
+rosewood
+ebony
+bamboo
+pine
+cedar
+redwood
+spruce
+birch
+ash
+elm
+beech
+hickory
+balsa
+plywood
+particle board
+MDF
+glass
+crystal
+lead crystal
+stained glass
+frosted glass
+etched glass
+tempered glass
+laminated glass
+bulletproof glass
+fiberglass
+plastic
+acrylic
+polycarbonate
+polyethylene
+polypropylene
+PVC
+nylon
+resin
+epoxy
+silicone
+rubber
+latex
+neoprene
+foam
+sponge
+ceramic
+porcelain
+earthenware
+stoneware
+terracotta
+clay
+brick
+concrete
+cement
+mortar
+plaster
+stucco
+drywall
+stone
+granite
+marble
+limestone
+sandstone
+slate
+basalt
+obsidian
+quartz
+flint
+chert
+jade
+nephrite
+jadeite
+onyx
+jasper
+agate
+amethyst
+lapis lazuli
+turquoise
+malachite
+coral
+ivory
+bone
+horn
+antler
+shell
+mother of pearl
+nacre
+abalone
+tortoiseshell
+leather
+suede
+nubuck
+shagreen
+synthetics
+microfiber
+carbon fiber
+kevlar
+fiberglass
+graphene
+aerogel
+nanofiber
+smart material
+memory foam
+hydrogel
+bioplastic
+mycelium
+lab-grown

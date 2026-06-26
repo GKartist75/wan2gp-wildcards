@@ -1,0 +1,55 @@
+wipe
+horizontal wipe
+vertical wipe
+diagonal wipe
+clock wipe
+radial wipe
+circle wipe
+star wipe
+heart wipe
+diamond wipe
+triangle wipe
+hexagon wipe
+oval wipe
+curtain wipe
+barn door wipe
+venetian blind wipe
+matrix wipe
+checkerboard wipe
+split
+horizontal split
+vertical split
+quad split
+push
+push left
+push right
+push up
+push down
+slide
+slide left
+slide right
+slide up
+slide down
+flip
+flip horizontal
+flip vertical
+page peel
+page turn
+page curl
+book fold
+accordion fold
+fan
+zoom
+zoom out transition
+zoom blur
+swirl
+spin
+rotate
+flip over
+turn over
+roll
+roll away
+curtain
+reveal
+uncover
+cover

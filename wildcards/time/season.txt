@@ -1,0 +1,48 @@
+spring
+early spring
+mid-spring
+late spring
+summer
+early summer
+mid-summer
+late summer
+autumn
+fall
+early autumn
+mid-autumn
+late autumn
+winter
+early winter
+mid-winter
+late winter
+dry season
+wet season
+monsoon season
+rainy season
+harvest season
+growing season
+blooming season
+flowering season
+mating season
+migration season
+hibernation season
+nesting season
+calving season
+lambing season
+foaling season
+kitchen season
+holiday season
+festive season
+christmas season
+winter solstice
+summer solstice
+spring equinox
+autumn equinox
+beltane
+samhain
+imbolc
+lughnasadh
+mabon
+ostara
+yule
+litha

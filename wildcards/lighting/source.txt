@@ -1,0 +1,83 @@
+sunlight
+direct sunlight
+indirect sunlight
+sunbeams
+sun rays
+sunshine
+moonlight
+starlight
+firelight
+candlelight
+lantern light
+torch light
+campfire light
+fireplace glow
+lamp light
+desk lamp
+floor lamp
+table lamp
+bedside lamp
+reading light
+ceiling light
+chandelier
+pendant light
+track lighting
+recessed light
+spotlight
+floodlight
+street light
+neon light
+fluorescent light
+LED light
+tungsten light
+halogen light
+incandescent light
+arc light
+carbon arc
+xenon light
+HMI light
+metal halide
+sodium vapor
+mercury vapor
+black light
+UV light
+infrared light
+laser light
+bioluminescence
+chemiluminescence
+phosphorescence
+fluorescence
+electroluminescence
+triboluminescence
+radiance
+glow
+ember glow
+lava glow
+magic glow
+enchantment glow
+spell light
+divine light
+holy light
+blessed light
+sacred light
+heavenly light
+angelic light
+ethereal light
+otherworldly light
+mystical light
+phantom light
+spirit light
+ghost light
+will o wisp
+foxfire
+swamp gas
+aurora borealis
+northern lights
+southern lights
+aurora australis
+lightning
+sheet lightning
+fork lightning
+heat lightning
+ball lightning
+Saint Elmo's fire

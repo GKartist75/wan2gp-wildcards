@@ -1,0 +1,71 @@
+35mm film
+16mm film
+8mm film
+super 8
+70mm film
+imax film
+cinemascope
+vistaVision
+techniscope
+technicolor
+technicolor
+3-strip technicolor
+2-strip technicolor
+eastmancolor
+de luxe color
+metrocolor
+warnercolor
+pathecolor
+agfacolor
+fujicolor
+kodachrome
+ektachrome
+velvia
+provia
+portra
+ektar
+t-max
+tri-x
+hp5
+delta
+acros
+neopan
+film grain
+grain structure
+fine grain
+medium grain
+coarse grain
+heavy grain
+bleach bypass
+skip bleach
+silver retention
+cross-processed
+push processed
+pull processed
+overexposed
+underexposed
+high contrast
+low contrast
+desaturated
+oversaturated
+vintage film
+old film
+aged film
+damaged film
+scratched film
+dusty film
+faded film
+sun bleached
+film burn
+gate weave
+film gate
+perforations
+frame line
+sprocket hole
+film edge
+processing marks
+developer stains
+fixer residue
+hypo clearing
+washing marks
+drying marks

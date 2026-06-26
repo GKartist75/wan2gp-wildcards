@@ -1,0 +1,105 @@
+casual
+formal
+business casual
+athleisure
+sportswear
+activewear
+streetwear
+urban
+hip-hop
+skater
+surf
+preppy
+ivy league
+academic
+vintage
+retro
+classic
+modern
+contemporary
+avant-garde
+haute couture
+high fashion
+ready-to-wear
+bohemian
+boho
+hippie
+grunge
+punk
+goth
+emo
+scene
+rock
+metal
+rave
+clubwear
+festival
+cowboy
+western
+country
+military
+tactical
+utilitarian
+workwear
+industrial
+minimalist
+maximalist
+edgy
+elegant
+sophisticated
+chic
+glamorous
+luxurious
+opulent
+royal
+noble
+medieval
+renaissance
+victorian
+edwardian
+roaring twenties
+flapper
+art deco
+mid-century
+1950s
+1960s
+1970s
+1980s
+1990s
+2000s
+vintage pin-up
+rockabilly
+psychobilly
+teddy boy
+mod
+skinhead
+rude boy
+ska
+nordic
+scandinavian
+japanese street
+harajuku
+lolita
+gothic lolita
+sweet lolita
+punk lolita
+steampunk
+cyberpunk
+solarpunk
+dieselpunk
+apocalyptic
+post-apocalyptic
+wasteland
+tribal
+ethnic
+traditional
+folk
+ceremonial
+ritual
+bridal
+wedding
+funeral
+mourning
+religious
+clerical
+monastic

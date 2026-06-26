@@ -1,0 +1,10 @@
+cinematic volumetric lighting
+soft diffused natural light
+harsh neon glow
+moody low-key side lighting
+warm golden hour glow
+cold blue moonlight
+dramatic chiaroscuro
+flickering candlelight
+bioluminescent ambient glow
+hazy misty atmospheric light

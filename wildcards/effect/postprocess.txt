@@ -1,0 +1,73 @@
+film grain
+digital noise
+grain texture
+film stock
+bleach bypass
+desaturated
+color graded
+teal and orange
+warm grade
+cool grade
+golden grade
+blue grade
+sepia tone
+vintage tone
+retro tone
+faded
+washed out
+muted
+vibrant
+punchy
+contrasty
+high contrast
+low contrast
+hdr
+bloom
+glow
+lens flare
+lens reflection
+lens dirt
+lens scratch
+film burn
+film gate
+cine print
+color fringing
+chromatic aberration
+vignette
+light leak
+light bloom
+halation
+soft focus
+dreamy
+hazy
+misty
+ethereal
+diffused
+glossy
+matte
+flat
+deep
+rich
+saturated
+oversaturated
+undersaturated
+black crush
+white clip
+shadow lift
+highlight roll-off
+s-curve adjustment
+tone mapping
+lookup table
+lUT applied
+academy filter
+pro-mist
+black promist
+glimmerglass
+tiffen filter
+polarizer
+nd filter
+graduated nd
+infrared
+ultraviolet
+thermal
+x-ray

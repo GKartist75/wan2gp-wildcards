@@ -1,0 +1,56 @@
+ballet
+contemporary
+jazz
+tap
+hip-hop
+breakdance
+popping
+locking
+krumping
+waacking
+vogue
+salsa
+tango
+fandango
+flamenco
+rumba
+cha-cha
+mambo
+samba
+bossa nova
+merengue
+bachata
+reggaeton
+waltz
+foxtrot
+quickstep
+polka
+swing
+lindy-hop
+jitterbug
+ballroom
+belly dance
+hula
+tahitian
+irish step
+highland
+cossack
+kathak
+bharatanatyam
+butoh
+capoeira
+tutting
+robotics
+liquid dance
+interpretive
+lyrical
+modern
+folk dance
+ceremonial
+processional
+courtship dance
+victorian waltz
+disco
+house
+techno
+rave

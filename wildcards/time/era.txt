@@ -1,0 +1,70 @@
+prehistoric
+stone age
+bronze age
+iron age
+ancient
+classical
+hellenistic
+roman empire
+byzantine empire
+medieval
+dark ages
+high middle ages
+late middle ages
+rennaissance
+elizabethan
+jacobean
+baroque
+enlightenment
+georgian
+regency
+victorian
+edwardian
+gilded age
+roaring twenties
+great depression
+dirty thirties
+wartime
+post-war
+swinging sixties
+seventies
+eighties
+nineties
+millennium
+modern era
+contemporary
+futuristic
+far future
+distant future
+post-apocalyptic
+pre-apocalyptic
+interwar period
+cold war era
+space age
+information age
+digital age
+ai age
+fossil era
+age of exploration
+age of sail
+colonial era
+industrial revolution
+second industrial revolution
+digital revolution
+green revolution
+atomic age
+jet age
+machine age
+steam age
+bronze age collapse
+age of migration
+viking age
+crusades
+age of discovery
+golden age of piracy
+age of enlightenment
+age of revolution
+age of imperialism
+age of extremes
+great acceleration
+anthropocene

@@ -1,0 +1,101 @@
+# Wan2GP Wildcard Library — Index
+# Use __category_file__ in your prompts
+# e.g. "A __camera_shot__ of __character_archetype__ in __environment_nature__, __lighting_style__"
+
+## action
+action/movement       - basic physical movements
+action/dance          - dance styles and performance
+action/combat         - fighting and battle moves
+action/interaction    - interacting with objects and environment
+
+## aesthetic
+aesthetic/art-movement    - art historical movements
+aesthetic/vibe            - emotional and aesthetic vibes
+aesthetic/cultural        - cultural and subcultural aesthetics
+
+## camera
+camera/shot           - shot types (close-up, wide, etc)
+camera/angle          - camera angles
+camera/movement       - camera movements (dolly, pan, etc)
+camera/lens           - lens types and focal lengths
+camera/technique      - cinematographic techniques
+
+## character
+character/archetype   - hero, villain, mentor, etc
+character/profession  - occupations and roles
+character/age         - age descriptors
+character/body        - body type and physique
+character/species     - humanoid, creature, fantasy species
+
+## clothing
+clothing/top          - shirts, jackets, coats
+clothing/bottom       - pants, skirts, shorts
+clothing/footwear     - shoes, boots, sandals
+clothing/accessory    - hats, jewelry, bags
+clothing/fabric       - textile and material
+clothing/style        - fashion styles and eras
+
+## color
+color/named           - common color names
+color/palette         - color schemes and harmonies
+color/skin            - skin and hair tones
+
+## composition
+composition/framing   - framing and shot composition
+composition/layout    - spatial arrangement
+
+## effect
+effect/vfx            - visual and particle effects
+effect/postprocess    - post-processing effects
+effect/distortion     - distortion and warping
+
+## emotion
+emotion/mood          - emotional moods
+emotion/atmosphere    - atmospheric tone
+emotion/expression    - facial expressions
+
+## environment
+environment/nature    - natural landscapes and biomes
+environment/urban     - city and town settings
+environment/interior  - indoor locations
+environment/fantasy   - fantasy and magical settings
+environment/scifi     - sci-fi and futuristic settings
+environment/water     - aquatic and coastal settings
+
+## lighting
+lighting/direction    - light direction
+lighting/quality      - hard, soft, diffused
+lighting/source       - light source types
+lighting/temp         - color temperature
+lighting/style        - cinematic lighting styles
+
+## material
+material/surface      - surface textures
+material/substance    - material types
+material/organic      - organic textures
+
+## motion
+motion/character      - character motion descriptors
+motion/speed          - pace and speed
+motion/quality        - motion quality and style
+
+## quality
+quality/resolution    - resolution and detail
+quality/film          - film stock and photographic
+quality/render        - rendering and 3D terms
+
+## time
+time/day              - time of day
+time/season           - seasons
+time/era              - historical periods
+
+## transition
+transition/cut        - edit and cut types
+transition/dissolve   - dissolve and fade
+transition/wipe       - wipe and shape transitions
+
+## weather
+weather/precipitation - rain, snow, hail
+weather/sky           - cloud and sky conditions
+weather/fog           - fog, mist, haze
+weather/extreme       - storms and extreme weather

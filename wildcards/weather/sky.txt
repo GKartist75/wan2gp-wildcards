@@ -1,0 +1,75 @@
+clear sky
+blue sky
+cloudless sky
+partly cloudy
+mostly cloudy
+overcast
+broken clouds
+scattered clouds
+cumulus clouds
+stratus clouds
+cirrus clouds
+cirrocumulus
+cirrostratus
+altocumulus
+altostratus
+nimbostratus
+cumulonimbus
+lenticular clouds
+mammatus clouds
+roll clouds
+shelf clouds
+wall clouds
+funnel clouds
+storm clouds
+thunderheads
+anvil cloud
+towering cumulus
+fair weather clouds
+mare's tails
+mackerel sky
+storm sky
+threatening sky
+angry sky
+dramatic sky
+colorful sky
+painted sky
+fiery sky
+leaden sky
+steely sky
+pewter sky
+silver sky
+golden sky
+rosy sky
+violet sky
+purple sky
+crimson sky
+scarlet sky
+blood red sky
+inky sky
+pitch black sky
+star-filled sky
+starry sky
+constellation-filled
+milky way
+meteor shower
+shooting stars
+comet
+aurora borealis
+northern lights
+aurora australis
+southern lights
+polar lights
+sun dog
+moon dog
+halo
+sun halo
+moon halo
+corona
+sun pillar
+light pillar
+upper tangent arc
+circumzenithal arc
+circumhorizontal arc
+parhelion
+paraseleme

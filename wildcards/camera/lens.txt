@@ -1,0 +1,47 @@
+18mm
+24mm
+28mm
+35mm
+50mm
+85mm
+100mm
+135mm
+200mm
+300mm
+400mm
+500mm
+600mm
+800mm
+ultra-wide angle
+wide angle
+standard lens
+normal lens
+portrait lens
+telephoto lens
+super-telephoto
+macro lens
+tilt-shift lens
+fisheye lens
+anamorphic lens
+zoom lens
+prime lens
+fixed lens
+variable lens
+fast lens
+slow lens
+cine lens
+vintage lens
+soft focus lens
+split diopter
+lensbaby
+pinhole lens
+catadioptric lens
+mirror lens
+petzval lens
+large format
+medium format
+full frame
+aps-c
+micro four thirds
+35mm film
+70mm imax

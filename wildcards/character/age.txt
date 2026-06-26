@@ -1,0 +1,46 @@
+newborn
+infant
+toddler
+child
+preteen
+adolescent
+teenager
+young adult
+adult
+middle-aged
+elderly
+aged
+ancient
+baby
+young boy
+young girl
+teenage boy
+teenage girl
+young man
+young woman
+grown man
+grown woman
+mature man
+mature woman
+senior man
+senior woman
+old man
+old woman
+elder
+crone
+youthful
+ageless
+timeless
+immature
+mature
+grown
+aged
+weathered
+wrinkled
+smooth-faced
+baby-faced
+boyish
+girlish
+youthful
+venerable
+centenarian

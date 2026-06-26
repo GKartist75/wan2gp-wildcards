@@ -1,0 +1,55 @@
+dawn
+sunrise
+early morning
+morning
+mid-morning
+late morning
+noon
+midday
+early afternoon
+afternoon
+late afternoon
+golden hour
+sunset
+dusk
+twilight
+evening
+night
+midnight
+late night
+before dawn
+witching hour
+blue hour
+magic hour
+first light
+break of day
+daybreak
+sunup
+daylight
+broad daylight
+high noon
+sundown
+nightfall
+darkness
+pitch black
+deep night
+starry night
+moonlit night
+new moon
+full moon
+crescent moon
+half moon
+gibbous moon
+cloudy day
+overcast
+bright day
+clear day
+sunny
+partly cloudy
+gloomy day
+dim light
+low light
+available darkness
+artificial light
+city lights
+street lights

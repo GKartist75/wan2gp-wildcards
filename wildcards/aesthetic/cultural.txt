@@ -1,0 +1,94 @@
+dark academia
+light academia
+cottagecore
+farmcore
+goblincore
+fairycore
+mermaidcore
+royalcore
+castlecore
+medievalcore
+fantasycore
+dragoncore
+witchcraft
+wizardcore
+elfcore
+naturecore
+mushroomcore
+forestcore
+woodland
+vintage
+retro
+mid-century
+atomic age
+space age
+groovy
+disco
+mod
+swinging sixties
+roaring twenties
+victorian
+edwardian
+gilded age
+regency
+tudor
+celtic
+nordic
+viking
+anglo-saxon
+egyptian revival
+greek revival
+japanese
+wabi-sabi
+japonism
+shinto
+zen
+chinese traditional
+hanfu
+tang dynasty
+ming dynasty
+korean traditional
+hanbok
+indian traditional
+rajput
+mughal
+persian
+arabian
+ottoman
+moroccan
+tribal
+african
+maasai
+yorùbá
+aztec
+mayan
+incan
+native american
+pacific islander
+polynesian
+oceanic
+aboriginal
+gothic lolita
+punk
+goth
+emo
+scene
+grunge
+hipster
+preppy
+ivy league
+biker
+rocker
+surfer
+skater
+raver
+cyberpunk
+solarpunk
+steampunk
+dieselpunk
+atomPunk
+biopunk
+nanopunk
+post-apocalyptic
+wasteland
+desert punk

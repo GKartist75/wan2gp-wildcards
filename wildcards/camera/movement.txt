@@ -1,0 +1,63 @@
+dolly forward
+dolly backward
+dolly in
+dolly out
+track left
+track right
+tracking shot
+lateral tracking
+pan left
+pan right
+panning shot
+tilt up
+tilt down
+pedestal up
+pedestal down
+boom up
+boom down
+crane up
+crane down
+truck left
+truck right
+arc left
+arc right
+orbiting
+circling
+rotating
+spinning
+whip pan
+swish pan
+zoom in
+zoom out
+crash zoom
+dolly zoom
+vertigo effect
+push in
+pull out
+follow shot
+chase shot
+running shot
+walk-and-talk
+steadycam
+float cam
+snorricam
+body mount
+glide cam
+slider shot
+jib shot
+cable cam
+wire shot
+aerial flyover
+fly-through
+sweeping
+soaring
+diving
+climbing
+descending
+hovering
+bobbing
+swaying
+shaking
+vibrating
+juddering
+bouncing

@@ -1,0 +1,61 @@
+rain
+light rain
+moderate rain
+heavy rain
+torrential rain
+drizzle
+light drizzle
+misty drizzle
+spitting
+spray
+shower
+rain shower
+sun shower
+scattered showers
+downpour
+cloudburst
+deluge
+monsoon
+tropical rain
+rainstorm
+thunderstorm
+thunder
+lightning
+fork lightning
+sheet lightning
+heat lightning
+thunderclap
+thunder roll
+rainbow
+double rainbow
+snow
+light snow
+moderate snow
+heavy snow
+snow shower
+snow flurry
+snow squall
+snowstorm
+blizzard
+whiteout
+sleet
+freezing rain
+ice pellets
+graupel
+soft hail
+hail
+hailstorm
+hailstones
+diamond dust
+ice crystals
+frost
+hoarfrost
+rime ice
+glaze ice
+black ice
+powder snow
+wet snow
+packing snow
+corn snow
+firn
+névé

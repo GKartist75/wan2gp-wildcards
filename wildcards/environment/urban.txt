@@ -1,0 +1,141 @@
+city street
+main street
+side street
+alleyway
+back alley
+narrow alley
+cobblestone street
+pedestrian zone
+plaza
+square
+piazza
+promenade
+boulevard
+avenue
+highway
+freeway
+overpass
+underpass
+bridge
+footbridge
+skyscraper district
+financial district
+downtown
+midtown
+uptown
+suburb
+residential area
+neighborhood
+housing estate
+apartment complex
+condominium
+high-rise building
+office building
+shopping mall
+shopping center
+marketplace
+bazaar
+souk
+farmer's market
+flea market
+street market
+food court
+restaurant district
+entertainment district
+nightlife district
+club district
+theatre district
+museum district
+art gallery district
+university campus
+school grounds
+hospital grounds
+industrial zone
+factory district
+warehouse district
+docks
+harbor
+port
+marina
+waterfront
+riverside
+canal district
+railway station
+train station
+bus terminal
+airport
+subway station
+metro
+underground
+park
+city park
+central park
+botanical garden
+rooftop garden
+rooftop terrace
+rooftop bar
+observation deck
+viewpoint
+lookout
+skyline view
+cityscape
+panorama
+urban vista
+street corner
+intersection
+crosswalk
+roundabout
+traffic circle
+fountain square
+memorial
+monument
+war memorial
+statue square
+public square
+town square
+village square
+market square
+cathedral square
+historic district
+old town
+medieval quarter
+cultural quarter
+arts district
+garment district
+theatre district
+restaurant row
+bar street
+club row
+hotel row
+embassy row
+government district
+parliament
+capital building
+city hall
+courthouse
+police station
+fire station
+post office
+library
+museum
+art gallery
+concert hall
+opera house
+theatre
+cinema
+stadium
+arena
+sports complex
+race track
+hippodrome
+velodrome
+skate park
+amusement park
+theme park
+fairground
+carnival
+circus
+zoo
+aquarium
+planetarium
+observatory

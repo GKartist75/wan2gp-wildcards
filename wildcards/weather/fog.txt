@@ -1,0 +1,55 @@
+fog
+light fog
+dense fog
+thick fog
+patchy fog
+freezing fog
+radiation fog
+advection fog
+upslope fog
+evaporation fog
+steam fog
+frontal fog
+valley fog
+ground fog
+sea fog
+coastal fog
+mountain fog
+high fog
+mist
+light mist
+heavy mist
+ground mist
+river mist
+sea mist
+morning mist
+evening mist
+drifting mist
+swirling mist
+rising mist
+settling mist
+haze
+light haze
+thick haze
+heat haze
+dust haze
+smoke haze
+urban haze
+industrial haze
+pollution haze
+smog
+photochemical smog
+volcanic smog
+vog
+arctic haze
+desert haze
+dust
+blowing dust
+suspended dust
+dust storm
+sand storm
+dust devil
+haboob
+dust haze
+dry haze
+wet haze

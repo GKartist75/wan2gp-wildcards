@@ -1,0 +1,72 @@
+impressionism
+post-impressionism
+expressionism
+abstract expressionism
+cubism
+surrealism
+dadaism
+fauvism
+pointillism
+art nouveau
+art deco
+bauhaus
+pop art
+op art
+minimalism
+maximalism
+romanticism
+realism
+hyperrealism
+photorealism
+magical realism
+socialist realism
+renaissance
+baroque
+rococo
+neoclassicism
+gothic
+romanesque
+byzantine
+medieval
+manuscript illumination
+ukiyo-e
+sumi-e
+ink wash
+woodblock print
+calligraphic
+orientalism
+primitivism
+naive art
+folk art
+tribal art
+abstract geometric
+color field
+hard-edge painting
+gestural abstraction
+lyrical abstraction
+arte povera
+land art
+installation art
+kinetic art
+conceptual art
+contemporary
+postmodern
+neo-expressionism
+street art
+graffiti
+muralism
+digital art
+glitch art
+pixel art
+low poly
+voxel art
+vector art
+isometric
+vaporwave aesthetic
+synthwave
+cyberpunk
+steampunk
+dieselpunk
+atomPunk
+solarPunk
+cassette futurism

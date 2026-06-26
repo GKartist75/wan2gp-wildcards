@@ -1,0 +1,132 @@
+hat
+cap
+baseball cap
+bucket hat
+fedora
+trilby
+panama hat
+boater hat
+top hat
+bowler hat
+derby hat
+flat cap
+newsboy cap
+ivy cap
+beret
+beanie
+stocking cap
+winter hat
+trapper hat
+ushanka
+sombrero
+cowboy hat
+ten-gallon hat
+sun hat
+wide-brim hat
+straw hat
+fascinator
+headband
+headwrap
+bandana
+do-rag
+durag
+snood
+hairnet
+turban
+fez
+tam o shanter
+glengarry
+balmoral
+crown
+tiara
+diadem
+coronet
+veil
+mantilla
+wimple
+coif
+hood
+scarf
+muffler
+shawl
+wrap
+stole
+gloves
+mittens
+fingerless gloves
+opera gloves
+gauntlets
+belt
+suspenders
+braces
+tie
+necktie
+bow tie
+skinny tie
+bolo tie
+ascot
+cravat
+scarf
+pocket square
+cufflinks
+tie pin
+tie clip
+lapel pin
+brooch
+pin
+badge
+necklace
+pendant
+locket
+choker
+torque
+neck ring
+earrings
+stud earrings
+hoop earrings
+drop earrings
+chandelier earrings
+bracelet
+bangle
+cuff
+watch
+wristwatch
+pocket watch
+ring
+signet ring
+wedding ring
+band
+engagement ring
+cocktail ring
+anklet
+toe ring
+nose ring
+septum ring
+lip ring
+eyebrow ring
+tongue ring
+belt buckle
+suspenders clips
+armband
+wristband
+watchband
+watch strap
+garter
+sash
+ribbon
+bow
+hair clip
+hair pin
+barrette
+hair stick
+comb
+crown
+tiara
+diadem
+circlet
+chaplet
+wreath
+garland
+corona
+halo
+nimbus

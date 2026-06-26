@@ -1,0 +1,49 @@
+center frame
+left third
+right third
+top third
+bottom third
+upper left
+upper right
+lower left
+lower right
+top center
+bottom center
+left center
+right center
+dead center
+off-center
+extreme left
+extreme right
+extreme top
+extreme bottom
+bird's eye layout
+worm's eye layout
+isometric layout
+orthographic layout
+perspective layout
+flat layout
+stacked layout
+grid layout
+checkerboard
+staggered
+radial layout
+spiral layout
+circular layout
+triangular layout
+diagonal layout
+horizontal layout
+vertical layout
+linear layout
+curvilinear layout
+organic layout
+geometric layout
+cluster layout
+scattered layout
+uniform layout
+random layout
+patterned layout
+repeating layout
+mirrored layout
+symmetrical layout
+asymmetrical layout

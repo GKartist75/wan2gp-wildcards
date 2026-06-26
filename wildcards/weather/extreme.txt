@@ -1,0 +1,63 @@
+hurricane
+typhoon
+cyclone
+tropical storm
+tropical depression
+super typhoon
+major hurricane
+category 5
+storm surge
+tidal wave
+tornado
+funnel cloud
+waterspout
+dust devil
+fire whirl
+steam devil
+gustnado
+landspout
+downburst
+microburst
+macroburst
+derecho
+squall line
+bow echo
+supercell
+mesocyclone
+wall cloud
+shelf cloud
+roll cloud
+arcus cloud
+haboob
+dust storm
+sandstorm
+snowstorm
+blizzard
+icestorm
+sleet storm
+thunderstorm
+severe thunderstorm
+supercell thunderstorm
+pulse storm
+multi-cell storm
+squall
+gale
+storm force
+hurricane force
+tempest
+maelstrom
+whirlwind
+cyclone
+monsoon
+cloudburst
+flash flood
+flood
+inundation
+tsunami
+seismic wave
+rogue wave
+storm wave
+swell
+ground swell
+wind swell
+storm swell

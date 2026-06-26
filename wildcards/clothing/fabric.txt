@@ -1,0 +1,108 @@
+cotton
+polyester
+nylon
+rayon
+linen
+wool
+cashmere
+silk
+satin
+velvet
+velour
+corduroy
+denim
+leather
+suede
+faux leather
+pleather
+vinyl
+latex
+rubber
+neoprene
+spandex
+lycra
+elastane
+acrylic
+polyamide
+polyurethane
+microfiber
+modal
+bamboo
+hemp
+jute
+sisal
+raffia
+straw
+felt
+flannel
+tweed
+herringbone
+houndstooth
+plaid
+tartan
+gingham
+check
+striped
+pinstripe
+seersucker
+oxford cloth
+broadcloth
+poplin
+chambray
+muslin
+calico
+lace
+chiffon
+organza
+tulle
+mesh
+net
+fishnet
+crochet
+knit
+jersey
+interlock
+rib knit
+cable knit
+fleece
+polar fleece
+shearling
+faux fur
+fur
+angora
+mohair
+alpaca
+camel hair
+llama
+vicuna
+suede
+nubuck
+patent leather
+embossed leather
+tooled leather
+woven leather
+perforated leather
+quilted
+padded
+layered
+pleated
+ruffled
+frilled
+tiered
+gathered
+shirred
+smocked
+embroidered
+beaded
+sequined
+spangled
+rhinestone
+studded
+spiked
+applique
+patchwork
+fringed
+tasseled
+laced
+ribboned
+bow-trimmed

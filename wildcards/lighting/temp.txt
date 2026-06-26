@@ -1,0 +1,37 @@
+warm light
+cool light
+neutral light
+daylight
+tungsten
+incandescent warm
+candle warm
+golden
+amber
+orange glow
+red light
+blue light
+cool blue
+icy blue
+cold light
+white light
+pure white
+soft white
+warm white
+cool white
+natural white
+color temperature
+kelvin
+high color temperature
+low color temperature
+color cast
+warm cast
+cool cast
+golden cast
+blue cast
+green cast
+magenta cast
+amber cast
+rose cast
+peach cast
+lavender cast
+teal cast

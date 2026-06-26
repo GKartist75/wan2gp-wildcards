@@ -1,0 +1,124 @@
+dense forest
+ancient woodland
+enchanted forest
+pine forest
+deciduous forest
+rainforest
+jungle
+mangrove
+bamboo grove
+redwood grove
+sequoia forest
+taiga
+boreal forest
+woodland
+copse
+grove
+orchard
+vineyard
+meadow
+prairie
+savanna
+steppe
+tundra
+alpine
+mountain peak
+snow-capped mountain
+volcanic mountain
+mountain range
+foothills
+rolling hills
+valley
+gorge
+canyon
+ravine
+cliff edge
+sea cliff
+rock formation
+mesa
+butte
+plateau
+highland
+lowland
+plain
+field
+farmland
+pasture
+desert
+sand dune
+oasis
+cactus forest
+badlands
+salt flat
+cave system
+limestone cave
+ice cave
+lava tube
+underground cavern
+cenote
+grotto
+waterfall
+cascade
+rapids
+river
+stream
+creek
+brook
+lake
+pond
+reservoir
+wetland
+marsh
+swamp
+bog
+fen
+bayou
+delta
+estuary
+lagoon
+coral reef
+kelp forest
+seashore
+beach
+coastline
+cliffside
+shoreline
+peninsula
+cove
+bay
+harbor
+fjord
+island
+archipelago
+atoll
+volcanic island
+desert island
+glacier
+ice field
+iceberg
+frozen lake
+snowfield
+volcano
+geyser
+hot spring
+mud pot
+sulfur field
+natural arch
+natural bridge
+blowhole
+sinkhole
+fossil bed
+petrified forest
+badlands
+scrubland
+heathland
+moor
+chaparral
+shrubland
+tropical
+subtropical
+temperate
+arctic
+antarctic
+alpine
+subalpine

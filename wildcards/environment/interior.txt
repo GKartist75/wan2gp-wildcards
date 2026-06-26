@@ -1,0 +1,130 @@
+living room
+sitting room
+drawing room
+parlor
+family room
+den
+study
+library
+home office
+bedroom
+master bedroom
+guest bedroom
+children's room
+nursery
+dormitory
+kitchen
+galley kitchen
+open-plan kitchen
+dining room
+breakfast nook
+dining hall
+great hall
+banquet hall
+ballroom
+grand ballroom
+foyer
+entrance hall
+hallway
+corridor
+passageway
+staircase
+grand staircase
+spiral staircase
+escalator
+elevator
+atrium
+conservatory
+sunroom
+garden room
+greenhouse
+bathroom
+washroom
+powder room
+en-suite
+spa bathroom
+steam room
+sauna
+whirlpool
+locker room
+changing room
+dressing room
+walk-in closet
+pantry
+larder
+wine cellar
+basement
+cellar
+attic
+loft
+garage
+workshop
+studio
+art studio
+music studio
+recording studio
+dance studio
+yoga studio
+gym
+home gym
+game room
+playroom
+media room
+home theater
+cinema room
+man cave
+she shed
+balcony
+terrace
+patio
+deck
+porch
+veranda
+sun deck
+rooftop terrace
+courtyard
+atrium
+indoor garden
+solarium
+conservatory
+greenhouse
+atrium
+lobby
+lounge
+waiting room
+reception
+foyer
+entrance
+vestibule
+mudroom
+laundry room
+utility room
+boiler room
+furnace room
+storage room
+closet
+pantry
+cellar
+vault
+strong room
+panic room
+safe room
+command center
+control room
+operations room
+war room
+situation room
+boardroom
+conference room
+meeting room
+classroom
+lecture hall
+auditorium
+chapel
+sanctuary
+nave
+transept
+apse
+choir loft
+crypt
+catacomb

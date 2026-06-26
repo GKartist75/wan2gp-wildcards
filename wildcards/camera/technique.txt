@@ -1,0 +1,75 @@
+rack focus
+selective focus
+shallow depth of field
+deep focus
+soft focus
+sharp focus
+split focus
+pull focus
+follow focus
+focus on foreground
+focus on background
+focus on subject
+out of focus
+blurred background
+bokeh
+motion blur
+long exposure
+slow shutter
+fast shutter
+high speed
+time lapse
+hyperlapse
+stop motion
+freeze frame
+slow motion
+overcranking
+undercranking
+night photography
+low light
+available light
+pushed film
+cross processing
+double exposure
+multiple exposure
+in-camera effect
+practical effect
+miniature effect
+forced perspective
+aerial perspective
+atmospheric perspective
+linear perspective
+vanishing point
+rule of thirds
+golden ratio
+lead room
+head room
+nose room
+walking room
+looking room
+breathing room
+negative space
+positive space
+symmetry
+asymmetry
+balance
+contrast
+color grading
+color timing
+lUT applied
+teal and orange
+bleach bypass
+desaturated
+monochrome
+sepia tone
+vignette
+grain
+film grain
+digital noise
+chromatic aberration
+lens flare
+lens reflection
+glare
+bloom
+glow
+halation

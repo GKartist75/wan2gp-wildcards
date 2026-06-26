@@ -1,0 +1,96 @@
+enchanted forest
+magical glade
+fairy ring
+mushroom circle
+hidden grove
+sacred grove
+whispering woods
+singing forest
+crystal cave
+gemstone cavern
+floating islands
+sky islands
+cloud palace
+celestial temple
+astral plane
+ethereal realm
+spirit world
+dreamscape
+nightmare realm
+shadow realm
+twilight realm
+fae court
+elven kingdom
+dwarven hall
+underground city
+mountain fortress
+dragon's lair
+dragon's nest
+wyrm's cave
+ancient ruin
+lost city
+sunken city
+hidden temple
+forgotten shrine
+mystical tower
+wizard's tower
+mage's spire
+enchanter's workshop
+alchemist's laboratory
+potion shop
+apothecary
+herb garden
+magical garden
+crystal garden
+elemental plane
+plane of fire
+plane of water
+plane of earth
+plane of air
+plane of shadow
+plane of light
+celestial realm
+infernal realm
+abyssal plane
+purgatory
+limbo
+valhalla
+elysium
+asgard
+midgard
+jotunheim
+svartalfheim
+nidavellir
+vanaheim
+muspelheim
+niflheim
+heaven
+paradise
+garden of eden
+elysian fields
+fortunate isles
+atlantis
+avalon
+camelot
+neverland
+wonderland
+oz
+narnia
+middle-earth
+rivendell
+lothlorien
+mirkwood
+shire
+moria
+gondor
+rohan
+mordor
+númenor
+westeros
+kings landing
+winterfell
+essos
+braavos
+meereen
+qarth
+valyria

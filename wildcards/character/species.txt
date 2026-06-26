@@ -1,0 +1,164 @@
+human
+humanoid
+android
+cyborg
+robot
+golem
+homunculus
+clone
+mutant
+hybrid
+chimera
+shapeshifter
+doppelganger
+elf
+high elf
+wood elf
+dark elf
+dwarf
+mountain dwarf
+hill dwarf
+gnome
+halfling
+hobbit
+orc
+half-orc
+troll
+ogre
+giant
+frozen giant
+fire giant
+stone giant
+goblin
+hobgoblin
+bugbear
+kobold
+fairy
+pixie
+sprite
+nymph
+dryad
+naid
+sylph
+salamander
+undine
+angel
+seraphim
+cherubim
+archangel
+fallen angel
+demon
+imp
+fiend
+devil
+succubus
+incubus
+vampire
+werewolf
+lycanthrope
+zombie
+skeleton
+lich
+ghost
+specter
+wraith
+banshee
+poltergeist
+phantom
+spirit
+elemental
+earth elemental
+air elemental
+fire elemental
+water elemental
+dragon
+drake
+wyrm
+wyvern
+basilisk
+hydra
+behemoth
+leviathan
+phoenix
+griffin
+hippogriff
+pegasus
+unicorn
+centaur
+satyr
+faun
+minotaur
+harpy
+siren
+mermaid
+merman
+kraken
+sea serpent
+cerberus
+chimera
+manticore
+sphinx
+gorgon
+medusa
+naga
+lamia
+dullahan
+wendigo
+yeti
+bigfoot
+nessie
+jackalope
+kitsune
+tanuki
+tengu
+oni
+yokai
+dokkaebi
+boggart
+brownie
+leprechaun
+gremlin
+sprite
+nixie
+kelpie
+selkie
+drow
+drider
+araknid
+lizardfolk
+dragonborn
+tabaxi
+kenku
+tortle
+yuan-ti
+gith
+illithid
+mind flayer
+beholder
+slime
+ooze
+gelatinous cube
+mimic
+treant
+ent
+awakened animal
+talking animal
+anthropomorphic
+furry
+scalie
+avian
+aquatic
+insectoid
+arachnid
+cephalopod
+mollusk
+amorphous
+ethereal
+celestial
+astral
+shadow
+void
+aberrant
+eldritch
+cosmic
+primordial

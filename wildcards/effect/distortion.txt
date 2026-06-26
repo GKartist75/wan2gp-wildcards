@@ -1,0 +1,70 @@
+glitch
+digital glitch
+data corruption
+pixelation
+blocky
+artifacting
+scanline
+horizontal tear
+vertical tear
+screen tear
+roll
+vhs distortion
+tape warp
+dropout
+snow
+static
+white noise
+analog interference
+radio interference
+signal loss
+breakup
+fragmentation
+compression artifact
+macroblocking
+ringing
+banding
+posterization
+color shift
+channel offset
+rgb split
+chroma shift
+luma shift
+sync loss
+frame skip
+stutter
+judder
+wobble
+warp
+shear
+skew
+twist
+kaleidoscope
+mirror
+tunnel
+pinch
+bulge
+ripple
+wave
+swirl
+zap
+electrical arc
+spark
+crackle
+burn
+scorch
+melt
+drip
+run
+smear
+smudge
+bloom
+explode
+implode
+shatter
+crack
+fracture
+tear
+rip
+fold
+unfold

@@ -1,0 +1,75 @@
+octane render
+redshift
+arnold
+v-ray
+cycles
+eevee
+unreal engine
+unity
+blender
+maya
+3ds max
+cinema 4d
+houdini
+lightwave
+modo
+sketchup
+zbrush
+substance painter
+substance designer
+materialize
+megascans
+bridge
+quixel
+marvelous designer
+clo 3d
+daz studio
+poser
+makehuman
+metahuman
+character creator
+iclone
+motionbuilder
+keyframe animation
+procedural animation
+motion capture
+mocap
+performance capture
+facial capture
+hand tracking
+body tracking
+simulation
+physics simulation
+cloth simulation
+hair simulation
+fluid simulation
+smoke simulation
+fire simulation
+particle simulation
+rigid body simulation
+soft body simulation
+destruction simulation
+fracture simulation
+tessellation
+displacement
+subdivision surface
+catmull-clark
+loop subdivision
+nurbs
+bezier
+b-spline
+polygon modeling
+sculpting
+digital sculpting
+retopology
+uv mapping
+baking
+normal mapping
+bump mapping
+displacement mapping
+parallax mapping
+ambient occlusion
+global illumination
+path tracing
+ray tracing
+denoising

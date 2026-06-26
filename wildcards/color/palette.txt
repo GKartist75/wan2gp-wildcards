@@ -1,0 +1,63 @@
+monochrome
+grayscale
+sepia
+black and white
+duotone
+tritone
+complementary
+split complementary
+analogous
+triadic
+tetradic
+square
+rectangular
+warm palette
+cool palette
+neutral palette
+pastel palette
+muted palette
+vibrant palette
+earthy palette
+oceanic palette
+desert palette
+forest palette
+sunset palette
+sunrise palette
+twilight palette
+midnight palette
+neon palette
+fluorescent palette
+metallic palette
+iridescent palette
+chromatic
+achromatic
+high contrast
+low contrast
+color blocked
+gradient
+ombre
+fade
+wash
+tint
+shade
+tone
+hue shift
+color cast
+warm tone
+cool tone
+neutral tone
+golden tone
+blue tone
+green tone
+red tone
+vintage tone
+retro palette
+pastel goth
+dark academia palette
+light academia palette
+vaporwave palette
+synthwave palette
+cyberpunk palette
+outrun palette
+oceanic palette
+terrestrial palette

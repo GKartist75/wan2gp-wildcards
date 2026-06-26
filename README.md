@@ -34,6 +34,40 @@ Arrow keys / Enter / Tab / Click to insert. Escape to dismiss.
 - **Seed = -1** → random each time
 - **Fixed seed** → deterministic expansion (same seed = same picks)
 
+## Character Profiles
+
+Define named characters with appearance descriptions. Each character becomes
+a wildcard file — use `__character/Name__` in your prompt to inject their
+appearance. Voice, clothing, and tags are metadata stored for other plugins
+(LTX Director, SeedVC, etc.) to consume.
+
+### Managing Characters
+
+Open the **Wildcards** tab → **Character Profiles** section.
+
+1. Pick a character from the dropdown to edit, or click **New**
+2. Fill in:
+   - **Name** — identifier used in wildcard syntax
+   - **Appearance** — main description (what `__character/Name__` expands to)
+   - **Voice sample** — path/filename for TTS plugins (e.g. `voice_sarah.wav`)
+   - **Clothing**, **Tags**, **Notes** — metadata
+3. Click **Save** — creates/updates `wildcards/character/{Name}.txt`
+4. Use `__character/Sarah__` in any prompt → expands to appearance text
+
+You can list multiple appearance variants (one per line) for randomized
+variety while keeping the character identity consistent.
+
+### Example
+
+```
+Prompt:  "__character/Sarah__ walks through market, cinematic lighting"
+Expands: "blonde hair, blue eyes, red dress, fair skin woman walks through market, cinematic lighting"
+```
+
+For multi-shot video projects (LTX Director, Scail 2): every window uses
+`__character/Sarah__` → same appearance every time. Voice path in the
+profile lets audio plugins pick the right voice sample per character.
+
 ## Library
 
 ### Subdirectory categories (17 dirs, 89 files)
@@ -81,10 +115,13 @@ Arrow keys / Enter / Tab / Click to insert. Escape to dismiss.
 ```
 wan2gp-wildcards/
 ├── __init__.py
-├── plugin.py          # plugin + monkey-patch + autocomplete JS
-├── expander.py        # expansion engine
+├── plugin.py              # plugin + monkey-patch + autocomplete JS
+├── expander.py            # expansion engine
+├── character_manager.py   # character profile CRUD + wildcard sync
 ├── plugin_info.json
 ├── README.md
+├── characters/
+│   └── profiles.json      # character profile storage
 └── wildcards/
     ├── __index__.txt
     ├── action/        (4 files)

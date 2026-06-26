@@ -16,6 +16,7 @@ import gradio as gr
 from shared.utils.plugins import WAN2GPPlugin
 from shared.utils import prompt_parser
 from . import expander
+from . import character_manager
 
 PLUGIN_ID = "wildcards"
 PLUGIN_LABEL = "Wildcards"
@@ -61,8 +62,8 @@ class WildcardsPlugin(WAN2GPPlugin):
     def __init__(self):
         super().__init__()
         self.name = "Wildcards"
-        self.version = "1.0.0"
-        self.description = "Dynamic wildcard expansion for prompts"
+        self.version = "1.1.0"
+        self.description = "Dynamic wildcard expansion for prompts + character profile manager"
         self.type = ["extension"]
 
     def setup_ui(self):
@@ -75,6 +76,9 @@ class WildcardsPlugin(WAN2GPPlugin):
         plugin_dir = os.path.dirname(os.path.abspath(__file__))
         wildcards_path = os.path.join(plugin_dir, WILDCARDS_SUBDIR)
         expander.set_wildcards_dir(wildcards_path)
+
+        # init character manager
+        character_manager.init(plugin_dir)
 
         # always active when plugin is enabled in Plugin Manager
         global _expansion_enabled
@@ -352,6 +356,112 @@ Check `__index__.txt` for full file map. Quick categories:
                 fn=_send_to_prompt_box,
                 inputs=[batch_output],
                 outputs=[self.prompt, self.multi_prompts_gen_type],
+            )
+
+            gr.Markdown("---")
+            gr.Markdown("### Character Profiles")
+            gr.Markdown(
+                "Define named characters with appearance descriptions. "
+                "Each character becomes a wildcard file — use "
+                "`__character/Name__` in your prompt to inject their appearance. "
+                "Voice/clothing/tags are metadata for other plugins (LTX Director, SeedVC)."
+            )
+
+            char_dropdown = gr.Dropdown(
+                label="Character",
+                choices=character_manager.list_characters(),
+                value=None,
+                interactive=True,
+            )
+
+            char_name = gr.Textbox(label="Name", placeholder="e.g. Sarah")
+            char_appearance = gr.TextArea(
+                label="Appearance (what __character/Name__ expands to)",
+                lines=4,
+                placeholder="blonde hair, blue eyes, red dress, fair skin",
+            )
+            char_voice = gr.Textbox(
+                label="Voice sample (path/filename for TTS plugins)",
+                placeholder="voice_sarah.wav",
+            )
+            char_clothing = gr.Textbox(
+                label="Clothing",
+                placeholder="red dress",
+            )
+            char_tags = gr.Textbox(
+                label="Tags (comma separated)",
+                placeholder="female, human, protagonist",
+            )
+            char_notes = gr.TextArea(
+                label="Notes",
+                lines=2,
+                placeholder="Main character, confident demeanor",
+            )
+
+            with gr.Row():
+                char_save_btn = gr.Button("Save", variant="primary")
+                char_new_btn = gr.Button("New")
+                char_delete_btn = gr.Button("Delete", variant="stop")
+
+            char_msg = gr.Textbox(label="Result", interactive=False)
+
+            def _load_char(name: str):
+                if not name:
+                    return "", "", "", "", "", ""
+                p = character_manager.get_character(name)
+                if not p:
+                    return "", "", "", "", "", ""
+                return (
+                    name,
+                    p.get("appearance", ""),
+                    p.get("voice", ""),
+                    p.get("clothing", ""),
+                    p.get("tags", ""),
+                    p.get("notes", ""),
+                )
+
+            def _refresh_char_list():
+                return gr.update(choices=character_manager.list_characters(), value=None)
+
+            def _clear_char_form():
+                return "", "", "", "", "", ""
+
+            def _save_char(name, appearance, voice, clothing, tags, notes):
+                profile = {
+                    "appearance": appearance,
+                    "voice": voice,
+                    "clothing": clothing,
+                    "tags": tags,
+                    "notes": notes,
+                }
+                msg = character_manager.save_character(name, profile)
+                return msg, gr.update(choices=character_manager.list_characters(), value=name)
+
+            def _delete_char(name):
+                msg = character_manager.delete_character(name)
+                return msg, gr.update(choices=character_manager.list_characters(), value=None), "", "", "", "", "", ""
+
+            char_dropdown.change(
+                fn=_load_char,
+                inputs=[char_dropdown],
+                outputs=[char_name, char_appearance, char_voice, char_clothing, char_tags, char_notes],
+            )
+
+            char_new_btn.click(
+                fn=_clear_char_form,
+                outputs=[char_name, char_appearance, char_voice, char_clothing, char_tags, char_notes],
+            ).then(fn=lambda: (gr.update(value=None), ""), outputs=[char_dropdown, char_msg])
+
+            char_save_btn.click(
+                fn=_save_char,
+                inputs=[char_name, char_appearance, char_voice, char_clothing, char_tags, char_notes],
+                outputs=[char_msg, char_dropdown],
+            )
+
+            char_delete_btn.click(
+                fn=_delete_char,
+                inputs=[char_dropdown],
+                outputs=[char_msg, char_dropdown, char_name, char_appearance, char_voice, char_clothing, char_tags, char_notes],
             )
 
         # return components for lifecycle

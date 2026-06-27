@@ -243,3 +243,191 @@ time                  - time period descriptors
 lighting              - lighting terms (flat pool)
 color                 - color terms (flat pool)
 
+## Additional flat additions (from sd-dynamic-prompts)
+
+### Audio & Music (14 files)
+audio_genre, audio_instruments_brass, audio_instruments_keyboard,
+audio_instruments_other, audio_instruments_percussion,
+audio_instruments_strings, audio_instruments_woodwinds, audio_misc,
+audio_places, audio_playback_media, audio_playback_other,
+audio_playback_players, audio_playback_speakers_and_headphones,
+audio_professions
+
+### Gestures & Poses (53 files)
+gestures_one_hand_one_open_finger, gestures_one_hand_three_open_fingers,
+gestures_one_hand_two_open_fingers,
+gestures_one_hand_variable_number_of_open_fingers,
+gestures_one_hand_whole_closed_hand,
+gestures_one_hand_whole_open_hand, gestures_other, gestures_two_hands,
+posture_arms_basic, posture_arms_specific, posture_basic, posture_carrying,
+posture_foot_position, posture_hand_position,
+posture_hands_touching_each_other, posture_head, posture_hips,
+posture_hugging_main, posture_hugging_one_character,
+posture_hugging_two_characters, posture_knee_location,
+posture_leg_location, posture_movement_of_the_body,
+posture_other_whole_body, posture_poses, posture_rest_points,
+posture_three_characters, posture_torso, posture_two_characters,
+sexual_positions_bondage, sexual_positions_main,
+sex_acts_before, sex_acts_group_sex, sex_acts_same_sex,
+sex_acts_stimulation, sex_acts_penetration_and_insertion
+
+### Food & Drink (18 files)
+food_actions, food_breads, food_condiments, food_dairy,
+food_drink_containers, food_drink_main, food_fruit, food_main,
+food_meal, food_meat, food_misc, food_professions_and_establishments,
+food_sexual, food_snacks, food_sweets, food_sweets_main,
+food_utensils, food_vegetable
+
+### Animals (31 files)
+animals_categories, animals_types_aquatic_cambrian,
+animals_types_aquatic_crustacean, animals_types_aquatic_fish,
+animals_types_aquatic_invertebrate, animals_types_aquatic_whale,
+animals_types_cat, animals_types_dog, animals_types_insects,
+animals_types_large, animals_types_medium,
+animals_types_reptile_and_amphibian, animals_types_rodent,
+birds_main, birds_mythological, birds_real,
+cats_behavior, cats_breeds, cats_coat, cats_felines, cats_main,
+cats_misc, cats_places, cats_related,
+dog_breeds, dog_canines, dog_misc, dog_related, dogs_main,
+ears_animal, groups_animals
+
+### Nature & Elements (27 files)
+fire_actions, fire_body_parts, fire_colors, fire_forms, fire_main,
+fire_misc, fire_objects,
+flowers_main, flowers_misc, flowers_species,
+plant_actions, plant_locations, plant_misc, plant_parts, plant_types,
+tree_action, tree_habitats, tree_misc, tree_parts, tree_types,
+water_geography_bodies, water_geography_landforms, water_ice,
+water_main, water_meteorology, water_misc, water_steam
+
+### Technology & Objects (76 files)
+eyewear_eyewear_frame_colors, eyewear_eyewear_lens_colors,
+eyewear_eyewear_misc, eyewear_eyewear_types, eyewear_glasses_misc,
+eyewear_glasses_types, eyewear_main, eyewear_sunglasses,
+headwear_accessories, headwear_actions, headwear_colors,
+headwear_crowns, headwear_hats_brimless, headwear_hats_misc,
+headwear_hats_with_brim, headwear_hats_with_ear_flaps,
+headwear_hats_with_visor, headwear_helmets,
+headwear_non_specific_styles, headwear_not_headwear,
+headwear_other, headwear_types,
+injury_coverings, injury_misc, injury_visible,
+sports_equpment,
+technology_armor_futuristic, technology_armor_modern,
+technology_artificial_life, technology_computers,
+technology_costumes, technology_descriptions,
+technology_holograms, technology_jobs, technology_mecha,
+technology_medical, technology_parts_electronic,
+technology_parts_main, technology_parts_mechanical,
+technology_personal_communication, technology_places,
+technology_prosthetics, technology_radio, technology_robots,
+technology_scientific, technology_themes, technology_tools,
+technology_vehicles_aerospace, technology_vehicles_land,
+technology_vehicles_naval, technology_vehicles_power_sources,
+water_vehicles,
+wings_colors, wings_main, wings_misc, wings_number, wings_sizes,
+wings_types_elemental, wings_types_false, wings_types_insects,
+wings_types_other, wings_types_supernatural, wings_where_attached,
+tail_and_objects, tail_and_sex, tail_main, tail_misc, tail_number,
+tail_types_elemental, tail_types_mammals, tail_types_other_animals,
+tail_types_supernatural,
+sex_objects_BDSM, sex_objects_fluids, sex_objects_sex_toys
+
+### Clothing Detail (26 files)
+bra_colors, bra_main, bra_misc, bra_models, bra_multiple_colors,
+bra_patterns_and_prints, dress_appearance_colors,
+dress_appearance_models, dress_appearance_multiple_colors,
+dress_appearance_other, dress_appearance_patterns_and_prints,
+dress_misc, sleeves_actions, sleeves_colors, sleeves_lack_thereof,
+sleeves_lenght, sleeves_misc, sleeves_prints, sleeves_styled,
+sleeves_styles, sleeves_trims, swimsuit_colors, swimsuit_male,
+swimsuit_misc, swimsuit_styles, swimsuit_types,
+water_clothes
+
+### Attire (15 files)
+attire_headwear, attire_jewelry_and_accessories_head_and_face,
+attire_jewelry_and_accessories_limbs,
+attire_jewelry_and_accessories_neck_and_shoulders,
+attire_jewelry_and_accessories_torso_and_misc,
+attire_legs_and_feet, attire_other, attire_pants_and_bottomwear,
+attire_shirts_and_topwear, attire_shoes_and_footwear,
+attire_styles_and_patterns_patterns,
+attire_styles_and_patterns_prints,
+attire_swimsuits_and_bodysuits, attire_traditional_clothing,
+attire_uniforms_and_costumes
+
+### Body (167 files)
+ass_anatomy, ass_and_hands, ass_and_heads, ass_anus_anatomy,
+ass_misc, ass_with_cum,
+body_parts_appendages, body_parts_head, body_parts_torso_lower,
+body_parts_torso_upper,
+breasts_and_other_body_parts_*, breasts_clothes_for,
+breasts_descriptions, breasts_main, breasts_misc,
+breasts_sizes_ranges, breasts_sizes_scenes_revolving_around,
+breasts_visibilty_parts, breasts_visibilty_whole,
+ears_misc, ears_number, ears_objects, ears_other,
+eyes_accessories, eyes_around, eyes_closed,
+eyes_emotions_and_expressions, eyes_gazes, eyes_iris_colors,
+eyes_iris_form, eyes_iris_multiple_colors, eyes_misc,
+eyes_more_appearance_animal, eyes_more_appearance_other,
+eyes_more_appearance_series_specific,
+eyes_more_appearance_stylistic, eyes_number, eyes_pupils,
+eyes_sclera,
+face_drawing_styles, face_emotes, face_emotions, face_looking_at,
+face_main, face_misc, face_sexual, face_smile, face_smile_main,
+face_smug, face_smug_main, face_surprised_scared_sad,
+face_surprised_scared_sad_main,
+hair_actions, hair_color, hair_color_misc, hair_color_multiple,
+hair_facial, hair_fantasy, hair_misc, hair_objects_accessories,
+hair_objects_care, hair_styles_back, hair_styles_front,
+hair_styles_length, hair_styles_long, hair_styles_medium,
+hair_styles_misc, hair_styles_over_the_body, hair_styles_short,
+hair_styles_tall, hair_styles_texture, hair_styles_tied,
+hair_styles_top,
+hands_strange, hands_where_above_neck, hands_where_breasts,
+hands_where_lower_body, hands_where_members,
+hands_where_somewhere_else, hands_where_upper_body,
+legwear_*, neck_and_neckwear_*, nudity_*, panties_*,
+piercings_*, pussy_*, shoulders_*, skin_color_*, water_wet
+
+### Games (9 files)
+board_games_main, board_games_pieces, game_activities_board,
+game_activities_card, game_activities_group,
+game_activities_hand, game_activities_mechanical,
+game_activities_places, game_activities_puzzle
+
+### Composition (11 files)
+image_composition_angle_perspective_depth,
+image_composition_composition, image_composition_flaws,
+image_composition_focus, image_composition_format,
+image_composition_framing_body,
+image_composition_other_patterns, image_composition_styles,
+image_composition_subject_matter, image_composition_techniques,
+image_composition_traditional_japanese_patterns
+
+### Colors (4 files)
+colors_collections, colors_dominant_palettes,
+colors_dominant_specific, colors_misc
+
+### Backgrounds (4 files)
+backgrounds_colors, backgrounds_multiple_colors,
+backgrounds_other, backgrounds_patterns
+
+### Focus (4 files)
+focus_body_parts, focus_gender, focus_objects, focus_other
+
+### Groups (5 files)
+groups_by_gender_boys, groups_by_gender_girls,
+groups_by_gender_other, groups_everyone, groups_main
+
+### Misc (14 files)
+emoji, jobs, prints_patterns, prints_patterns_specific,
+prints_patterns_things, prints_print_items, sports_list,
+sports_main, verbs_and_gerunds_ambiguous,
+verbs_and_gerunds_gerunds, verbs_and_gerunds_verbs,
+scenario-desc, wh-site, noun-emote,
+colours, general_aesthetics, adjectives, appearance, haircolour,
+size, adnd, cthulhu, tolkien, jewelry, digitalart, drawing,
+othermedia, painting, sculptural, shading-techniques, textile,
+beards, mood, occupations, home, artmovement, generalstyle,
+platform, seasons, timeofday
+

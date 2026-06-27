@@ -43,7 +43,7 @@ def _get_wildcard_keys() -> list[str]:
 
 
 def _list_wc_files() -> list[str]:
-    """Recursively list .txt files, exclude __index__.txt."""
+    """Recursively list .txt files, exclude __index__.txt and __favorites__.json."""
     wc_dir = expander.WILDCARDS_DIR
     if not os.path.isdir(wc_dir):
         return []
@@ -55,6 +55,80 @@ def _list_wc_files() -> list[str]:
             rel = os.path.relpath(os.path.join(root, fname), wc_dir)
             files.append(rel)
     return sorted(files)
+
+
+def _get_categories() -> list[str]:
+    """Sorted list of subdirectory names (skip __ prefixed)."""
+    wc_dir = expander.WILDCARDS_DIR
+    if not os.path.isdir(wc_dir):
+        return []
+    cats = []
+    for entry in sorted(os.listdir(wc_dir)):
+        if os.path.isdir(os.path.join(wc_dir, entry)) and not entry.startswith("_"):
+            cats.append(entry)
+    return cats
+
+
+def _filter_files(search: str, category: str, favorites_only: bool, favorites: list[str]) -> list[str]:
+    """Filter file list by search term, category, and favorites."""
+    all_files = _list_wc_files()
+    if category and category != "All":
+        all_files = [f for f in all_files if f.startswith(category + "/")]
+    if search:
+        q = search.lower()
+        all_files = [f for f in all_files if q in f.lower()]
+    if favorites_only and favorites:
+        all_files = [f for f in all_files if f in favorites]
+    return all_files
+
+
+FAVORITES_FILE = "__favorites__.json"
+
+
+def _load_favorites() -> list[str]:
+    """Load favorited file paths."""
+    path = os.path.join(expander.WILDCARDS_DIR, FAVORITES_FILE)
+    if not os.path.isfile(path):
+        return []
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (json.JSONDecodeError, OSError):
+        return []
+
+
+def _save_favorites(favorites: list[str]):
+    """Persist favorited file paths."""
+    path = os.path.join(expander.WILDCARDS_DIR, FAVORITES_FILE)
+    try:
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(favorites, f)
+    except OSError:
+        pass
+
+
+def _search_content(query: str) -> str:
+    """Search across all wildcard file contents. Returns lines with file:line:match."""
+    if not query:
+        return ""
+    q = query.lower()
+    results = []
+    for fpath in _list_wc_files():
+        full = os.path.join(expander.WILDCARDS_DIR, fpath)
+        try:
+            with open(full, "r", encoding="utf-8") as f:
+                for i, line in enumerate(f, 1):
+                    if q in line.lower():
+                        snippet = line.rstrip()[:120]
+                        results.append(f"{fpath}:{i}: {snippet}")
+        except OSError:
+            continue
+        if len(results) >= 500:  # safety cap
+            break
+    if not results:
+        return "No matches found."
+    return "\n".join(results)
+
 
 # state kept on the plugin instance for the monkey-patch
 _original_process_template = prompt_parser.process_template
@@ -158,10 +232,13 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
         self.add_custom_js(js)
 
     def on_tab_select(self, state: dict):
-        """Refresh file dropdown from disk on every tab visit."""
+        """Refresh file dropdown and category filter from disk on every tab visit."""
         if hasattr(self, "file_dropdown"):
-            return gr.update(choices=_list_wc_files())
-        return None
+            # refresh file list and category list
+            cats = ["All"] + _get_categories()
+            files = _list_wc_files()
+            return [gr.update(choices=files), gr.update(choices=cats)]
+        return [None, None]
 
     def create_ui(self, api_session):
 
@@ -252,17 +329,32 @@ Check `__index__.txt` for full file map. Quick categories:
             gr.Markdown("> Expansion is active when this plugin is enabled in the **Plugins** tab.")
 
             gr.Markdown("---")
-            gr.Markdown("### Wildcard File Manager")
+            gr.Markdown("### Wildcard File Browser")
+
+            with gr.Row():
+                cat_filter = gr.Dropdown(
+                    label="Category",
+                    choices=["All"] + _get_categories(),
+                    value="All",
+                    interactive=True,
+                )
+                search_filter = gr.Textbox(
+                    label="Search files",
+                    placeholder="type to filter...",
+                    scale=2,
+                )
+                fav_only = gr.Checkbox(label="★ Favorites only", value=False)
 
             file_dropdown = gr.Dropdown(
                 label="Wildcard File",
                 choices=_list_wc_files(),
                 value=None,
                 interactive=True,
-                allow_custom_value=True,
             )
-            refresh_btn = gr.Button("Refresh File List")
-            refresh_btn.click(fn=_refresh_list, outputs=[file_dropdown], queue=False)
+
+            with gr.Row():
+                refresh_btn = gr.Button("Refresh")
+                star_btn = gr.Button("★ Toggle Favorite")
 
             file_editor = gr.TextArea(label="File Content", lines=12)
 
@@ -273,38 +365,124 @@ Check `__index__.txt` for full file map. Quick categories:
             )
 
             with gr.Row():
-                new_name = gr.Textbox(label="New filename", placeholder="e.g. mytheme.txt")
+                new_name = gr.Textbox(label="New filename", placeholder="e.g. mytheme.txt", scale=2)
                 create_btn = gr.Button("Create")
                 save_btn = gr.Button("Save")
                 delete_btn = gr.Button("Delete")
 
             file_msg = gr.Textbox(label="Result", interactive=False)
 
-            def _create_file(name: str) -> tuple[str, gr.update]:
+            def _create_file(name: str) -> tuple[str, gr.update, gr.update]:
                 if not name:
-                    return "No filename given.", gr.update()
+                    return "No filename given.", gr.update(), gr.update()
                 if not name.endswith(".txt"):
                     name += ".txt"
                 msg = _save_file(name, "")
-                return msg, gr.update(choices=_list_wc_files(), value=name)
+                all_files = _list_wc_files()
+                return msg, gr.update(choices=all_files, value=name), gr.update(choices=["All"] + _get_categories())
+
+            def _update_filter(search: str, category: str, fav_only: bool):
+                favs = _load_favorites()
+                filtered = _filter_files(search, category, fav_only, favs)
+                return gr.update(choices=filtered, value=None)
+
+            search_filter.change(
+                fn=_update_filter,
+                inputs=[search_filter, cat_filter, fav_only],
+                outputs=[file_dropdown],
+            )
+            cat_filter.change(
+                fn=_update_filter,
+                inputs=[search_filter, cat_filter, fav_only],
+                outputs=[file_dropdown],
+            )
+            fav_only.change(
+                fn=_update_filter,
+                inputs=[search_filter, cat_filter, fav_only],
+                outputs=[file_dropdown],
+            )
 
             create_btn.click(
                 fn=_create_file,
                 inputs=[new_name],
-                outputs=[file_msg, file_dropdown],
+                outputs=[file_msg, file_dropdown, cat_filter],
             )
 
             save_btn.click(
                 fn=_save_file,
                 inputs=[file_dropdown, file_editor],
                 outputs=[file_msg],
-            ).then(fn=_refresh_list, outputs=[file_dropdown], queue=False)
+            ).then(
+                fn=_update_filter,
+                inputs=[search_filter, cat_filter, fav_only],
+                outputs=[file_dropdown],
+            )
 
             delete_btn.click(
                 fn=_delete_file,
                 inputs=[file_dropdown],
                 outputs=[file_msg],
-            ).then(fn=_refresh_list, outputs=[file_dropdown], queue=False)
+            ).then(
+                fn=_update_filter,
+                inputs=[search_filter, cat_filter, fav_only],
+                outputs=[file_dropdown],
+            ).then(
+                fn=lambda: gr.update(choices=["All"] + _get_categories()),
+                outputs=[cat_filter],
+            )
+
+            refresh_btn.click(
+                fn=_update_filter,
+                inputs=[search_filter, cat_filter, fav_only],
+                outputs=[file_dropdown],
+            )
+
+            def _toggle_star(filename: str) -> str:
+                if not filename:
+                    return "No file selected."
+                favs = _load_favorites()
+                if filename in favs:
+                    favs.remove(filename)
+                    _save_favorites(favs)
+                    return f"Removed ★ from {filename}"
+                else:
+                    favs.append(filename)
+                    _save_favorites(favs)
+                    return f"Added ★ to {filename}"
+
+            star_btn.click(
+                fn=_toggle_star,
+                inputs=[file_dropdown],
+                outputs=[file_msg],
+            )
+
+            gr.Markdown("---")
+            gr.Markdown("### Cross-File Content Search")
+
+            with gr.Row():
+                content_query = gr.Textbox(
+                    label="Search term",
+                    placeholder="e.g. sunset, cyberpunk, dragon...",
+                    scale=3,
+                )
+                content_search_btn = gr.Button("Search All Files", scale=1)
+
+            content_results = gr.Textbox(
+                label="Matches (file:line:content)",
+                lines=8,
+                interactive=False,
+            )
+
+            content_search_btn.click(
+                fn=_search_content,
+                inputs=[content_query],
+                outputs=[content_results],
+            )
+            content_query.submit(
+                fn=_search_content,
+                inputs=[content_query],
+                outputs=[content_results],
+            )
 
             gr.Markdown("---")
             gr.Markdown("### Test Expansion")
@@ -485,4 +663,5 @@ Check `__index__.txt` for full file map. Quick categories:
 
         # return components for lifecycle
         self.file_dropdown = file_dropdown
-        self.on_tab_outputs = [self.file_dropdown]
+        self.cat_filter = cat_filter
+        self.on_tab_outputs = [self.file_dropdown, self.cat_filter]

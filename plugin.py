@@ -41,6 +41,21 @@ def _get_wildcard_keys() -> list[str]:
             keys.add(f"__{rel[:-4]}__")  # strip .txt
     return sorted(keys)
 
+
+def _list_wc_files() -> list[str]:
+    """Recursively list .txt files, exclude __index__.txt."""
+    wc_dir = expander.WILDCARDS_DIR
+    if not os.path.isdir(wc_dir):
+        return []
+    files = []
+    for root, dirs, fnames in os.walk(wc_dir):
+        for fname in sorted(fnames):
+            if not fname.endswith(".txt") or fname == "__index__.txt":
+                continue
+            rel = os.path.relpath(os.path.join(root, fname), wc_dir)
+            files.append(rel)
+    return sorted(files)
+
 # state kept on the plugin instance for the monkey-patch
 _original_process_template = prompt_parser.process_template
 _expansion_enabled = False  # set True in setup_ui when plugin is loaded
@@ -62,7 +77,7 @@ class WildcardsPlugin(WAN2GPPlugin):
     def __init__(self):
         super().__init__()
         self.name = "Wildcards"
-        self.version = "1.1.0"
+        self.version = "1.2.0"
         self.description = "Dynamic wildcard expansion for prompts + character profile manager"
         self.type = ["extension"]
 
@@ -142,21 +157,13 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 """ % (KEYS_JSON,)
         self.add_custom_js(js)
 
-    def create_ui(self, api_session):
+    def on_tab_select(self, state: dict):
+        """Refresh file dropdown from disk on every tab visit."""
+        if hasattr(self, "file_dropdown"):
+            return gr.update(choices=_list_wc_files())
+        return None
 
-        def _list_wc_files() -> list[str]:
-            """Recursively list .txt files, exclude __index__.txt."""
-            wc_dir = expander.WILDCARDS_DIR
-            if not os.path.isdir(wc_dir):
-                return []
-            files = []
-            for root, dirs, fnames in os.walk(wc_dir):
-                for fname in sorted(fnames):
-                    if not fname.endswith(".txt") or fname == "__index__.txt":
-                        continue
-                    rel = os.path.relpath(os.path.join(root, fname), wc_dir)
-                    files.append(rel)
-            return sorted(files)
+    def create_ui(self, api_session):
 
         def _read_file(filename: str) -> str:
             if not filename:
@@ -207,7 +214,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
             return expander._expand_text(prompt, rng, depth=0)
 
         with gr.Column():
-            gr.Markdown("## Wildcard Prompt Expansion")
+            gr.Markdown(f"## Wildcard Prompt Expansion  —  v{self.version}")
             guide = r"""
 ### Quick Start
 
@@ -273,11 +280,19 @@ Check `__index__.txt` for full file map. Quick categories:
 
             file_msg = gr.Textbox(label="Result", interactive=False)
 
+            def _create_file(name: str) -> tuple[str, gr.update]:
+                if not name:
+                    return "No filename given.", gr.update()
+                if not name.endswith(".txt"):
+                    name += ".txt"
+                msg = _save_file(name, "")
+                return msg, gr.update(choices=_list_wc_files(), value=name)
+
             create_btn.click(
-                fn=lambda name: _save_file(name, ""),
+                fn=_create_file,
                 inputs=[new_name],
-                outputs=[file_msg],
-            ).then(fn=_refresh_list, outputs=[file_dropdown], queue=False)
+                outputs=[file_msg, file_dropdown],
+            )
 
             save_btn.click(
                 fn=_save_file,
@@ -335,9 +350,13 @@ Check `__index__.txt` for full file map. Quick categories:
                 count = max(1, min(100, int(count)))
                 lines = []
                 for i in range(count):
-                    seed = i if seed_mode.startswith("Sequential") else None
-                    rng = random.Random(seed)
-                    expanded = expander._expand_text(prompt_template, rng, depth=0)
+                    if seed_mode.startswith("Sequential"):
+                        # line-by-line cycling, no randomness
+                        expanded = expander.expand_prompt_sequential(prompt_template, i)
+                    else:
+                        # random mode: each variation gets fresh RNG (no seed = random)
+                        rng = random.Random()
+                        expanded = expander._expand_text(prompt_template, rng, depth=0)
                     lines.append(expanded)
                 return "\n".join(lines)
 
@@ -465,4 +484,5 @@ Check `__index__.txt` for full file map. Quick categories:
             )
 
         # return components for lifecycle
-        self.on_tab_outputs = []
+        self.file_dropdown = file_dropdown
+        self.on_tab_outputs = [self.file_dropdown]

@@ -29,6 +29,11 @@ Arrow keys / Enter / Tab / Click to insert. Escape to dismiss.
 
 **Batch Generate N Variations** — enter a template with wildcards, set count, generate N expanded prompts, send straight to the prompt box.
 
+| Mode | Behavior |
+|---|---|
+| **Sequential** (default) | Each variable picks line-by-line through its file. Index 0 → line 1, index 1 → line 2, etc. Cycles when exhausted. No repeats until all lines used. |
+| **Random** | Each variation uses fresh randomness — true random, no seed lock. |
+
 ### Seed
 
 - **Seed = -1** → random each time
@@ -143,6 +148,19 @@ wan2gp-wildcards/
     ├── weather/       (4 files)
     └── 101 flat .txt files
 ```
+
+## Changelog
+
+### v1.2.0
+- **Sequential mode fixed**: now actually cycles through wildcard lines in order. No more repeat-before-cycling or wrong-order picks.
+- **Weight detection fixed**: `N::value` syntax now detected across all lines (was only checking first line).
+- **Dropdown refresh**: file list now refreshes on every tab visit — no more empty list after restart.
+- **Create auto-selects**: new wildcard file is immediately selected in dropdown and editor, ready for editing.
+- **Version shown** in tab header.
+
+### v1.1.0
+- Character profile manager with wildcard sync.
+- Inline autocomplete JS.
 
 ## Credits
 

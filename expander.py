@@ -83,11 +83,22 @@ def load_wildcard_lines(name: str) -> list[str]:
     return lines
 
 
-def pick_random(rng: random.Random, items: list[str]) -> str:
-    """Pick item uniformly, or weighted if items use N:: prefix."""
+def pick_random(rng: random.Random, items: list[str], sequential_index: int | None = None) -> str:
+    """Pick item uniformly, or weighted if items use N:: prefix.
+
+    When sequential_index is set, picks items[index % len(items)] for
+    line-by-line cycling instead of random choice.
+    """
     if not items:
         return ""
-    if not items[0].startswith("::") and "::" not in items[0]:
+
+    # sequential mode: index directly into items, no RNG
+    if sequential_index is not None:
+        return items[sequential_index % len(items)]
+
+    # check if any item has N:: prefix (weighted) -- was previously only checking items[0]
+    has_weights = any("::" in item for item in items)
+    if not has_weights:
         return rng.choice(items)
 
     choices: list[str] = []
@@ -112,7 +123,7 @@ def pick_random(rng: random.Random, items: list[str]) -> str:
     return rng.choices(choices, weights=weights, k=1)[0]
 
 
-def _expand_text(text: str, rng: random.Random, depth: int = 0) -> str:
+def _expand_text(text: str, rng: random.Random, depth: int = 0, sequential_index: int | None = None) -> str:
     """Recursive expansion: wildcards first, then variants. Depth-limited."""
     if depth >= DEPTH_LIMIT:
         return text
@@ -123,8 +134,8 @@ def _expand_text(text: str, rng: random.Random, depth: int = 0) -> str:
         lines = load_wildcard_lines(name)
         if not lines:
             return m.group(0)  # leave as-is if not found
-        chosen = pick_random(rng, lines)
-        return _expand_text(chosen, rng, depth + 1)
+        chosen = pick_random(rng, lines, sequential_index=sequential_index)
+        return _expand_text(chosen, rng, depth + 1, sequential_index=sequential_index)
 
     text = WILDCARD_RE.sub(_replace_wildcard, text)
 
@@ -134,8 +145,8 @@ def _expand_text(text: str, rng: random.Random, depth: int = 0) -> str:
         parts = [p.strip() for p in inner.split("|")]
         if len(parts) < 2:
             return m.group(0)
-        chosen = pick_random(rng, parts)
-        return _expand_text(chosen, rng, depth + 1)
+        chosen = pick_random(rng, parts, sequential_index=sequential_index)
+        return _expand_text(chosen, rng, depth + 1, sequential_index=sequential_index)
 
     text = VARIANT_RE.sub(_replace_variant, text)
     return text
@@ -156,3 +167,23 @@ def expand_prompt(prompt: str, seed: int | None = None) -> str:
 
     rng = random.Random(seed)
     return _expand_text(prompt, rng, depth=0)
+
+
+def expand_prompt_sequential(prompt: str, index: int) -> str:
+    """Expand prompt using sequential (non-random) selection.
+
+    Each __wildcard__ picks the line at position `index % len(lines)`
+    instead of a random choice. This cycles through wildcard files in order.
+
+    Args:
+        prompt: Input prompt string.
+        index: Zero-based index for line-by-line cycling.
+
+    Returns:
+        Expanded prompt string.
+    """
+    if not prompt or not WILDCARDS_DIR:
+        return prompt
+
+    rng = random.Random()  # not used in sequential mode, but needed for signature
+    return _expand_text(prompt, rng, depth=0, sequential_index=index)

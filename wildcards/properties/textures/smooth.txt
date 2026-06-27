@@ -1,0 +1,11 @@
+smooth
+silky
+satin
+velvet
+glassy
+glossy
+lustrous
+metallic
+slick
+polished
+sleek

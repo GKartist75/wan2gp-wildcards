@@ -1,61 +1,102 @@
-sneakers
-trainers
-running shoes
-athletic shoes
-basketball shoes
-hiking boots
-work boots
-combat boots
-military boots
-motorcycle boots
-riding boots
-cowboy boots
-wellington boots
-rain boots
-galoshes
-sandals
-flip-flops
-slides
-mules
-clogs
-platform sandals
-wedge sandals
-heels
-stilettos
-pumps
-kitten heels
-block heels
-wedges
-platform heels
-peep-toe heels
-open-toe heels
-slingback heels
+animal slippers
 ankle boots
-booties
-chelsea boots
-chukka boots
-desert boots
+ankle strap heels
+armored boots
+ballet slippers
+block heels
+boots
+buckle heels
+cage heels
+chunky heels
+clear heels
+clog sandals
+cone heels
+converse
+covered heels
+cowboy boots
+crochet heels
+crocs
+cross-laced footwear
+cross-laced sandals
+cuban heels
+cut-out heels
+d'orsay heels
+dress heels
+embellished heels
+espadrille heels
+flats
+flip-flops
+footwear ribbon
+geta
+gladiator heels
+gladiator sandals
+heel boots
+heel clogs
+heel espadrilles
+heel less heels
+heel loafers
+heel mules
+heel pumps
+heel sandals
+heel slingbacks
+heel wedges
+heeled boots
+heeled clogs
+heeled espadrilles
+heeled loafers
+heeled mules
+heeled pumps
+heeled sandals
+heeled slingbacks
+heeled wedges
+high heel boots
+high heels
+high tops
+high-heel boots
+high-heel clogs
+high-heel espadrilles
+high-heel loafers
+high-heel mules
+high-heel sandals
+high-heel slingbacks
+high-heel wedges
+kiltie loafers
+kitten heels
+knee boots
+lace-up boots
+lace-up heels
+laser cut heels
 loafers
-penny loafers
-tassel loafers
-boat shoes
-moccasins
-oxfords
-derby shoes
-brogues
-wingtips
-monk strap shoes
-dress shoes
-formal shoes
-ballet flats
-ballerina shoes
+mary jane heels
 mary janes
-espadrilles
-canvas shoes
-vulcanized shoes
+metallic heels
+monk shoes
+okobo
+open-toe heels
+over-the-knee boots
+oxfords
+peep-toe heels
+platform footwear
+platform heels
+pointed-toe heels
+pointy footwear
+pump heels
+pumps
+rubber boots
+saddle shoes
+sandals
+slingback heels
 slippers
-house shoes
-bedroom slippers
-orthopedic shoes
-barefoot
-bare soles
+sneakers
+spurs
+square-toe heels
+stiletto heels
+strappy heels
+thigh boots
+toeless footwear
+uwabaki
+waraji
+wedge heels
+winged footwear
+wrap-around heels
+zouri

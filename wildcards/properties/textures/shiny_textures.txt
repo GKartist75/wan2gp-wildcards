@@ -1,0 +1,13 @@
+shiny
+glossy
+lustrous
+glassy
+metallic
+iridescent
+opalescent
+holographic
+prismatic
+corrugated
+frosted
+reflective
+gleaming

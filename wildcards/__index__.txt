@@ -513,3 +513,43 @@ Aesthetics, Composition, Lighting, Medium, Quality-Modifiers, Viewpoint
 ### Vocab-and-Lists/ (9 files)
 Adjective, Anime, Cartoons, Game-Consoles, Games, Movies, Noun, Preposition, Verb
 
+
+## Remaining billions sections (939 files)
+
+astronomy/ (4) - celestial-bodies, spacecrafts, relations
+atmosphere/ (74) - abstract, artistic, caves, celestial, colorful, cozy, cultural, dark, desert, dreamy, fantasy, magical, mystical, nature, oceanic, sci-fi, space, surreal, and 54 more
+audio/ (34) - albumcover, genre, melody, music, notation, notes, sound
+books/ (12) - genres, types, bookbinding-styles, book-covers, typography, printing
+brain-psychology/ (4) - terms, practices, concepts, neural-circuit-patterns
+castle_exteriors/ (14) - types, walls, towers, entrances, grounds, decorative-elements, defensive-features, fortifications, lighting
+chemistry/ (3) - elements, gems, minerals
+christmas/ (11) - artstyles, atmosphere, characters, decorations, food, lightings, scapes, scenes, traditions
+components/ (17) - bearings, fasteners, electrical-connectors, electronic, hydraulic, pneumatic, springs, structural
+constructions/ (126) - types (cyberpunk/fictional/magical/regular/scifi), rooms, interior-design, materials, lighting-sources
+creatures/ (43) - appendages, body-shapes, being-types, descriptors, dragons, ears, horns, skin-fur-types, tails, wings, species (birds, fish, mammals, reptiles, mythical)
+easter/ (10) - artstyles, atmosphere, characters, costumes, decorations, food, places, symbols, traditions
+fruits/ (6) - climate, flesh, seed, surface, aroma
+habitats/ (41) - biomes, cave, civil, crater, fantasy, housing, magical, places, types, wonderland
+halloween/ (15) - artstyles, atmosphere, costumes, decorations, food, grimaces, lighting, pumpkin-carving, symbols, traditions
+jewelry/ (18) - age, brilliance, carat, clarities, cut, durability, facets, fire, hardness, luster, origin, rarity, setting, style, symbolism, treatments
+lighting/ (27) - ambient, artificial, atmospheric, cinematic, colored, dramatic, fantasy, mood, natural, neon, period, practical, sci-fi, stage, studio, volumetric
+lunar-newyear/ (10) - artstyles, atmosphere, characters, decorations, food, lightings, scapes, scenes, symbols, traditions
+machines/ (31) - types (agricultural, communication, complex, construction, control, energy, household, industrial, medical, military, mining, musical, navigation, optical, printing, robotics, scientific, textile, transportation, weapons)
+matter/ (3) - state, movement
+person/ (34) - ages, beard, body-feature, bodyshapes, cheek, chest, ear, ethnicity, eyebrows, eyelashes, face-shape, forehead, head, hip, legs, lip, mouth, neck, nose, poses, skin, waist
+phenomena/ (9) - abstract, astronomy, cyberpunk, magical, math, natural, physics, psychology, sci-fi
+plants/ (13) - flower, fruit, growth-habit, inflorescence, leaf, root, seed, sepal, stem, foliage-arrangement
+properties/ (84) - colors, fabrics, patterns, materials, textures, shapes (2D/3D), size, structure, paint, Visual/Appearance
+rpg/ (127) - tiles, paths, species, equipment (weapons, armor, accessories), abilities (combat, spells), traps, secrets, furniture, items
+scenes/ (39) - settings (landscapes, urban), features, cyberpunk scenes, fantasy scenes, scifi scenes
+scifi/ (18) - atmosphere, biopunk, computer, cyberpunk, nanotech, space, spacecrafts (antennae, engine, hull, markings, sensor, shape, size, type, window)
+st-patrick/ (10) - artstyles, atmosphere, characters, costumes, decorations, food, lightings, places, symbols, traditions
+styles-architectural/ (8) - african, asian, european, indigenous, islamic, pre-columbian, south-american
+styles-drawing/ (16) - background, body-depiction, color, composition, expression, face-head-depiction, form, line-stroke, narrative, perspective, shading, style, texture, tools
+subjects-school/ (12) - art, biology, chemistry, economy, history, literature, math, music, physics, technology
+subtypes/ (2) - cyberpunk, scifi
+superheroes/ (4) - dc, marvel, female, male
+supervillains/ (4) - dc, marvel, female, male
+valentine/ (10) - artstyles, atmosphere, characters, decorations, food, lightings, scapes, scenes, symbols, traditions
+vehicles/ (20) - types (airborne, cars, spacecraft, water), accessories, customization, exterior-features, lights, windows, size
+words/ (26) - adjectives, verbs, substantives, magical/scifi/cyberpunk words, brain-psychology, constructors

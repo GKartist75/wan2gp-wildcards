@@ -1,0 +1,12 @@
+view
+scene
+stretch
+outlook
+prospect
+panorama
+landscape
+point
+horizon
+distance
+expanse
+perspective

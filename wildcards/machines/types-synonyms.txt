@@ -1,0 +1,26 @@
+apparatus
+device
+appliance
+contraption
+engine
+mechanism
+gadget
+tool
+instrument
+implement
+equipment
+system
+instrumentality
+contrivance
+rig
+setup
+gimmick
+invention
+creation
+innovation
+widget
+automaton
+robot
+android
+cyborg
+rube goldberg device

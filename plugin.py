@@ -109,24 +109,27 @@ def _save_favorites(favorites: list[str]):
 
 def _search_content(query: str) -> str:
     """Search across all wildcard file contents. Returns lines with file:line:match."""
-    if not query:
-        return ""
-    q = query.lower()
+    if not query or not query.strip():
+        return "Enter a search term."
+    q = query.strip().lower()
+    wc_dir = expander.WILDCARDS_DIR
+    if not os.path.isdir(wc_dir):
+        return "Wildcards directory not found."
     results = []
     for fpath in _list_wc_files():
-        full = os.path.join(expander.WILDCARDS_DIR, fpath)
+        full = os.path.join(wc_dir, fpath)
         try:
-            with open(full, "r", encoding="utf-8") as f:
+            with open(full, "r", encoding="utf-8", errors="replace") as f:
                 for i, line in enumerate(f, 1):
                     if q in line.lower():
                         snippet = line.rstrip()[:120]
                         results.append(f"{fpath}:{i}: {snippet}")
-        except OSError:
+        except Exception:
             continue
-        if len(results) >= 500:  # safety cap
+        if len(results) >= 500:
             break
     if not results:
-        return "No matches found."
+        return f"No matches for '{query}'."
     return "\n".join(results)
 
 

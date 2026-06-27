@@ -431,3 +431,32 @@ othermedia, painting, sculptural, shading-techniques, textile,
 beards, mood, occupations, home, artmovement, generalstyle,
 platform, seasons, timeofday
 
+## Subdirectory additions (from billions of wildcards)
+
+### characters/ (245 files)
+beings - cthulu-mythos, cyberpunk, doctor-who, elder scrolls, halo, etc.
+professions - historical, magical (crafter/caster/knowledge/nature/dark/light/illusion), scifi, fiction, modern
+itemslots, weapons, classes, magical-beings
+
+### styles/ (163 files)
+art-styles (101 movements), artists/ (70+ movements with named artists)
+ambient-effects, animations, camera settings, creative-concepts
+rendering-techniques, resolutions, punk-styles, image-styles, quality
+
+### clothings/ (121 files)
+baroque - female/male dress (types, arms, collar, accessories)
+edoperiod - female/male attire
+cyberpunk, magical, nsfw, regular, scifi - female/male per body part
+
+### heraldry/ (15 files)
+badges, blazon, colors, ordinaries, charges, supporters, mantling, crests, etc.
+
+### mushrooms/ (18 files)
+annulus, bioluminescence, bruising, gill, growth-form, habitat, hymenium
+latex, mycorrhizal-association, pileus, poisonous/medicinal properties, stipe, etc.
+
+### magical/ (407 files)
+academy - places (administration, alchemy, archives, classrooms, dorms, etc.)
+magic types - evocation, enchantment, illusion, necromancy, etc.
+profession-magic-use, academy extra items, academy atmosphere
+

@@ -1,0 +1,48 @@
+adept
+alchemist
+arcane warrior
+archmage
+battlemage
+blood mage
+chronomancer
+cleric
+cryomancer
+death knight
+druid
+elemental shaman
+elementalist
+enchantress
+enchanter
+fey sorcerer
+force adept
+geomancer
+holy mage
+illusionist
+mage
+mindflayer
+mystic
+necrolyte
+necromancer
+nightblade
+psion
+pyromancer
+rune mage
+shadowmancer
+sorcerer
+sorceress
+spellblade
+spellslinger
+spiritweaver
+starcaller
+star mage
+stormcaller
+summoner
+sun priest
+technomancer
+thaumaturge
+voidcaller
+warlock
+war mage
+witch doctor
+wizard
+wizardess

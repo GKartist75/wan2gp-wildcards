@@ -1,7 +1,7 @@
 # wan2gp-wildcards
 
 Wildcard prompt expansion plugin for [Wan2GP](https://github.com/deepbeepmeep/Wan2GP).  
-**113,000+ terms** across **1,787 files** in **23 subdirectory categories** + **729 flat wildcards** (merged from sd-wildcards + sd-dynamic-prompts + billions of wildcards).
+**128,000+ terms** across **2,105 files** in **35 subdirectory categories** + **729 flat wildcards** (merged from sd-wildcards + sd-dynamic-prompts + billions of wildcards + YetAnotherWildcardCollection).
 
 ## Install
 
@@ -146,17 +146,18 @@ wan2gp-wildcards/
     ├── time/          (5 files)
     ├── transition/    (3 files)
     ├── weather/       (4 files)
-    └── 1,058 subdirectory .txt files across 23 categories (sd-wildcards + billions of wildcards)
+    └── 1,376 subdirectory .txt files across 35 categories (sd-wildcards + billions of wildcards + YetAnotherWildcardCollection)
     └── 729 flat .txt files (sd-wildcards + sd-dynamic-prompts devilkkw/nsp/jumbo)
 ```
 
 ## Changelog
 
 ### v1.2.0
+- **Merged 318 files from YetAnotherWildcardCollection**: Artists/Themed (29), Species (63 inc. 1,204 Pokemon), Materials (20), Props (11), Prompts (28), Body (37), Clothing (37), Colors (17), NSFW (26), Styling (6), Background (13), States (14), Concepts (3), Characters (13), Vocab (9).
 - **Merged 969 files from billions of wildcards**: character professions (245), art styles with artist names (163), historical clothing (121), heraldry (15), mushroom biology (18), magic types (407).
 - **Merged 528 files from sd-dynamic-prompts (devilkkw/nsp/jumbo)**: audio/music, gestures, technology, food, detailed animals, nature, wings, tails, composition, games, detailed body parts, NSFW content, clothing detail, art mediums, occupations, and more.
 - **Merged 110 files from sd-wildcards**: cosmic, nature, makeup, camera specs, render/3D, demographics, fine-grained clothing, body types, art mediums, and more.
-- **1,787 total files** (729 flat + 1,058 subdirectory across 23 categories).
+- **2,105 total files** (729 flat + 1,376 subdirectory across 35 categories).
 - **Sequential mode fixed**: now actually cycles through wildcard lines in order. No more repeat-before-cycling or wrong-order picks.
 - **Weight detection fixed**: `N::value` syntax now detected across all lines (was only checking first line).
 - **Dropdown refresh**: file list now refreshes on every tab visit — no more empty list after restart.

@@ -460,3 +460,56 @@ academy - places (administration, alchemy, archives, classrooms, dorms, etc.)
 magic types - evocation, enchantment, illusion, necromancy, etc.
 profession-magic-use, academy extra items, academy atmosphere
 
+## Subdirectory additions (from YetAnotherWildcardCollection)
+
+### Artists/ (29 files)
+Themed/ - anime, backgrounds, cartoons, concept, digital, fineart, line-art, manga, painting, surreal, vectors
+e621/ - anime, blurry, chibi, chubby, dragon-feral, female-hourglass, fluffy, hardlight, humanoid, etc.
+
+### Background/ (13 files)
+Ambience, buildings-and-rooms, country-city, disaster, environment, events, fantasy, heritage-sites, parks-and-monuments, planets-and-space, seasons, simple, weather
+
+### Body/ (37 files)
+Body-Type/ (fit, heavy, light, poor-condition, shape, short, tall)
+Ears, Eyes/ (eye-shape, pupil-color, pupil-shape, sclera-color), Face-Shape
+Genitalia/ (breasts-*, penis-*, pussy-*, nipple-type)
+Hair/ (color, eyebrows, facial, female, length, male, misc-styles, texture)
+Horns, Misc-Appendages, Misc-Head, Misc-Lower-Torso, Misc-Upper-Torso, Nose-Shape
+
+### Characters/ (13 files)
+Actors, Actress, Animal-Crossing, Celebrity, Composite/Animal-Crossing, FNAF, Fictional, Franchise-Girls, League-of-Legends, MLP, Super-Hero, Super-Villain, Yoshi
+
+### Clothing/ (37 files)
+Armor, Bags, Belt, Bottomwear, Corsets, Costumes, Dress, Eyewear, Footwear, Headwear, Jewelry-Accessories, Legwear, Misc, Outfits, Robes, Suits, Tattoos, Topwear, Underwear/ (bra-*, panty-*, swimwear-*, lingerie, piercings)
+
+### Colors/ (17 files)
+Basic, per-color (black/blue/brown/green/grey/magenta/orange/pink/purple/red/white/yellow), Misc, Monochrome, Palettes, Skin
+
+### Concepts/ (3 files)
+Gestures, Occupations, Postures-and-Poses
+
+### Materials/ (20 files)
+Bone, Ceramic, Cloth, Crystal, Fantasy, Fictional, Fossil, Fur, Glass, Leather, Metal, Mineral, Misc, Nano, Plastic, Resin, Rock, Sci-Fi, Synthetic, Wood
+
+### NSFW/ (26 files)
+Bondage-Positions, Fetish-Gear, Fetishes/ (13 subcategories), Nudity/ (exposed body parts), POV, Sex-Positions, Sex-Toys
+
+### Prompts/ (28 files)
+Art-Quality-Styles, Art-Styling, Boudoir, Business-Woman, Characters-With-Accessories, Fantasy-Landscape, Fine-Art-Female, Glamour-Shots, Hardcore, Historical-Characters, Hobby-Female, Lingerie-Female, LOTR-*, Medieval-Female, Misc, Misc-Subjects, Occupation-Female, Portrait-Female, RPG-*, Scenarios, Scifi-Female, Sexy, Stripper, Surreal-Landscape, Swimwear, XXX
+
+### Props/ (11 files)
+Appliances, Artifacts, Desserts, Drinks, Flowers, Food, Instruments, Sports, Utensils, Vehicles, Weapons
+
+### Species/ (63 files)
+Per-species: Alien, Aquatic, Avian, Bear, Bovine, Cat, Creature, Deer, Digimon, Dinosaur, Dog, Dragon, Eevee, Equine, Fox, Furry, Goat, Humanoid, Insect, Lion, Misc, Monkey, Monster, Pokemon (1,204), Rabbit, Robot, Rodent, Scalie, Slug, Taur, Tiger, Wolf
+Composite/ (33 hybrid files combining species with prefixes)
+
+### States/ (14 files)
+Age, Clothing-Removal, Emoji, Emotions/ (anger, happy, lust, misc, sadness, surprise), Gender, Gender-All, Looking, Nationality-Race, Size
+
+### Styling/ (6 files)
+Aesthetics, Composition, Lighting, Medium, Quality-Modifiers, Viewpoint
+
+### Vocab-and-Lists/ (9 files)
+Adjective, Anime, Cartoons, Game-Consoles, Games, Movies, Noun, Preposition, Verb
+

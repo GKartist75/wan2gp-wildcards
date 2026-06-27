@@ -73,6 +73,22 @@ For multi-shot video projects (LTX Director, Scail 2): every window uses
 `__character/Sarah__` → same appearance every time. Voice path in the
 profile lets audio plugins pick the right voice sample per character.
 
+## Changelog
+
+### v1.2.0
+- **Merged all 939 remaining files from billions of wildcards**: added 37 more categories — rpg (127), properties (84), atmosphere (74), constructions (126), creatures (43), scenes (39), person (34), audio (34), machines (31), lighting (27), words (26), vehicles (20), jewelry (18), scifi (18), styles-drawing (16), halloween (15), castle_exteriors (14), plants (13), books (12), subjects-school (12), christmas (11), holidays (easter, lunar-newyear, st-patrick, valentine), styles-architectural (8), astronomy/chemistry/phenomena, superheroes/supervillains, and more.
+- **Merged 318 files from YetAnotherWildcardCollection**: Artists, Species, Materials, Props, Prompts, Body, Clothing, Colors, NSFW, Styling, Background, States, Concepts, Characters, Vocab.
+- **Merged 969 files from billions of wildcards (first pass)**: characters, styles, clothings, heraldry, mushrooms, magical.
+- **Merged 528 files from sd-dynamic-prompts**: devilkkw/nsp/jumbo collections.
+- **Merged 110 files from sd-wildcards**: cosmic, nature, makeup, camera, render/3D, demographics, etc.
+- **3,044 total files** (729 flat + 2,315 subdirectory across 67 categories).
+- **Bugs fixed**: sequential mode cycling, weight detection (N::value), dropdown refresh, create auto-selects.
+- **Version shown** in tab header.
+
+### v1.1.0
+- Character profile manager with wildcard sync.
+- Inline autocomplete JS.
+
 ## Library
 
 ## Wildcard Index
@@ -318,22 +334,6 @@ wan2gp-wildcards/
     ├── words/                (26)  — adjectives, verbs, substantives by domain
     └── 2,315 subdirectory .txt files across 67 total categories
 ```
-
-## Changelog
-
-### v1.2.0
-- **Merged all 939 remaining files from billions of wildcards**: added 37 more categories — rpg (127), properties (84), atmosphere (74), constructions (126), creatures (43), scenes (39), person (34), audio (34), machines (31), lighting (27), words (26), vehicles (20), jewelry (18), scifi (18), styles-drawing (16), halloween (15), castle_exteriors (14), plants (13), books (12), subjects-school (12), christmas (11), holidays (easter, lunar-newyear, st-patrick, valentine), styles-architectural (8), astronomy/chemistry/phenomena, superheroes/supervillains, and more.
-- **Merged 318 files from YetAnotherWildcardCollection**: Artists, Species, Materials, Props, Prompts, Body, Clothing, Colors, NSFW, Styling, Background, States, Concepts, Characters, Vocab.
-- **Merged 969 files from billions of wildcards (first pass)**: characters, styles, clothings, heraldry, mushrooms, magical.
-- **Merged 528 files from sd-dynamic-prompts**: devilkkw/nsp/jumbo collections.
-- **Merged 110 files from sd-wildcards**: cosmic, nature, makeup, camera, render/3D, demographics, etc.
-- **3,044 total files** (729 flat + 2,315 subdirectory across 67 categories).
-- **Bugs fixed**: sequential mode cycling, weight detection (N::value), dropdown refresh, create auto-selects.
-- **Version shown** in tab header.
-
-### v1.1.0
-- Character profile manager with wildcard sync.
-- Inline autocomplete JS.
 
 ## Credits
 

@@ -154,7 +154,7 @@ class WildcardsPlugin(WAN2GPPlugin):
     def __init__(self):
         super().__init__()
         self.name = "Wildcards"
-        self.version = "1.2.0"
+        self.version = "1.3.0"
         self.description = "Dynamic wildcard expansion for prompts + character profile manager"
         self.type = ["extension"]
 
@@ -228,7 +228,7 @@ else if(e.key==='Escape'){d.style.display='none'}
 });
 t.addEventListener('blur',function(){setTimeout(function(){d.style.display='none'},200)})
 }
-function init(){['wc-test-input','wc-batch-prompt'].forEach(function(i){var t=ft(i);if(t)sa(t)})}
+function init(){['wc-prompt-input'].forEach(function(i){var t=ft(i);if(t)sa(t)})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 """ % (KEYS_JSON,)
@@ -295,44 +295,126 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
         with gr.Column():
             gr.Markdown(f"## Wildcard Prompt Expansion  —  v{self.version}")
-            guide = r"""
-### Quick Start
-
-| Syntax | Effect | Example |
-|---|---|---|
-| `__file__` | Random line from `wildcards/file.txt` | `__camera_shot__` → `close-up shot` |
-| `__dir__` | Random line from ALL files in `wildcards/dir/` | `__color__` → picks from named, palette, or skin |
-| `__dir/file__` | Specific file in subdirectory | `__color/named__` → only from `color/named.txt` |
-| `{a|b|c}` | Random inline choice | `{cinematic|vintage|raw}` |
-| `N::value` | Weighted option in .txt files | `3::sunset` in file = 3× more likely |
-
-**Seed = -1** for random per generation. **Seed = fixed number** for reproducible results.
-
-### Prompt Examples
-
-```
-__camera_shot__ of __character_archetype__ in __environment_nature__, __lighting_style__
-__color__ {neon|moody|atmospheric} scene, camera __camera_movement__, __emotion_mood__
-A {cyberpunk|fantasy|post-apocalyptic} __environment_urban__, __weather_sky__, __camera_technique__
-```
-
-### Library Structure
-
-Check `__index__.txt` for full file map. Quick categories:
-`action/*` `aesthetic/*` `camera/*` `character/*` `clothing/*` `color/*`
-`composition/*` `effect/*` `emotion/*` `environment/*` `lighting/*`
-`material/*` `motion/*` `quality/*` `time/*` `transition/*` `weather/*`
-""".strip()
-            gr.Markdown(guide)
+            gr.Markdown("> Expansion active when enabled in **Plugins** tab. Type `__` for wildcard autocomplete.")
 
             seed_input = gr.Number(label="Seed (-1 = random)", value=-1, precision=0)
-
             seed_input.change(fn=_set_seed, inputs=[seed_input])
 
-            gr.Markdown("> Expansion is active when this plugin is enabled in the **Plugins** tab.")
-
+            # ── Prompt Builder ──────────────────────────────────────────
             gr.Markdown("---")
-            gr.Markdown("### Wildcard File Browser")
+            gr.Markdown("### 1. Prompt Builder")
+
+            prompt_input = gr.Textbox(
+                label="Prompt Template",
+                lines=4,
+                placeholder="e.g. A __camera_shot__ of a young woman in __environment_nature__, __lighting_style__",
+                elem_id="wc-prompt-input",
+            )
+
+            with gr.Row():
+                test_btn = gr.Button("▶ Expand Preview", scale=1)
+                batch_count = gr.Number(label="Variations", value=6, precision=0, minimum=1, maximum=100, scale=1)
+                batch_seed_mode = gr.Radio(
+                    label="Mode",
+                    choices=["Sequential", "Random"],
+                    value="Sequential",
+                    scale=1,
+                )
+                generate_btn = gr.Button("Generate N", scale=1, variant="primary")
+                send_btn = gr.Button("Send to Prompt", scale=1)
+
+            test_output = gr.Textbox(label="Preview (single expansion)", lines=2, interactive=False)
+            batch_output = gr.Textbox(label="Generated Variations (one per line)", lines=6, interactive=False)
+
+            def _test_expand(prompt: str, seed_val: int) -> str:
+                rng = random.Random(seed_val if seed_val >= 0 else None)
+                return expander._expand_text(prompt, rng, depth=0)
+
+            def _generate_batch(prompt_template: str, count: int, seed_mode: str) -> str:
+                if not prompt_template:
+                    return ""
+                count = max(1, min(100, int(count)))
+                lines = []
+                for i in range(count):
+                    if seed_mode.startswith("Sequential"):
+                        expanded = expander.expand_prompt_sequential(prompt_template, i)
+                    else:
+                        rng = random.Random()
+                        expanded = expander._expand_text(prompt_template, rng, depth=0)
+                    lines.append(expanded)
+                return "\n".join(lines)
+
+            def _send_to_prompt_box(batch_text: str):
+                if not batch_text:
+                    return gr.update(), gr.update()
+                return gr.update(value=batch_text), gr.update(value="G")
+
+            test_btn.click(fn=_test_expand, inputs=[prompt_input, seed_input], outputs=[test_output])
+            generate_btn.click(fn=_generate_batch, inputs=[prompt_input, batch_count, batch_seed_mode], outputs=[batch_output])
+            send_btn.click(fn=_send_to_prompt_box, inputs=[batch_output], outputs=[self.prompt, self.multi_prompts_gen_type])
+
+            # ── Character Profiles ──────────────────────────────────────
+            gr.Markdown("---")
+            gr.Markdown("### 2. Character Profiles")
+            gr.Markdown(
+                "Define named characters. Use `__character/Name__` in your prompt to inject appearance. "
+                "Voice/clothing/tags are metadata for other plugins."
+            )
+
+            char_dropdown = gr.Dropdown(
+                label="Character",
+                choices=character_manager.list_characters(),
+                value=None,
+                interactive=True,
+            )
+
+            char_name = gr.Textbox(label="Name", placeholder="e.g. Sarah")
+            char_appearance = gr.TextArea(
+                label="Appearance (what __character/Name__ expands to)",
+                lines=3,
+                placeholder="blonde hair, blue eyes, red dress, fair skin",
+            )
+            char_voice = gr.Textbox(label="Voice sample (path/filename for TTS)", placeholder="voice_sarah.wav")
+            char_clothing = gr.Textbox(label="Clothing", placeholder="red dress")
+            char_tags = gr.Textbox(label="Tags (comma separated)", placeholder="female, human, protagonist")
+            char_notes = gr.TextArea(label="Notes", lines=2, placeholder="Main character")
+
+            with gr.Row():
+                char_save_btn = gr.Button("Save", variant="primary")
+                char_new_btn = gr.Button("New")
+                char_delete_btn = gr.Button("Delete", variant="stop")
+
+            char_msg = gr.Textbox(label="Result", interactive=False)
+
+            def _load_char(name: str):
+                if not name:
+                    return "" * 6
+                p = character_manager.get_character(name)
+                if not p:
+                    return "" * 6
+                return (name, p.get("appearance", ""), p.get("voice", ""), p.get("clothing", ""), p.get("tags", ""), p.get("notes", ""))
+
+            def _clear_char_form():
+                return "" * 6
+
+            def _save_char(name, appearance, voice, clothing, tags, notes):
+                profile = {"appearance": appearance, "voice": voice, "clothing": clothing, "tags": tags, "notes": notes}
+                msg = character_manager.save_character(name, profile)
+                return msg, gr.update(choices=character_manager.list_characters(), value=name)
+
+            def _delete_char(name):
+                msg = character_manager.delete_character(name)
+                return (msg, gr.update(choices=character_manager.list_characters(), value=None)) + ("",) * 6
+
+            char_dropdown.change(fn=_load_char, inputs=[char_dropdown], outputs=[char_name, char_appearance, char_voice, char_clothing, char_tags, char_notes])
+            char_new_btn.click(fn=_clear_char_form, outputs=[char_name, char_appearance, char_voice, char_clothing, char_tags, char_notes])\
+                .then(fn=lambda: (gr.update(value=None), ""), outputs=[char_dropdown, char_msg])
+            char_save_btn.click(fn=_save_char, inputs=[char_name, char_appearance, char_voice, char_clothing, char_tags, char_notes], outputs=[char_msg, char_dropdown])
+            char_delete_btn.click(fn=_delete_char, inputs=[char_dropdown], outputs=[char_msg, char_dropdown, char_name, char_appearance, char_voice, char_clothing, char_tags, char_notes])
+
+            # ── Wildcard File Browser ───────────────────────────────────
+            gr.Markdown("---")
+            gr.Markdown("### 3. Wildcard File Browser")
 
             with gr.Row():
                 cat_filter = gr.Dropdown(
@@ -487,182 +569,26 @@ Check `__index__.txt` for full file map. Quick categories:
                 outputs=[content_results],
             )
 
+            # ── Cross-File Search ─────────────────────────────────────
             gr.Markdown("---")
-            gr.Markdown("### Test Expansion")
-
-            test_input = gr.Textbox(
-                label="Test Prompt",
-                lines=3,
-                placeholder="e.g. A __color__ {sunlit|moody|dramatic} scene",
-                elem_id="wc-test-input",
-            )
-            test_seed = gr.Number(label="Test Seed (-1 = random)", value=-1, precision=0)
-            test_btn = gr.Button("Expand")
-            test_output = gr.Textbox(label="Result", lines=3, interactive=False)
-
-            test_btn.click(fn=_test_expand, inputs=[test_input, test_seed], outputs=[test_output])
-
-            gr.Markdown("---")
-            gr.Markdown("### Batch Generate N Variations")
-
-            batch_prompt = gr.Textbox(
-                label="Prompt Template",
-                lines=3,
-                placeholder="e.g. A __camera_shot__ of a __character_archetype__, __lighting_style__",
-                elem_id="wc-batch-prompt",
-            )
+            gr.Markdown("### 4. Cross-File Content Search")
 
             with gr.Row():
-                batch_count = gr.Number(label="Number of Variations", value=6, precision=0, minimum=1, maximum=100)
-                batch_seed_mode = gr.Radio(
-                    label="Seed Mode",
-                    choices=["Sequential (0,1,2...)", "Random"],
-                    value="Sequential (0,1,2...)",
+                content_query = gr.Textbox(
+                    label="Search term",
+                    placeholder="e.g. sunset, cyberpunk, dragon...",
+                    scale=3,
                 )
+                content_search_btn = gr.Button("Search All Files", scale=1)
 
-            generate_btn = gr.Button("Generate N Variations")
-            batch_output = gr.Textbox(label="Generated Prompts (one per line)", lines=8, interactive=False)
-
-            send_btn = gr.Button("Send to Prompt Box (sets multi-prompt mode to G)")
-
-            def _generate_batch(prompt_template: str, count: int, seed_mode: str) -> str:
-                if not prompt_template:
-                    return ""
-                count = max(1, min(100, int(count)))
-                lines = []
-                for i in range(count):
-                    if seed_mode.startswith("Sequential"):
-                        # line-by-line cycling, no randomness
-                        expanded = expander.expand_prompt_sequential(prompt_template, i)
-                    else:
-                        # random mode: each variation gets fresh RNG (no seed = random)
-                        rng = random.Random()
-                        expanded = expander._expand_text(prompt_template, rng, depth=0)
-                    lines.append(expanded)
-                return "\n".join(lines)
-
-            def _send_to_prompt_box(batch_text: str):
-                if not batch_text:
-                    return gr.update(), gr.update()
-                return gr.update(value=batch_text), gr.update(value="G")
-
-            generate_btn.click(
-                fn=_generate_batch,
-                inputs=[batch_prompt, batch_count, batch_seed_mode],
-                outputs=[batch_output],
+            content_results = gr.Textbox(
+                label="Matches (file:line:content)",
+                lines=8,
+                interactive=False,
             )
 
-            send_btn.click(
-                fn=_send_to_prompt_box,
-                inputs=[batch_output],
-                outputs=[self.prompt, self.multi_prompts_gen_type],
-            )
-
-            gr.Markdown("---")
-            gr.Markdown("### Character Profiles")
-            gr.Markdown(
-                "Define named characters with appearance descriptions. "
-                "Each character becomes a wildcard file — use "
-                "`__character/Name__` in your prompt to inject their appearance. "
-                "Voice/clothing/tags are metadata for other plugins (LTX Director, SeedVC)."
-            )
-
-            char_dropdown = gr.Dropdown(
-                label="Character",
-                choices=character_manager.list_characters(),
-                value=None,
-                interactive=True,
-            )
-
-            char_name = gr.Textbox(label="Name", placeholder="e.g. Sarah")
-            char_appearance = gr.TextArea(
-                label="Appearance (what __character/Name__ expands to)",
-                lines=4,
-                placeholder="blonde hair, blue eyes, red dress, fair skin",
-            )
-            char_voice = gr.Textbox(
-                label="Voice sample (path/filename for TTS plugins)",
-                placeholder="voice_sarah.wav",
-            )
-            char_clothing = gr.Textbox(
-                label="Clothing",
-                placeholder="red dress",
-            )
-            char_tags = gr.Textbox(
-                label="Tags (comma separated)",
-                placeholder="female, human, protagonist",
-            )
-            char_notes = gr.TextArea(
-                label="Notes",
-                lines=2,
-                placeholder="Main character, confident demeanor",
-            )
-
-            with gr.Row():
-                char_save_btn = gr.Button("Save", variant="primary")
-                char_new_btn = gr.Button("New")
-                char_delete_btn = gr.Button("Delete", variant="stop")
-
-            char_msg = gr.Textbox(label="Result", interactive=False)
-
-            def _load_char(name: str):
-                if not name:
-                    return "", "", "", "", "", ""
-                p = character_manager.get_character(name)
-                if not p:
-                    return "", "", "", "", "", ""
-                return (
-                    name,
-                    p.get("appearance", ""),
-                    p.get("voice", ""),
-                    p.get("clothing", ""),
-                    p.get("tags", ""),
-                    p.get("notes", ""),
-                )
-
-            def _refresh_char_list():
-                return gr.update(choices=character_manager.list_characters(), value=None)
-
-            def _clear_char_form():
-                return "", "", "", "", "", ""
-
-            def _save_char(name, appearance, voice, clothing, tags, notes):
-                profile = {
-                    "appearance": appearance,
-                    "voice": voice,
-                    "clothing": clothing,
-                    "tags": tags,
-                    "notes": notes,
-                }
-                msg = character_manager.save_character(name, profile)
-                return msg, gr.update(choices=character_manager.list_characters(), value=name)
-
-            def _delete_char(name):
-                msg = character_manager.delete_character(name)
-                return msg, gr.update(choices=character_manager.list_characters(), value=None), "", "", "", "", "", ""
-
-            char_dropdown.change(
-                fn=_load_char,
-                inputs=[char_dropdown],
-                outputs=[char_name, char_appearance, char_voice, char_clothing, char_tags, char_notes],
-            )
-
-            char_new_btn.click(
-                fn=_clear_char_form,
-                outputs=[char_name, char_appearance, char_voice, char_clothing, char_tags, char_notes],
-            ).then(fn=lambda: (gr.update(value=None), ""), outputs=[char_dropdown, char_msg])
-
-            char_save_btn.click(
-                fn=_save_char,
-                inputs=[char_name, char_appearance, char_voice, char_clothing, char_tags, char_notes],
-                outputs=[char_msg, char_dropdown],
-            )
-
-            char_delete_btn.click(
-                fn=_delete_char,
-                inputs=[char_dropdown],
-                outputs=[char_msg, char_dropdown, char_name, char_appearance, char_voice, char_clothing, char_tags, char_notes],
-            )
+            content_search_btn.click(fn=_search_content, inputs=[content_query], outputs=[content_results])
+            content_query.submit(fn=_search_content, inputs=[content_query], outputs=[content_results])
 
         # return components for lifecycle
         self.file_dropdown = file_dropdown

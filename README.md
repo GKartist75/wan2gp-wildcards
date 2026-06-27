@@ -75,15 +75,18 @@ profile lets audio plugins pick the right voice sample per character.
 
 ## Changelog
 
+### v1.3.0
+- **UI reorder**: Prompt Builder (test + batch generate + send) moved to top. Character Profiles second. File Browser and Cross-File Search moved below.
+- **Collapsed Quick Start guide** into compact header line.
+- **Searchable file browser**: category filter + search box + favorites-only mode.
+- **Cross-file content search**: search all 3,044 files for any term.
+- **Favorites system**: star files for quick access, persisted across restarts.
+- **Version bumped** to 1.3.0.
+
 ### v1.2.0
-- **Merged all 939 remaining files from billions of wildcards**: added 37 more categories — rpg (127), properties (84), atmosphere (74), constructions (126), creatures (43), scenes (39), person (34), audio (34), machines (31), lighting (27), words (26), vehicles (20), jewelry (18), scifi (18), styles-drawing (16), halloween (15), castle_exteriors (14), plants (13), books (12), subjects-school (12), christmas (11), holidays (easter, lunar-newyear, st-patrick, valentine), styles-architectural (8), astronomy/chemistry/phenomena, superheroes/supervillains, and more.
-- **Merged 318 files from YetAnotherWildcardCollection**: Artists, Species, Materials, Props, Prompts, Body, Clothing, Colors, NSFW, Styling, Background, States, Concepts, Characters, Vocab.
-- **Merged 969 files from billions of wildcards (first pass)**: characters, styles, clothings, heraldry, mushrooms, magical.
-- **Merged 528 files from sd-dynamic-prompts**: devilkkw/nsp/jumbo collections.
-- **Merged 110 files from sd-wildcards**: cosmic, nature, makeup, camera, render/3D, demographics, etc.
-- **3,044 total files** (729 flat + 2,315 subdirectory across 67 categories).
-- **Bugs fixed**: sequential mode cycling, weight detection (N::value), dropdown refresh, create auto-selects.
-- **Version shown** in tab header.
+- **Merged all remaining wildcard collections**: 939 files from billions of wildcards, 318 from YetAnotherWildcardCollection, 969 from first billions pass, 528 from sd-dynamic-prompts, 110 from sd-wildcards.
+- **3,044 total files** across 67 categories.
+- **Bugs fixed**: sequential mode cycling, weight detection, dropdown refresh, create auto-selects.
 
 ### v1.1.0
 - Character profile manager with wildcard sync.

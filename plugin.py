@@ -541,34 +541,6 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
                 outputs=[file_msg],
             )
 
-            gr.Markdown("---")
-            gr.Markdown("### Cross-File Content Search")
-
-            with gr.Row():
-                content_query = gr.Textbox(
-                    label="Search term",
-                    placeholder="e.g. sunset, cyberpunk, dragon...",
-                    scale=3,
-                )
-                content_search_btn = gr.Button("Search All Files", scale=1)
-
-            content_results = gr.Textbox(
-                label="Matches (file:line:content)",
-                lines=8,
-                interactive=False,
-            )
-
-            content_search_btn.click(
-                fn=_search_content,
-                inputs=[content_query],
-                outputs=[content_results],
-            )
-            content_query.submit(
-                fn=_search_content,
-                inputs=[content_query],
-                outputs=[content_results],
-            )
-
             # ── Cross-File Search ─────────────────────────────────────
             gr.Markdown("---")
             gr.Markdown("### 4. Cross-File Content Search")

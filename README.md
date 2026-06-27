@@ -146,12 +146,14 @@ wan2gp-wildcards/
     ├── time/          (5 files)
     ├── transition/    (3 files)
     ├── weather/       (4 files)
-    └── 101 flat .txt files
+    └── 212 flat .txt files (102 original + 110 merged from sd-wildcards)
 ```
 
 ## Changelog
 
 ### v1.2.0
+- **Merged 110 files from sd-wildcards**: added cosmic, nature, makeup, camera specs, render/3D, demographics, fine-grained clothing, body types, art mediums, and more.
+- **301 total files** (212 flat + 89 subdirectory).
 - **Sequential mode fixed**: now actually cycles through wildcard lines in order. No more repeat-before-cycling or wrong-order picks.
 - **Weight detection fixed**: `N::value` syntax now detected across all lines (was only checking first line).
 - **Dropdown refresh**: file list now refreshes on every tab visit — no more empty list after restart.

@@ -99,3 +99,147 @@ weather/precipitation - rain, snow, hail
 weather/sky           - cloud and sky conditions
 weather/fog           - fog, mist, haze
 weather/extreme       - storms and extreme weather
+
+## New flat additions (from sd-wildcards)
+
+### Cosmic & Space
+cosmic-galaxy         - galaxy types and descriptors
+cosmic-nebula         - nebula types
+cosmic-star           - star types
+cosmic-term           - general space terminology
+planet                - planet types
+
+### Nature Objects
+flower                - flower types
+food                  - food and cuisine
+fruit                 - fruit types
+tree                  - tree types
+biome                 - biome and ecosystem types
+forest-type           - forest classifications
+national-park         - national park names
+
+### Water & Aquatic
+water                 - water types and descriptors
+underwater            - underwater settings
+wave                  - wave types
+
+### Art Mediums
+oil-painting          - oil painting techniques and styles
+sculpture             - sculpture descriptors
+still-life            - still life subjects and arrangements
+watercolor            - watercolor techniques
+
+### Makeup & Hair Detail
+bangs                 - bang/hairstyle types
+braid                 - braid styles
+eyeliner              - eyeliner styles
+lipstick              - lipstick types
+lipstick-shade        - lipstick color shades
+makeup                - general makeup terms
+hair-accessory        - hair accessories
+eye-color             - eye color options
+skin-color            - skin tone descriptors
+blonde                - blonde hair shades
+
+### Camera Specs
+f-stop                - aperture / f-stop values
+iso-stop              - ISO values
+focal-length          - lens focal lengths
+camera-manu           - camera manufacturers
+
+### Photography & Videography
+photo-term            - photography terminology
+photoshoot-type       - types of photoshoots
+portrait-type         - portrait categories
+angle                 - camera angles (flat pool)
+camera                - camera types (flat pool)
+pose                  - pose descriptors
+
+### Render & 3D
+render                - rendering terms
+render-engine         - render engine names
+3d-term               - 3D modeling and CGI terminology
+detail                - detail level descriptors
+hd                    - HD / quality descriptors
+
+### Film
+film-genre            - film genres and styles
+technique             - film and video techniques
+
+### Demographics & Identity
+nationality           - nationality descriptors
+race                  - racial and ethnic descriptors
+occupation            - job and profession names
+class                 - social and fantasy class types
+identity              - identity and role descriptors
+gender                - gender descriptors
+gender-ext            - extended gender descriptors
+female-adult          - adult female descriptors
+female-young          - young female descriptors
+male-adult            - adult male descriptors
+male-young            - young male descriptors
+
+### Creatures
+alien                 - alien types and descriptors
+angel                 - angel types
+monster               - monster types
+robot                 - robot types
+fantasy-creature      - fantasy creature types
+scifi                 - sci-fi creature/term pool
+horror                - horror genre descriptors
+fantasy               - fantasy genre descriptors
+fantasy-setting       - fantasy setting types
+
+### Fine-Grained Clothing
+dress                 - dress types
+suit-female           - women's suits
+suit-male             - men's suits
+swimwear              - swimwear types
+costume-female        - women's costumes
+costume-male          - men's costumes
+headwear-female       - women's hats and headwear
+headwear-male         - men's hats and headwear
+high-heels            - heel types
+legwear               - legwear types
+neckwear              - neckwear and ties
+choker                - choker types
+belt                  - belt types
+eardrops              - earring types (flat pool)
+purse                 - purse and bag types
+clothing-female       - women's clothing (flat pool)
+clothing-male         - men's clothing (flat pool)
+clothing              - general clothing (flat pool)
+
+### Specific Aesthetics
+punk                  - punk aesthetic descriptors
+trippy                - psychedelic descriptors
+fantasy-setting       - fantasy setting types
+scifi                 - sci-fi descriptors
+
+### Body & Physique
+body-fit              - fit/athletic body types
+body-framing          - body framing descriptors
+body-heavy            - heavy/large body types
+body-light            - slim/light body types
+body-poor             - poor/weak body descriptors
+body-shape            - general body shape
+body-shape2           - additional body shapes
+body-short            - short stature descriptors
+body-tall             - tall stature descriptors
+
+### Misc
+background            - background types
+background-color      - background color options
+furniture             - furniture types
+gem                   - gemstone types
+location              - location descriptors
+setting               - general setting descriptors
+interior              - interior setting types
+landscape             - landscape types
+movement              - general movement terms
+expression            - facial expression types
+decade                - decade descriptors
+time                  - time period descriptors
+lighting              - lighting terms (flat pool)
+color                 - color terms (flat pool)
+

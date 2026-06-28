@@ -8,6 +8,7 @@ and test expansion.
 import os
 import re
 import json
+import html
 import random
 import time
 
@@ -52,7 +53,7 @@ def _list_wc_files() -> list[str]:
         for fname in sorted(fnames):
             if not fname.endswith(".txt") or fname == "__index__.txt":
                 continue
-            rel = os.path.relpath(os.path.join(root, fname), wc_dir)
+            rel = os.path.relpath(os.path.join(root, fname), wc_dir).replace(os.sep, "/")
             files.append(rel)
     return sorted(files)
 
@@ -133,6 +134,46 @@ def _search_content(query: str) -> str:
     return "\n".join(results)
 
 
+def _get_files_for_cat(cat: str) -> list[str]:
+    """Files belonging to a category (subdirectory). Empty cat / 'All' = all files."""
+    if not cat or cat == "All":
+        return _list_wc_files()
+    prefix = cat + "/"
+    return [f for f in _list_wc_files() if f.startswith(prefix)]
+
+
+def _render_chips_html(filename: str, seed: int = 0) -> str:
+    """Read file, pick up to 30 lines, return clickable chip HTML."""
+    if not filename:
+        return '<div class="wc-chips"><p class="wc-hint">\u2190 Select a category + file to see values</p></div>'
+    full = os.path.join(expander.WILDCARDS_DIR, filename)
+    if not os.path.isfile(full):
+        return '<div class="wc-chips"><p>File not found</p></div>'
+    try:
+        with open(full, "r", encoding="utf-8", errors="replace") as f:
+            lines = [l.rstrip() for l in f if l.strip() and not l.startswith("#")]
+    except Exception:
+        return '<div class="wc-chips"><p>Error reading file</p></div>'
+    if not lines:
+        return '<div class="wc-chips"><p>Empty file</p></div>'
+    rng = random.Random(seed)
+    rng.shuffle(lines)
+    sample = lines[:30]
+    def esc(s):
+        return s.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;").replace('"',"&quot;")
+    chips = "".join(
+        f'<span class="wc-chip" data-value="{esc(v)}">{esc(v[:60])}</span>'
+        for v in sample
+    )
+    css = """<style>
+.wc-chips{display:flex;flex-wrap:wrap;gap:6px;padding:6px 0}
+.wc-chip{background:rgba(100,100,130,0.12);border:1px solid rgba(100,100,130,0.25);border-radius:16px;padding:4px 12px;cursor:pointer;font-size:13px;color:inherit;transition:background .15s;white-space:nowrap;display:inline-block}
+.wc-chip:hover{background:rgba(100,100,130,0.22);border-color:rgba(100,100,130,0.4)}
+.wc-hint{color:inherit;opacity:.5;font-style:italic;font-size:13px}
+</style>"""
+    return css + '<div class="wc-chips">' + chips + '</div>'
+
+
 # state kept on the plugin instance for the monkey-patch
 _original_process_template = prompt_parser.process_template
 _expansion_enabled = False  # set True in setup_ui when plugin is loaded
@@ -154,7 +195,7 @@ class WildcardsPlugin(WAN2GPPlugin):
     def __init__(self):
         super().__init__()
         self.name = "Wildcards"
-        self.version = "1.3.0"
+        self.version = "1.4.0"
         self.description = "Dynamic wildcard expansion for prompts + character profile manager"
         self.type = ["extension"]
 
@@ -228,7 +269,15 @@ else if(e.key==='Escape'){d.style.display='none'}
 });
 t.addEventListener('blur',function(){setTimeout(function(){d.style.display='none'},200)})
 }
+function ft2(i){var e=document.getElementById(i);return e&&e.querySelector('select')||e&&e.querySelector('input:not([type=hidden])')}
+function iv(t,v){if(!t||!v)return;var s=t.selectionStart,e=t.selectionEnd,sp=s>0&&!t.value[s-1].match(/\s/)?' ':'';t.value=t.value.substring(0,s)+sp+v+t.value.substring(e);var np=s+sp.length+v.length;t.selectionStart=t.selectionEnd=np;t.dispatchEvent(new Event('input',{bubbles:true}))}
 function init(){['wc-prompt-input'].forEach(function(i){var t=ft(i);if(t)sa(t)})}
+// chip click + Insert __file__ via event delegation
+document.body.addEventListener('click',function(e){
+var ch=e.target.closest('.wc-chip');
+if(ch){e.preventDefault();var p=document.getElementById('wc-prompt-input'),ta=p&&p.querySelector('textarea');if(ta)iv(ta,ch.dataset.value);return}
+var ib=e.target.closest('button');if(ib&&ib.textContent.trim().includes('Insert __file__')){e.preventDefault();var sd=ft2('wc-file-dd'),fv=sd&&sd.value||'';if(!fv)return;var ref='__'+fv.replace(/\.txt$/,'')+'__';var p=document.getElementById('wc-prompt-input'),ta=p&&p.querySelector('textarea');if(ta)iv(ta,ref)}
+});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 """ % (KEYS_JSON,)
@@ -289,10 +338,6 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
             global _expansion_seed
             _expansion_seed = seed_val if seed_val >= 0 else None
 
-        def _test_expand(prompt: str, seed_val: int) -> str:
-            rng = random.Random(seed_val if seed_val >= 0 else None)
-            return expander._expand_text(prompt, rng, depth=0)
-
         with gr.Column():
             gr.Markdown(f"## Wildcard Prompt Expansion  —  v{self.version}")
             gr.Markdown("> Expansion active when enabled in **Plugins** tab. Type `__` for wildcard autocomplete.")
@@ -304,6 +349,16 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
             gr.Markdown("---")
             gr.Markdown("### 1. Prompt Builder")
 
+            # ── Visual Wildcard Explorer ──
+            with gr.Accordion("\U0001f50d Wildcard Explorer", open=True):
+                with gr.Row():
+                    wc_cat = gr.Dropdown(label="Category", choices=["All"] + _get_categories(), value="All", scale=2)
+                    wc_file = gr.Dropdown(label="File", choices=_list_wc_files(), value=None, scale=3, elem_id="wc-file-dd")
+                wc_chips = gr.HTML(_render_chips_html(""))
+                with gr.Row():
+                    wc_shuffle = gr.Button("\u21bb Shuffle Values", size="sm", scale=1)
+                    wc_insert_ref = gr.Button("+ Insert __file__", size="sm", scale=1)
+
             prompt_input = gr.Textbox(
                 label="Prompt Template",
                 lines=4,
@@ -311,17 +366,28 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
                 elem_id="wc-prompt-input",
             )
 
+            def _filter_cat_files(cat: str) -> gr.update:
+                return gr.update(choices=_get_files_for_cat(cat), value=None)
+
+            def _render_chips(filename: str) -> str:
+                return _render_chips_html(filename)
+
+            # Insert __file__ handled in JS (event delegation in setup_ui) — no Python event to avoid Gradio arg mismatch
+            wc_cat.change(fn=_filter_cat_files, inputs=[wc_cat], outputs=[wc_file])
+            wc_file.change(fn=_render_chips, inputs=[wc_file], outputs=[wc_chips])
+            wc_shuffle.click(fn=_render_chips, inputs=[wc_file], outputs=[wc_chips])
+
             with gr.Row():
-                test_btn = gr.Button("▶ Expand Preview", scale=1)
+                test_btn = gr.Button("Generate 1 row", scale=1)
                 batch_count = gr.Number(label="Variations", value=6, precision=0, minimum=1, maximum=100, scale=1)
                 batch_seed_mode = gr.Radio(
                     label="Mode",
                     choices=["Sequential", "Random"],
-                    value="Sequential",
+                    value="Random",
                     scale=1,
                 )
                 generate_btn = gr.Button("Generate N", scale=1, variant="primary")
-                send_btn = gr.Button("Send to Prompt", scale=1)
+                send_btn = gr.Button("Send to Media Generator", scale=1)
 
             test_output = gr.Textbox(label="Preview (single expansion)", lines=2, interactive=False)
             batch_output = gr.Textbox(label="Generated Variations (one per line)", lines=6, interactive=False)
@@ -335,13 +401,20 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
                     return ""
                 count = max(1, min(100, int(count)))
                 lines = []
-                for i in range(count):
-                    if seed_mode.startswith("Sequential"):
-                        expanded = expander.expand_prompt_sequential(prompt_template, i)
-                    else:
+                if seed_mode.startswith("Sequential"):
+                    for i in range(count):
+                        lines.append(expander.expand_prompt_sequential(prompt_template, i))
+                else:
+                    seen = set()
+                    max_attempts = count * 20
+                    attempts = 0
+                    while len(lines) < count and attempts < max_attempts:
                         rng = random.Random()
                         expanded = expander._expand_text(prompt_template, rng, depth=0)
-                    lines.append(expanded)
+                        if expanded not in seen:
+                            seen.add(expanded)
+                            lines.append(expanded)
+                        attempts += 1
                 return "\n".join(lines)
 
             def _send_to_prompt_box(batch_text: str):

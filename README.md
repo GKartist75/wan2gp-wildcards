@@ -75,13 +75,20 @@ profile lets audio plugins pick the right voice sample per character.
 
 ## Changelog
 
+### v1.4.0
+- **Visual Wildcard Explorer**: accordion with category → file → clickable value chips. Click chip to insert literal value into prompt at cursor. Insert __file__ reference button.
+- **Chips styled** for light/dark themes, insert with automatic spacing.
+- **Random mode dedup**: batch generate now ensures no duplicate prompts in random mode.
+- **Path separator fix**: Windows `\` normalized to `/` for category filtering.
+- **Button renames**: "Generate 1 row", "Send to Media Generator". Random mode default.
+- **Explorer open by default**.
+
 ### v1.3.0
-- **UI reorder**: Prompt Builder (test + batch generate + send) moved to top. Character Profiles second. File Browser and Cross-File Search moved below.
-- **Collapsed Quick Start guide** into compact header line.
-- **Searchable file browser**: category filter + search box + favorites-only mode.
-- **Cross-file content search**: search all 3,044 files for any term.
-- **Favorites system**: star files for quick access, persisted across restarts.
-- **Version bumped** to 1.3.0.
+- **UI reorder**: Prompt Builder on top, Character Profiles second, File Browser and Cross-File Search below.
+- **Quick Start guide collapsed** into compact header.
+- **Searchable file browser** with category filter, search box, favorites-only mode.
+- **Cross-file content search** across all 3,044 files.
+- **Favorites system** persisted across restarts.
 
 ### v1.2.0
 - **Merged all remaining wildcard collections**: 939 files from billions of wildcards, 318 from YetAnotherWildcardCollection, 969 from first billions pass, 528 from sd-dynamic-prompts, 110 from sd-wildcards.

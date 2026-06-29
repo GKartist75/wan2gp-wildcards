@@ -167,9 +167,9 @@ def _render_chips_html(filename: str, seed: int = 0) -> str:
     )
     css = """<style>
 .wc-chips{display:flex;flex-wrap:wrap;gap:6px;padding:6px 0}
-.wc-chip{background:rgba(100,100,130,0.12);border:1px solid rgba(100,100,130,0.25);border-radius:16px;padding:4px 12px;cursor:pointer;font-size:13px;color:inherit;transition:background .15s;white-space:nowrap;display:inline-block}
+.wc-chip{background:rgba(100,100,130,0.12);border:1px solid rgba(100,100,130,0.25);border-radius:16px;padding:4px 12px;cursor:pointer;font-size:13px;color:#222;transition:background .15s;white-space:nowrap;display:inline-block}
 .wc-chip:hover{background:rgba(100,100,130,0.22);border-color:rgba(100,100,130,0.4)}
-.wc-hint{color:inherit;opacity:.5;font-style:italic;font-size:13px}
+.wc-hint{color:#222;opacity:.5;font-style:italic;font-size:13px}
 </style>"""
     return css + '<div class="wc-chips">' + chips + '</div>'
 
@@ -276,8 +276,9 @@ function init(){['wc-prompt-input'].forEach(function(i){var t=ft(i);if(t)sa(t)})
 document.body.addEventListener('click',function(e){
 var ch=e.target.closest('.wc-chip');
 if(ch){e.preventDefault();var p=document.getElementById('wc-prompt-input'),ta=p&&p.querySelector('textarea');if(ta)iv(ta,ch.dataset.value);return}
-var ib=e.target.closest('button');if(ib&&ib.textContent.trim().includes('Insert __file__')){e.preventDefault();var sd=ft2('wc-file-dd'),fv=sd&&sd.value||'';if(!fv)return;var ref='__'+fv.replace(/\.txt$/,'')+'__';var p=document.getElementById('wc-prompt-input'),ta=p&&p.querySelector('textarea');if(ta)iv(ta,ref);return}
-if(ib&&ib.textContent.trim().includes('Send to Media Generator')){e.preventDefault();var bt=document.querySelector('#wangp-prompt-advanced textarea'),bc=document.querySelector('#wc-batch-output textarea');if(!bt||!bc)return;var txt=bc.value;if(!txt)return;bt.value=txt;bt.dispatchEvent(new Event('input',{bubbles:true}))}\n});
+var ib=e.target.closest('button');
+if(ib&&ib.textContent.trim().includes('Insert __file__')){e.preventDefault();var sd=ft2('wc-file-dd'),fv=sd&&sd.value||'';if(!fv)return;var ref='__'+fv.replace(/\.txt$/,'')+'__';var p=document.getElementById('wc-prompt-input'),ta=p&&p.querySelector('textarea');if(ta)iv(ta,ref);return}
+});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 """ % (KEYS_JSON,)

@@ -195,7 +195,7 @@ class WildcardsPlugin(WAN2GPPlugin):
     def __init__(self):
         super().__init__()
         self.name = "Wildcards"
-        self.version = "1.5.1"
+        self.version = "1.5.2"
         self.description = "Dynamic wildcard expansion for prompts + character profile manager"
         self.type = ["extension"]
 

@@ -75,6 +75,11 @@ profile lets audio plugins pick the right voice sample per character.
 
 ## Changelog
 
+### v1.5.0
+- **Send to Media Generator** now uses JS event handler (works after Wan2GP updates that broke Python cross-tab updates)
+- **Batch output textbox** has elem_id for reliable JS selection
+- JS simplified to copy prompt text between tabs
+
 ### v1.4.0
 - **Visual Wildcard Explorer**: accordion with category → file → clickable value chips. Click chip to insert literal value into prompt at cursor. Insert __file__ reference button.
 - **Chips styled** for light/dark themes, insert with automatic spacing.

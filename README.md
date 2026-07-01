@@ -75,6 +75,17 @@ profile lets audio plugins pick the right voice sample per character.
 
 ## Changelog
 
+### v1.5.2
+- **Final cleanup**: removed unused copy button, kept only Python handler for Send to Media Generator
+- **Typo fix**: `path/filename` label in char_voice fixed
+- **CSS fix**: chips now visible on dark themes (final pass)
+- **JS cleanup**: only chip click + Insert `__file__` handlers remain
+
+### v1.5.1
+- **CSS fix**: chips/hint use `color:#222` instead of `color:inherit` (was invisible on dark themes)
+- **Removed JS handler** for Send to Media Generator that conflicted with Python handler
+- Autocomplete works via JS, Send to Media Generator via Python — no overlap
+
 ### v1.5.0
 - **Send to Media Generator** now uses JS event handler (works after Wan2GP updates that broke Python cross-tab updates)
 - **Batch output textbox** has elem_id for reliable JS selection

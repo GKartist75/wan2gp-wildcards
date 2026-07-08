@@ -4,6 +4,8 @@ Syntax:
 - __name__       -> random line from wildcards/name.txt
 - {opt1|opt2}    -> random inline choice
 - 2::value       -> weighted option in .txt files (weight 2)
+- __$var:file__  -> pick from file, store result as var
+- __$var__       -> reuse previously stored var value
 - Nesting: files can reference other __wildcards__ and {options}
 - Seed-deterministic via random.Random(seed)
 """
@@ -16,8 +18,10 @@ import glob as globmod
 WILDCARDS_DIR: str = ""  # set by plugin.py on init
 DEPTH_LIMIT = 10
 
-WILDCARD_RE = re.compile(r"__([a-zA-Z0-9_/.\\-]+)__")
+WILDCARD_RE = re.compile(r"__([a-zA-Z0-9_/.\-]+)__")
 VARIANT_RE = re.compile(r"\{([^{}]*)\}")
+CAPTURE_SET_RE = re.compile(r"__\$([a-zA-Z0-9_]+):([a-zA-Z0-9_/.\\-]+)__")
+CAPTURE_GET_RE = re.compile(r"__\$([a-zA-Z0-9_]+)__")
 
 
 def set_wildcards_dir(path: str) -> None:
@@ -123,10 +127,37 @@ def pick_random(rng: random.Random, items: list[str], sequential_index: int | No
     return rng.choices(choices, weights=weights, k=1)[0]
 
 
-def _expand_text(text: str, rng: random.Random, depth: int = 0, sequential_index: int | None = None) -> str:
-    """Recursive expansion: wildcards first, then variants. Depth-limited."""
+def _expand_text(text: str, rng: random.Random, depth: int = 0,
+                 sequential_index: int | None = None,
+                 _context: dict[str, str] | None = None) -> str:
+    """Recursive expansion: captures, wildcards, then variants. Depth-limited."""
     if depth >= DEPTH_LIMIT:
         return text
+    if _context is None:
+        _context = {}
+
+    # 0a. expand __$var:file__ capture-and-store
+    def _replace_capture_set(m: re.Match) -> str:
+        var, file = m.group(1), m.group(2)
+        lines = load_wildcard_lines(file)
+        if not lines:
+            return m.group(0)
+        chosen = pick_random(rng, lines, sequential_index=sequential_index)
+        chosen = _expand_text(chosen, rng, depth + 1,
+                              sequential_index=sequential_index, _context=_context)
+        _context[var] = chosen
+        return chosen
+
+    text = CAPTURE_SET_RE.sub(_replace_capture_set, text)
+
+    # 0b. expand __$var__ (reuse captured value)
+    def _replace_capture_get(m: re.Match) -> str:
+        var = m.group(1)
+        if var in _context:
+            return _context[var]
+        return m.group(0)  # unknown var, leave as-is
+
+    text = CAPTURE_GET_RE.sub(_replace_capture_get, text)
 
     # 1. expand __wildcard__ references
     def _replace_wildcard(m: re.Match) -> str:
@@ -135,7 +166,7 @@ def _expand_text(text: str, rng: random.Random, depth: int = 0, sequential_index
         if not lines:
             return m.group(0)  # leave as-is if not found
         chosen = pick_random(rng, lines, sequential_index=sequential_index)
-        return _expand_text(chosen, rng, depth + 1, sequential_index=sequential_index)
+        return _expand_text(chosen, rng, depth + 1, sequential_index=sequential_index, _context=_context)
 
     text = WILDCARD_RE.sub(_replace_wildcard, text)
 
@@ -146,7 +177,7 @@ def _expand_text(text: str, rng: random.Random, depth: int = 0, sequential_index
         if len(parts) < 2:
             return m.group(0)
         chosen = pick_random(rng, parts, sequential_index=sequential_index)
-        return _expand_text(chosen, rng, depth + 1, sequential_index=sequential_index)
+        return _expand_text(chosen, rng, depth + 1, sequential_index=sequential_index, _context=_context)
 
     text = VARIANT_RE.sub(_replace_variant, text)
     return text

@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 680" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a1a2e"/><stop offset="100%" stop-color="#0f0f23"/></linearGradient>
+    <linearGradient id="box1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#16213e"/><stop offset="100%" stop-color="#1a1a3e"/></linearGradient>
+    <linearGradient id="box2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1a3a2e"/><stop offset="100%" stop-color="#16213e"/></linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="680" fill="url(#bg)" rx="8"/>
+
+  <!-- Title -->
+  <text x="450" y="40" text-anchor="middle" fill="#e0e0ff" font-size="22" font-weight="bold">Wan2GP Wildcards Plugin — Infographic</text>
+
+  <!-- Box 1: Prompt Template -->
+  <rect x="40" y="70" width="820" height="95" rx="12" fill="url(#box1)" stroke="#0f3460" stroke-width="2"/>
+  <text x="450" y="92" text-anchor="middle" fill="#a8d8ea" font-size="15">Your Prompt Template</text>
+  <text x="450" y="120" text-anchor="middle" fill="#ffffff" font-size="18">A __camera_shot__ of __$a:name__ wearing a __color__ hat.</text>
+  <text x="450" y="148" text-anchor="middle" fill="#ffffff" font-size="18">__$a__ smiles at __$b:name__ under __weather/sky__.</text>
+
+  <!-- Arrow -->
+  <polygon points="448,170 452,170 450,190" fill="#e94560"/>
+  <rect x="448" y="170" width="4" height="20" fill="#e94560"/>
+
+  <!-- Box 2: Steps -->
+  <rect x="40" y="195" width="820" height="270" rx="12" fill="url(#box1)" stroke="#0f3460" stroke-width="2"/>
+  <text x="450" y="218" text-anchor="middle" fill="#a8d8ea" font-size="15">Expansion Steps</text>
+
+  <text x="60" y="252" fill="#e94560" font-size="14">1. __camera_shot__  →</text>
+  <text x="310" y="252" fill="#c0c0d0" font-size="14">random from camera/shot.txt  →  'close-up shot'</text>
+
+  <text x="60" y="282" fill="#e94560" font-size="14">2. __$a:name__      →</text>
+  <text x="310" y="282" fill="#c0c0d0" font-size="14">random from name.txt, STORE as $a  →  'Alice'</text>
+
+  <text x="60" y="312" fill="#e94560" font-size="14">3. __color__        →</text>
+  <text x="310" y="312" fill="#c0c0d0" font-size="14">random from color/*.txt  →  'crimson'</text>
+
+  <text x="60" y="342" fill="#e94560" font-size="14">4. __$a__           →</text>
+  <text x="310" y="342" fill="#c0c0d0" font-size="14">REUSE stored $a  →  'Alice' (same as step 2)</text>
+
+  <text x="60" y="372" fill="#e94560" font-size="14">5. __$b:name__      →</text>
+  <text x="310" y="372" fill="#c0c0d0" font-size="14">random from name.txt (different pick)  →  'Bob'</text>
+
+  <text x="60" y="402" fill="#e94560" font-size="14">6. __weather/sky__  →</text>
+  <text x="310" y="402" fill="#c0c0d0" font-size="14">random from weather/sky.txt  →  'cloudy'</text>
+
+  <text x="60" y="440" fill="#7a7a9a" font-size="13" font-style="italic">Key: each __wildcard__ picks randomly | __$var:file__ picks AND stores | __$var__ reuses</text>
+
+  <!-- Arrow -->
+  <polygon points="448,470 452,470 450,490" fill="#2d6a4f"/>
+  <rect x="448" y="470" width="4" height="20" fill="#2d6a4f"/>
+
+  <!-- Box 3: Result -->
+  <rect x="40" y="495" width="820" height="85" rx="12" fill="url(#box2)" stroke="#2d6a4f" stroke-width="2"/>
+  <text x="450" y="518" text-anchor="middle" fill="#95d5b2" font-size="15">Expanded Prompt</text>
+  <text x="450" y="550" text-anchor="middle" fill="#ffffff" font-size="17">A close-up shot of Alice wearing a crimson hat. Alice smiles at Bob under cloudy.</text>
+
+  <!-- Legend -->
+  <rect x="40" y="600" width="820" height="55" rx="8" fill="#0d0d1a" stroke="#333355" stroke-width="1"/>
+  <text x="65" y="625" fill="#e94560" font-size="13">__file__</text>
+  <text x="65" y="642" fill="#7a7a9a" font-size="11">Random pick</text>
+
+  <text x="255" y="625" fill="#e94560" font-size="13">__$var:file__</text>
+  <text x="255" y="642" fill="#7a7a9a" font-size="11">Pick + Store</text>
+
+  <text x="465" y="625" fill="#e94560" font-size="13">__$var__</text>
+  <text x="465" y="642" fill="#7a7a9a" font-size="11">Reuse stored</text>
+
+  <text x="675" y="625" fill="#e94560" font-size="13">{a|b|c}</text>
+  <text x="675" y="642" fill="#7a7a9a" font-size="11">Inline choice</text>
+</svg>

@@ -552,4 +552,14 @@ superheroes/ (4) - dc, marvel, female, male
 supervillains/ (4) - dc, marvel, female, male
 valentine/ (10) - artstyles, atmosphere, characters, decorations, food, lightings, scapes, scenes, symbols, traditions
 vehicles/ (20) - types (airborne, cars, spacecraft, water), accessories, customization, exterior-features, lights, windows, size
+
+## art-styles
+art-styles/anime              - anime & manga illustration styles (Ghibli, Akira, Chainsaw Man...)
+art-styles/cartoon            - cartoon & animation styles (Simpsons, Disney, Arcane...)
+art-styles/comics             - comic book & graphic novel styles (Marvel, DC, Moebius...)
+art-styles/drawing            - drawing techniques & sketch styles (Charcoal, Etching, Doodle...)
+art-styles/photography        - photography & cinematic styles (Film Noir, Vogue, Neon...)
+art-styles/design             - design & 3D render styles (Bauhaus, Pixar, Low Poly, Pixel Art...)
+art-styles/digital-painting   - digital painting styles (Artgerm, Sakimichan, Loish...)
+art-styles/painting           - traditional painting styles (Van Gogh, Monet, Rembrandt...)
 words/ (26) - adjectives, verbs, substantives, magical/scifi/cyberpunk words, brain-psychology, constructors

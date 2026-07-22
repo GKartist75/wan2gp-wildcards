@@ -213,7 +213,6 @@ clothing              - general clothing (flat pool)
 ### Specific Aesthetics
 punk                  - punk aesthetic descriptors
 trippy                - psychedelic descriptors
-fantasy-setting       - fantasy setting types
 scifi                 - sci-fi descriptors
 
 ### Body & Physique

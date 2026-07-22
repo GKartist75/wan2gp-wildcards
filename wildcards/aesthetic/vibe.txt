@@ -56,7 +56,6 @@ bohemian
 free-spirited
 romantic
 tender
-intimate
 sensual
 passionate
 fiery
@@ -90,7 +89,6 @@ rustic
 earthy
 natural
 organic
-raw
 pure
 pristine
 untouched

@@ -11,3 +11,9 @@ short
 shoulder length
 very long
 very short
+very short hair
+short hair
+medium hair
+long hair
+very long hair
+big hair

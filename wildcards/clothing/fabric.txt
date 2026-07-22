@@ -75,7 +75,6 @@ alpaca
 camel hair
 llama
 vicuna
-suede
 nubuck
 patent leather
 embossed leather

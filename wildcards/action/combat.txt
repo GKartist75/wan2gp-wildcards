@@ -40,7 +40,6 @@ stabbing
 slashing
 swinging
 thrusting
-parrying
 shielding
 bashing
 dueling

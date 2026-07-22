@@ -50,6 +50,5 @@ dust storm
 sand storm
 dust devil
 haboob
-dust haze
 dry haze
 wet haze

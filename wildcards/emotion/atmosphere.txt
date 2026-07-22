@@ -40,7 +40,6 @@ isolated atmosphere
 abandoned atmosphere
 decaying atmosphere
 ruined atmosphere
-desolate atmosphere
 barren atmosphere
 sterile atmosphere
 clinical atmosphere
@@ -83,4 +82,3 @@ meditative atmosphere
 zen atmosphere
 harmonious atmosphere
 balanced atmosphere
-peaceful atmosphere

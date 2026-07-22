@@ -67,7 +67,6 @@ scholar
 academic
 professor
 teacher
-mentor
 apprentice
 student
 disciple

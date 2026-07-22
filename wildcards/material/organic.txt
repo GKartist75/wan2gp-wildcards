@@ -35,7 +35,6 @@ down
 quill
 spine
 spike
-quill
 bristle
 whisker
 tentacle
@@ -82,7 +81,6 @@ epidermis
 dermis
 hypodermis
 cuticle
-cortex
 medulla
 pith
 sap
@@ -98,8 +96,6 @@ saliva
 milk
 honey
 nectar
-pollen
-spore
 yeast
 mold
 mildew

@@ -238,7 +238,6 @@ Collegiate Church, Castle and Old Town of Quedlinburg
 Cologne Cathedral
 Colonial City of Santo Domingo
 Colonies of Benevolence 
-Colonies of Benevolence 
 Comoé National Park
 Complex of Hue Monuments
 Complex of Koguryo Tombs
@@ -303,7 +302,6 @@ Episcopal City of Albi
 Episcopal Complex of the Euphrasian Basilica in the Historic Centre of Poreč
 Erbil Citadel
 Erzgebirge/Krušnohoří Mining Region 
-Erzgebirge/Krušnohoří Mining Region 
 Etruscan Necropolises of Cerveteri and Tarquinia
 Everglades National Park
 Fagus Factory in Alfeld
@@ -311,7 +309,6 @@ Fanjingshan
 Fasil Ghebbi, Gondar Region
 Fatehpur Sikri
 Ferrara, City of the Renaissance, and its Po Delta 
-Fertö / Neusiedlersee Cultural Landscape 
 Fertö / Neusiedlersee Cultural Landscape 
 Flemish Béguinages
 Fort and Shalamar Gardens in Lahore
@@ -687,12 +684,10 @@ Monastery of the Hieronymites and Tower of Belem in Lisbon
 Monastic Island of Reichenau
 Mont-Saint-Michel and its Bay
 Monte San Giorgio 
-Monte San Giorgio 
 Monticello and the University of Virginia in Charlottesville
 Monumental Earthworks of Poverty Point
 Monuments of Oviedo and the Kingdom of the Asturias 
 Morne Trois Pitons National Park
-Mosi-oa-Tunya / Victoria Falls 
 Mosi-oa-Tunya / Victoria Falls 
 Mount Athos
 Mount Emei Scenic Area, including Leshan Giant Buddha Scenic Area
@@ -982,7 +977,6 @@ Statue of Liberty
 Stećci Medieval Tombstone Graveyards
 Stevns Klint
 Stoclet House
-Stone Circles of Senegambia 
 Stone Circles of Senegambia 
 Stone Town of Zanzibar
 Stonehenge, Avebury and Associated Sites

@@ -1,0 +1,8 @@
+Bird
+Bug
+Cat
+Crustacean
+Dog
+Fish
+Reptile
+Whale

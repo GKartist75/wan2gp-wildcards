@@ -55,7 +55,6 @@ fairy lighting
 christmas lighting
 holiday lighting
 decorative lighting
-accent lighting
 wall washing
 up lighting
 down lighting
@@ -68,7 +67,6 @@ stage lighting
 concert lighting
 theatre lighting
 mood lighting
-ambient lighting
 task lighting
 reading lighting
 work lighting

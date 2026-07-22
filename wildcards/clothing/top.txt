@@ -18,7 +18,6 @@ hoodie
 sweatshirt
 vest
 waistcoat
-tank top
 jersey
 jumper
 leotard
@@ -33,7 +32,6 @@ bomber jacket
 flight jacket
 motorcycle jacket
 trucker jacket
-blazer
 sport coat
 suit jacket
 tuxedo jacket
@@ -51,10 +49,7 @@ robe
 hooded cloak
 shrug
 bolero
-cardigan
 gilet
-vest
-waistcoat
 doublet
 jerkin
 tabard

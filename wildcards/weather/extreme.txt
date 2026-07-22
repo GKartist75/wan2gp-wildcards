@@ -47,7 +47,6 @@ hurricane force
 tempest
 maelstrom
 whirlwind
-cyclone
 monsoon
 cloudburst
 flash flood

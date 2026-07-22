@@ -83,7 +83,6 @@ Baloo from The Jungle Book
 Bagheera from The Jungle Book
 King Louie from The Jungle Book
 Mowgli from The Jungle Book
-Luke Skywalker
 Princess Leia Organa
 Han Solo
 Darth Vader
@@ -116,11 +115,7 @@ Tom Paris
 Harry Kim
 The Doctor
 Anakin Skywalker
-Darth Vader
 Padmé Amidala
-Han Solo
-Princess Leia Organa
-Chewbacca
 Lando Calrissian
 Qui-Gon Jinn
 Mace Windu
@@ -132,8 +127,6 @@ Finn
 Poe Dameron
 Kylo Ren
 BB-8
-R2-D2
-C-3PO
 The Mandolorian
 Neo
 Trinity
@@ -175,7 +168,6 @@ The Time Traveler
 The Eloi
 The Morlocks
 Dr. John Watson
-Sherlock Holmes
 Professor James Moriarty
 Irene Adler
 Mycroft Holmes
@@ -185,12 +177,10 @@ Dr. Victor Frankenstein
 Frankenstein's Monster
 Dracula
 Count Dracula
-Gandalf
 Bilbo Baggins
 Aragorn
 Legolas
 Gimli
-Frodo Baggins
 Samwise Gamgee
 Galadriel
 Elrond
@@ -216,7 +206,6 @@ Tauriel
 Thranduil
 Arwen
 Glorfindel
-Harry Potter
 Hermione Granger
 Ron Weasley
 Albus Dumbledore
@@ -236,7 +225,6 @@ Dobby
 Bellatrix Lestrange
 Lucius Malfoy
 Zeus
-Thor
 Apollo
 Odin
 Hades
@@ -334,12 +322,10 @@ Princess Zelda
 Princess Peach
 Samus Aran
 Kirby
-Sonic the Hedgehog
 Tails
 Knuckles
 Crash Bandicoot
 Spyro the Dragon
-Lara Croft
 Nathan Drake
 Master Chief
 Cortana
@@ -429,14 +415,12 @@ Lorelai Gilmore
 Cookie Lyon
 Barney Stinson
 Daenerys Targaryen
-Sherlock Holmes
 Leslie Knope
 Alicia Florrick
 Eleven from Stranger Things
 Carrie Mathison
 Mindy Lahiri
 Agent Dale Cooper from Twin Peaks
-Eric Cartman
 Will Byers
 Dr. House
 Claire Underwood

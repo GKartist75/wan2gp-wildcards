@@ -21,7 +21,6 @@ dress trousers
 formal trousers
 suit pants
 tuxedo pants
-cargo pants
 parachute pants
 overalls
 dungarees
@@ -56,12 +55,10 @@ harem pants
 palazzo pants
 wide-leg pants
 bell-bottoms
-jeans
 corduroy pants
 velvet pants
 linen pants
 wool pants
-cargo pants
 military pants
 fatigue pants
 khaki pants

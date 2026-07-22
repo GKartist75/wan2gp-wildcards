@@ -59,5 +59,4 @@ vaporwave palette
 synthwave palette
 cyberpunk palette
 outrun palette
-oceanic palette
 terrestrial palette

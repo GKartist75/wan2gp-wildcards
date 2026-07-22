@@ -1,7 +1,10 @@
 # wan2gp-wildcards
 
 Wildcard prompt expansion plugin for [Wan2GP](https://github.com/deepbeepmeep/Wan2GP).  
-**149,000+ terms** across **3,044 files** in **67 subdirectory categories** + **729 flat wildcards**.
+**149,000+ terms** across **3,019 files** organized into **78 category directories**.
+
+> **v1.6.2** — Complete file reorganization. All files live in category directories now;
+> old `__underscore_names__` still work via 727 built-in aliases.
 
 ---
 
@@ -9,13 +12,16 @@ Wildcard prompt expansion plugin for [Wan2GP](https://github.com/deepbeepmeep/Wa
 
 | Syntax | Effect | Example |
 |---|---|---|
-| `__name__` | Random line from `wildcards/name.txt` | `__camera_shot__` → `close-up shot` |
+| `__name__` | Random line from `wildcards/name.txt` | `__camera/shot__` → `close-up shot` |
 | `__dir__` | Random line from ALL files in `wildcards/dir/` | `__color__` → pooled from all color files |
 | `__dir/file__` | Specific file in subdirectory | `__color/named__` |
 | `{a\|b\|c}` | Random inline choice | `{cinematic\|vintage\|raw}` |
 | `N::value` | Weighted option (weight N) | `3::sunset` = 3× more likely |
 | `__$var:file__` | Pick from file, store result as **named variable** | `__$a:name__` → stores "Alice" as `$a` |
 | `__$var__` | Reuse previously stored variable | `__$a__` → "Alice" again |
+
+> 💡 **All existing wildcards moved.** Old names like `__camera_shot__` still work
+> automatically — no prompt changes needed. Use the new `__dir/file__` style going forward.
 
 ---
 
@@ -175,6 +181,27 @@ The plugin tracks how often each wildcard file is used. Click **Show Top 50 Used
 - **Send to Media Generator**: now uses Wan2GP's State API (works after Gradio updates)
 - **Line count display**: file dropdown shows number of lines per file
 - **Performance**: optimized file listing for 3,000+ files
+
+### v1.6.2 — File Reorganization
+- **Complete reorganization**: all 1,500+ flat files moved into 78 category directories
+- **727 backward-compat aliases**: every old `__underscore_name__` still resolves
+- **Merged duplicates**: `color/`+`colors/`, `material/`+`materials/`, `clothing/`+`clothings/` merged
+- **Clear naming**: all files use lowercase, hyphenated names (`world-heritage-sites` not `wh-site`)
+- **NSFW consolidated**: all adult content unified under `nsfw/` subdirectories
+- **0 flat files remain**: every `.txt` lives in a logical category directory
+
+### v1.6.1
+- **Bugfix**: `_load_char`/`_clear_char_form` now returns 6 separate values (fixes Gradio crash when selecting/clearing characters)
+- **Bugfix**: `_import_characters` error paths now return the right number of values (fixes event handler crash)
+- **Bugfix**: Import JSON flow now waits for paste → Enter submit (was firing on empty box)
+- **Atomic writes**: stats and favorites use tempfile + atomic rename (prevents data corruption)
+- **Cross-platform**: all 321 uppercase filenames/dirs normalized to lowercase (Linux compat)
+- **Dead code**: removed unused `_count_lines` function
+- **Dedup**: removed duplicate lines across all wildcard files
+- **Empty file**: populated empty `books/grimoires.txt` with default entries
+- **Glob fix**: fixed dead glob resolution in expander (now uses `name*.txt`)
+- **Error reporting**: silent `except: pass` replaced with `print()` diagnostics
+- **Package doc**: `__init__.py` now has a docstring and exports
 
 ### v1.5.2
 - Final cleanup: removed unused copy button, kept only Python handler for Send to Media Generator

@@ -49,3 +49,7 @@ triangular eyewear
 under-rim eyewear
 versace glasses
 x-ray glasses
+glasses
+monocle
+sunglasses
+goggles

@@ -11,6 +11,7 @@ import json
 import html
 import random
 import time
+import tempfile
 
 import gradio as gr
 
@@ -25,7 +26,11 @@ WILDCARDS_SUBDIR = "wildcards"  # under plugin dir
 
 
 def _get_wildcard_keys() -> list[str]:
-    """All valid wildcard keys for autocomplete, e.g. __camera__, __camera/shot__."""
+    """All valid wildcard keys for autocomplete, e.g. __camera__, __camera/shot__.
+
+    Also includes backward-compat aliases for renamed/moved files
+    so users still see old names in the dropdown.
+    """
     wc_dir = expander.WILDCARDS_DIR
     if not os.path.isdir(wc_dir):
         return []
@@ -40,16 +45,10 @@ def _get_wildcard_keys() -> list[str]:
                 continue
             rel = os.path.relpath(os.path.join(root, fname), wc_dir)
             keys.add(f"__{rel[:-4]}__")  # strip .txt
+    # Backward-compat: include old alias names so autocomplete still shows them
+    for old_name in expander.WILDCARD_ALIASES:
+        keys.add(f"__{old_name}__")
     return sorted(keys)
-
-
-def _count_lines(filepath: str) -> int:
-    """Count non-empty, non-comment lines in a wildcard file."""
-    try:
-        with open(filepath, "r", encoding="utf-8", errors="replace") as f:
-            return sum(1 for line in f if line.strip() and not line.startswith("#"))
-    except OSError:
-        return 0
 
 
 def _list_wc_files() -> list[str]:
@@ -111,13 +110,23 @@ def _load_favorites() -> list[str]:
 
 
 def _save_favorites(favorites: list[str]):
-    """Persist favorited file paths."""
+    """Persist favorited file paths (atomic write)."""
     path = os.path.join(expander.WILDCARDS_DIR, FAVORITES_FILE)
+    tmp = None
     try:
-        with open(path, "w", encoding="utf-8") as f:
+        fd, tmp = tempfile.mkstemp(dir=os.path.dirname(path), suffix=".tmp")
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
             json.dump(favorites, f)
-    except OSError:
-        pass
+        os.replace(tmp, path)
+        tmp = None
+    except OSError as e:
+        print(f"[Wildcards] Error saving favorites: {e}")
+    finally:
+        if tmp is not None:
+            try:
+                os.unlink(tmp)
+            except OSError:
+                pass
 
 
 def _load_templates() -> dict[str, str]:
@@ -153,13 +162,23 @@ def _load_stats() -> dict[str, int]:
 
 
 def _save_stats(stats: dict[str, int]):
-    """Persist wildcard usage stats."""
+    """Persist wildcard usage stats (atomic write)."""
     path = os.path.join(expander.WILDCARDS_DIR, STATS_FILE)
+    tmp = None
     try:
-        with open(path, "w", encoding="utf-8") as f:
+        fd, tmp = tempfile.mkstemp(dir=os.path.dirname(path), suffix=".tmp")
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
             json.dump(stats, f, indent=2, ensure_ascii=False)
-    except OSError:
-        pass
+        os.replace(tmp, path)
+        tmp = None
+    except OSError as e:
+        print(f"[Wildcards] Error saving stats: {e}")
+    finally:
+        if tmp is not None:
+            try:
+                os.unlink(tmp)
+            except OSError:
+                pass
 
 
 def _search_content(query: str) -> str:
@@ -263,7 +282,7 @@ class WildcardsPlugin(WAN2GPPlugin):
     def __init__(self):
         super().__init__()
         self.name = "Wildcards"
-        self.version = "1.6.0"
+        self.version = "1.6.2"
         self.description = "Dynamic wildcard expansion + character profiles + templates + usage stats"
         self.type = ["extension"]
 
@@ -621,14 +640,14 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
             def _load_char(name: str):
                 if not name:
-                    return "" * 6
+                    return "", "", "", "", "", ""
                 p = character_manager.get_character(name)
                 if not p:
-                    return "" * 6
+                    return "", "", "", "", "", ""
                 return (name, p.get("appearance", ""), p.get("voice", ""), p.get("clothing", ""), p.get("tags", ""), p.get("notes", ""))
 
             def _clear_char_form():
-                return "" * 6
+                return "", "", "", "", "", ""
 
             def _save_char(name, appearance, voice, clothing, tags, notes):
                 profile = {"appearance": appearance, "voice": voice, "clothing": clothing, "tags": tags, "notes": notes}
@@ -648,15 +667,15 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
                 with open(profiles_path, "r", encoding="utf-8") as f:
                     return f.read()
 
-            def _import_characters(json_str: str) -> str:
+            def _import_characters(json_str: str) -> tuple[str, gr.update]:
                 if not json_str.strip():
-                    return "Paste JSON first."
+                    return "Paste JSON first.", gr.update()
                 try:
                     data = json.loads(json_str)
                 except json.JSONDecodeError as e:
-                    return f"Invalid JSON: {e}"
+                    return f"Invalid JSON: {e}", gr.update()
                 if not isinstance(data, dict):
-                    return "JSON must be an object."
+                    return "JSON must be an object.", gr.update()
                 profiles_path = os.path.join(character_manager._plugin_dir, character_manager.CHARACTERS_SUBDIR, character_manager.PROFILES_FILE)
                 existing = {}
                 if os.path.isfile(profiles_path):
@@ -681,8 +700,9 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
             char_save_btn.click(fn=_save_char, inputs=[char_name, char_appearance, char_voice, char_clothing, char_tags, char_notes], outputs=[char_msg, char_dropdown])
             char_delete_btn.click(fn=_delete_char, inputs=[char_dropdown], outputs=[char_msg, char_dropdown, char_name, char_appearance, char_voice, char_clothing, char_tags, char_notes])
             char_export_btn.click(fn=_export_characters, outputs=[char_msg])
-            char_import_btn.click(fn=lambda: gr.update(visible=True), outputs=[char_import_box])\
-                .then(fn=_import_characters, inputs=[char_import_box], outputs=[char_msg, char_dropdown])
+            char_import_btn.click(fn=lambda: gr.update(visible=True), outputs=[char_import_box])
+            char_import_box.submit(fn=_import_characters, inputs=[char_import_box], outputs=[char_msg, char_dropdown])\
+                .then(fn=lambda: gr.update(visible=False), outputs=[char_import_box])
 
             # ── Wildcard File Browser ───────────────────────────────────
             gr.Markdown("---")

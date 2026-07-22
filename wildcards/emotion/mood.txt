@@ -77,7 +77,6 @@ aggravated
 annoyed
 irritated
 exasperated
-furious
 wrathful
 bitter
 resentful
@@ -97,7 +96,6 @@ worried
 uneasy
 apprehensive
 dreadful
-terrified
 alarmed
 startled
 shocked
@@ -134,10 +132,8 @@ defeated
 vulnerable
 fragile
 sensitive
-tender
 empathetic
 lonely
 isolated
 abandoned
 forsaken
-longing

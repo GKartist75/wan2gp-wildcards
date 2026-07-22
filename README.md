@@ -172,16 +172,6 @@ The plugin tracks how often each wildcard file is used. Click **Show Top 50 Used
 
 ## Changelog
 
-### v1.6.0
-- **Named capture variables**: `__$var:file__` picks + stores, `__$var__` reuses same value across the whole prompt (fixes "multiple people" prompting)
-- **Prompt Templates**: save/load named templates with wildcards intact (`__templates__.json`)
-- **Rename files**: rename wildcard files from the UI
-- **Usage stats**: tracks how often each wildcard is used, viewable from the UI
-- **Character export/import**: export JSON, import to merge profiles
-- **Send to Media Generator**: now uses Wan2GP's State API (works after Gradio updates)
-- **Line count display**: file dropdown shows number of lines per file
-- **Performance**: optimized file listing for 3,000+ files
-
 ### v1.6.2 — File Reorganization
 - **Complete reorganization**: all 1,500+ flat files moved into 78 category directories
 - **727 backward-compat aliases**: every old `__underscore_name__` still resolves
@@ -191,6 +181,27 @@ The plugin tracks how often each wildcard file is used. Click **Show Top 50 Used
 - **0 flat files remain**: every `.txt` lives in a logical category directory
 
 ### v1.6.1
+- **Bugfix**: `_load_char`/`_clear_char_form` now returns 6 separate values (fixes Gradio crash when selecting/clearing characters)
+- **Bugfix**: `_import_characters` error paths now return the right number of values (fixes event handler crash)
+- **Bugfix**: Import JSON flow now waits for paste → Enter submit (was firing on empty box)
+- **Atomic writes**: stats and favorites use tempfile + atomic rename (prevents data corruption)
+- **Cross-platform**: all 321 uppercase filenames/dirs normalized to lowercase (Linux compat)
+- **Dead code**: removed unused `_count_lines` function
+- **Dedup**: removed duplicate lines across all wildcard files
+- **Empty file**: populated empty `books/grimoires.txt` with default entries
+- **Glob fix**: fixed dead glob resolution in expander (now uses `name*.txt`)
+- **Error reporting**: silent `except: pass` replaced with `print()` diagnostics
+- **Package doc**: `__init__.py` now has a docstring and exports
+
+### v1.6.0
+- **Named capture variables**: `__$var:file__` picks + stores, `__$var__` reuses same value across the whole prompt (fixes "multiple people" prompting)
+- **Prompt Templates**: save/load named templates with wildcards intact (`__templates__.json`)
+- **Rename files**: rename wildcard files from the UI
+- **Usage stats**: tracks how often each wildcard is used, viewable from the UI
+- **Character export/import**: export JSON, import to merge profiles
+- **Send to Media Generator**: now uses Wan2GP's State API (works after Gradio updates)
+- **Line count display**: file dropdown shows number of lines per file
+- **Performance**: optimized file listing for 3,000+ files
 - **Bugfix**: `_load_char`/`_clear_char_form` now returns 6 separate values (fixes Gradio crash when selecting/clearing characters)
 - **Bugfix**: `_import_characters` error paths now return the right number of values (fixes event handler crash)
 - **Bugfix**: Import JSON flow now waits for paste → Enter submit (was firing on empty box)

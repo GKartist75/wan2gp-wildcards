@@ -3,8 +3,8 @@
 Wildcard prompt expansion plugin for [Wan2GP](https://github.com/deepbeepmeep/Wan2GP).  
 **149,000+ terms** across **3,019 files** organized into **78 category directories**.
 
-> **v1.6.2** — Complete file reorganization. All files live in category directories now;
-> old `__underscore_names__` still work via 727 built-in aliases.
+> **v1.6.3** — Set variables manually: `__$food=apple__` assigns a literal value (no random pick),
+> reuse it anywhere via `__$food__`. Perfect for batch runs where you change one or two values between generations.
 
 ---
 

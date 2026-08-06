@@ -5,6 +5,7 @@ Syntax:
 - {opt1|opt2}    -> random inline choice
 - 2::value       -> weighted option in .txt files (weight 2)
 - __$var:file__  -> pick from file, store result as var
+- __$var=value__ -> assign a literal value to var (no random pick)
 - __$var__       -> reuse previously stored var value
 - Nesting: files can reference other __wildcards__ and {options}
 - Seed-deterministic via random.Random(seed)
@@ -20,7 +21,10 @@ DEPTH_LIMIT = 10
 
 WILDCARD_RE = re.compile(r"__([a-zA-Z0-9_/.\-]+)__")
 VARIANT_RE = re.compile(r"\{([^{}]*)\}")
-CAPTURE_SET_RE = re.compile(r"__\$([a-zA-Z0-9_]+):([a-zA-Z0-9_/.\\-]+)__")
+CAPTURE_ANY_RE = re.compile(
+    r"__\$([a-zA-Z0-9_]+):([a-zA-Z0-9_/.\\-]+)__"   # __$var:file__
+    r"|__\$([a-zA-Z0-9_]+)\s*=\s*(.+?)__"           # __$var=value__
+)
 CAPTURE_GET_RE = re.compile(r"__\$([a-zA-Z0-9_]+)__")
 
 
@@ -880,19 +884,26 @@ def _expand_text(text: str, rng: random.Random, depth: int = 0,
     if _context is None:
         _context = {}
 
-    # 0a. expand __$var:file__ capture-and-store
-    def _replace_capture_set(m: re.Match) -> str:
-        var, file = m.group(1), m.group(2)
-        lines = load_wildcard_lines(file)
-        if not lines:
-            return m.group(0)
-        chosen = pick_random(rng, lines, sequential_index=sequential_index)
-        chosen = _expand_text(chosen, rng, depth + 1,
-                              sequential_index=sequential_index, _context=_context)
-        _context[var] = chosen
-        return chosen
+    # 0. expand __$var:file__ (pick + store) and __$var=value__ (literal assign)
+    #    in ONE pass so textual order is respected — the last set in the prompt wins.
+    def _replace_capture(m: re.Match) -> str:
+        var, file, var2, value = m.group(1), m.group(2), m.group(3), m.group(4)
+        if file is not None:
+            lines = load_wildcard_lines(file)
+            if not lines:
+                return m.group(0)
+            chosen = pick_random(rng, lines, sequential_index=sequential_index)
+            chosen = _expand_text(chosen, rng, depth + 1,
+                                  sequential_index=sequential_index, _context=_context)
+            _context[var] = chosen
+            return chosen
+        expanded = _expand_text(value.strip(), rng, depth + 1,
+                                sequential_index=sequential_index,
+                                _context=_context)
+        _context[var2] = expanded
+        return expanded
 
-    text = CAPTURE_SET_RE.sub(_replace_capture_set, text)
+    text = CAPTURE_ANY_RE.sub(_replace_capture, text)
 
     # 0b. expand __$var__ (reuse captured value)
     def _replace_capture_get(m: re.Match) -> str:

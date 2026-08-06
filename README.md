@@ -17,6 +17,7 @@ Wildcard prompt expansion plugin for [Wan2GP](https://github.com/deepbeepmeep/Wa
 | `__dir/file__` | Specific file in subdirectory | `__color/named__` |
 | `{a\|b\|c}` | Random inline choice | `{cinematic\|vintage\|raw}` |
 | `N::value` | Weighted option (weight N) | `3::sunset` = 3× more likely |
+| `__$var=value__` | Assign a literal value to a **named variable** (manual, no random) | `__$food=apple__` → stores "apple" as `$food` |
 | `__$var:file__` | Pick from file, store result as **named variable** | `__$a:name__` → stores "Alice" as `$a` |
 | `__$var__` | Reuse previously stored variable | `__$a__` → "Alice" again |
 
@@ -89,6 +90,17 @@ Expands: Alice stands next to Bob.
 
 Each variable keeps its value throughout the entire prompt expansion — even across sentences.
 
+#### Manual control: `__$var=value__`
+
+Don't want a random pick? Set the variable by hand with `__$var=value__` — great for batch runs where you change one or two values between generations:
+
+```
+Prompt:  An __$food=apple__ pie with a golden crust, __$food__ slices on top.
+Expands: An apple pie with a golden crust, apple slices on top.
+```
+
+Change `__$food=apple__` → `__$food=cherry__` between runs — everything referencing `__$food__` follows along, and nothing is ever picked randomly.
+
 ---
 
 ## Install
@@ -109,6 +121,7 @@ Each variable keeps its value throughout the entire prompt expansion — even ac
 | `__name__` | Random line from `wildcards/name.txt` |
 | `__dir__` | Random line pooled from ALL files in `wildcards/dir/` |
 | `__dir/file__` | Specific file in subdirectory |
+| `__$var=value__` | Assign a literal value to variable `var` (no random pick) |
 | `__$var:file__` | Pick from file, store result under variable name `var` |
 | `__$var__` | Reuse stored variable `var` (must be set first) |
 | `{a\|b\|c}` | Random inline choice |
@@ -171,6 +184,15 @@ The plugin tracks how often each wildcard file is used. Click **Show Top 50 Used
 ---
 
 ## Changelog
+
+### v1.6.3 — Literal Variable Assignment
+
+- **Set variables manually**: new `__$var=value__` syntax assigns a literal value — no random pick, full user control. Perfect for batch runs where you change a few values between generations:
+  ```
+  Prompt:  A delicious __$food=apple__ pie, topped with fresh __$food__ slices.
+  Expands: A delicious apple pie, topped with fresh apple slices.
+  ```
+- **Mix freely**: `__$food=apple__` (manual) and `__$food:fruit__` (random from file) share the same variable namespace — set it either way, reuse with `__$food__`
 
 ### v1.6.2 — File Reorganization
 - **Complete reorganization**: all 1,500+ flat files moved into 78 category directories

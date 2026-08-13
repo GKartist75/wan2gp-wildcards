@@ -3,3 +3,6 @@ __pycache__/
 .env
 .venv
 .hermes/
+.pytest_cache/
+tests/__pycache__/
+*.egg-info

@@ -3,8 +3,11 @@
 Wildcard prompt expansion plugin for [Wan2GP](https://github.com/deepbeepmeep/Wan2GP).  
 **149,000+ terms** across **3,019 files** organized into **78 category directories**.
 
-> **v1.6.3** — Set variables manually: `__$food=apple__` assigns a literal value (no random pick),
-> reuse it anywhere via `__$food__`. Perfect for batch runs where you change one or two values between generations.
+> **v1.6.4** — Bug fixes, performance, and a Prompt Linter. Weighted `N::value` picks now
+> require a numeric prefix (a line like `a movie:: style` is kept verbatim); usage stats are
+> buffered (no disk write per expansion, previews no longer pollute counts); wildcard files are
+> cached (faster batches); Create/Rename/Save reject path traversal; and a **Check Prompt Template**
+> button flags `__name__` references that resolve to no file.
 
 ---
 
@@ -181,9 +184,31 @@ The plugin tracks how often each wildcard file is used. Click **Show Top 50 Used
 - **Search** — type to filter files by name
 - **Cross-File Search** — search content across all 3,044 files
 
+### Prompt Linter (v1.6.4)
+
+Click **Check Prompt Template** to scan the current Prompt Template for `__name__` references that
+resolve to no wildcard file on disk (typos, renamed/moved wildcards). It lists every unresolved
+reference so you can fix it before generating — real resolution is identical to what the generator uses,
+including the 727 backward-compat aliases.
+
 ---
 
 ## Changelog
+
+### v1.6.4 — Bug Fixes, Performance, Prompt Linter
+
+- **Bug B2**: Weighted `N::value` picks now require a *numeric* prefix. A line like `a movie:: style` is no longer mangled into ` style` — only `3::sunset` is treated as a weight.
+- **Bug B3**: Create / Rename / Save now reject path traversal (`../`, absolute paths, drive letters) — files can no longer escape the `wildcards/` directory.
+- **Bug B4**: Character Import validates every entry; names with `/` or invalid profiles are skipped (with a count) instead of crashing or writing bad data.
+- **Bug B5**: All-zero/negative weights fall back to uniform pick (no more `ValueError` crash).
+- **Bug B6**: Random batch mode now honors the Seed box (deterministic sub-seeds); Generation uses the same seed path.
+- **Bug B7**: Sequential mode strips `N::` weight prefixes (previously leaked `3::` into output).
+- **Perf P1**: Wildcard file contents are cached with mtime/size invalidation — repeated picks in batches/nesting no longer re-read from disk.
+- **Perf P2**: File listing is cached (TTL) and invalidated on edits — the search box no longer walks 3,000+ files per keystroke.
+- **Perf P3**: Cross-file content search caps work (500 results) and skips absurdly long lines.
+- **Perf P4**: Value chips use a stride sample instead of shuffling multi-MB files.
+- **Stats B1**: Usage stats are buffered in memory and flushed on tab select / exit (no disk write per expansion), and UI previews no longer pollute real usage counts.
+- **Lint**: new **Check Prompt Template** button flags `__name__` references that resolve to no file.
 
 ### v1.6.3 — Literal Variable Assignment
 

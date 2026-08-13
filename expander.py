@@ -19,13 +19,23 @@ import glob as globmod
 WILDCARDS_DIR: str = ""  # set by plugin.py on init
 DEPTH_LIMIT = 10
 
-WILDCARD_RE = re.compile(r"__([a-zA-Z0-9_/.\-]+)__")
+WILDCARD_RE = re.compile(r"__([a-zA-Z0-9_/.\\-]+)__")
 VARIANT_RE = re.compile(r"\{([^{}]*)\}")
 CAPTURE_ANY_RE = re.compile(
     r"__\$([a-zA-Z0-9_]+):([a-zA-Z0-9_/.\\-]+)__"   # __$var:file__
     r"|__\$([a-zA-Z0-9_]+)\s*=\s*(.+?)__"           # __$var=value__
 )
 CAPTURE_GET_RE = re.compile(r"__\$([a-zA-Z0-9_]+)__")
+
+# A weighted line must START with a numeric weight: "3::sunset" or "-1.5::x".
+# Lines that merely CONTAIN "::" elsewhere (e.g. "a movie:: style") are plain
+# values and must not be treated as weights (prevents silent prefix loss).
+WEIGHT_RE = re.compile(r"^\s*(-?\d+(?:\.\d+)?)\s*::(.*)$")
+
+# Parsed-line cache: {name: (signature, lines)} where signature is a tuple of
+# (path, mtime_ns, size) for each resolved file. Invalidation is automatic on
+# file change (mtime/size), plus explicit invalidate_cache() after edits.
+_LINE_CACHE: dict[str, tuple[tuple[tuple[str, int, int], ...], list[str]]] = {}
 
 
 # Wildcard name aliases (old flat names → new organized paths)
@@ -820,10 +830,47 @@ def resolve_wildcard_files(name: str) -> list[str]:
     return paths
 
 
+def sanitize_relative_path(name: str) -> str | None:
+    """Validate a user-supplied relative filename (e.g. \"mytheme/sunset.txt\").
+
+    Returns the normalized name (forward slashes) if safe, else None.
+    Rejects absolute paths, drive letters, ``..`` traversal, and NUL.
+    """
+    if not name or not name.strip():
+        return None
+    name = name.strip().replace("\\", "/")
+    if "\x00" in name or name.startswith("/") or re.match(r"^[a-zA-Z]:", name):
+        return None
+    parts = name.split("/")
+    if any(p in ("", ".", "..") for p in parts):
+        return None
+    return name
+
+
+def invalidate_cache() -> None:
+    """Drop cached wildcard lines (call after editing/creating/deleting files)."""
+    _LINE_CACHE.clear()
+
+
 def load_wildcard_lines(name: str) -> list[str]:
-    """Return all non-empty, non-comment lines from matching wildcard files."""
+    """Return all non-empty, non-comment lines from matching wildcard files.
+
+    Results are cached per name with an (mtime, size) signature so repeated
+    expansions (batches, nesting) don't re-read files from disk.
+    """
+    files = resolve_wildcard_files(name)
+    try:
+        signature = tuple(
+            (p, os.path.getmtime(p), os.path.getsize(p)) for p in files
+        )
+    except OSError:
+        signature = ()
+    cached = _LINE_CACHE.get(name)
+    if cached is not None and cached[0] == signature:
+        return cached[1]
+
     lines: list[str] = []
-    for fpath in resolve_wildcard_files(name):
+    for fpath in files:
         try:
             with open(fpath, "r", encoding="utf-8") as fh:
                 for line in fh:
@@ -832,37 +879,46 @@ def load_wildcard_lines(name: str) -> list[str]:
                         lines.append(line)
         except OSError:
             continue
+    _LINE_CACHE[name] = (signature, lines)
     return lines
 
 
 def pick_random(rng: random.Random, items: list[str], sequential_index: int | None = None) -> str:
     """Pick item uniformly, or weighted if items use N:: prefix.
 
-    When sequential_index is set, picks items[index % len(items)] for
-    line-by-line cycling instead of random choice.
+    A line is weighted ONLY when it starts with a numeric weight (``3::sunset``);
+    lines merely containing ``::`` in content are kept intact. When
+    sequential_index is set, picks items[index % len(items)] for line-by-line
+    cycling instead of random choice (weight prefixes are stripped).
     """
     if not items:
         return ""
 
     # sequential mode: index directly into items, no RNG
     if sequential_index is not None:
-        return items[sequential_index % len(items)]
+        item = items[sequential_index % len(items)]
+        m = WEIGHT_RE.match(item)
+        if m:
+            return m.group(2).strip() or item.strip()
+        return item.strip()
 
-    # check if any item has N:: prefix (weighted) -- was previously only checking items[0]
-    has_weights = any("::" in item for item in items)
+    # weighted only if at least one line starts with a numeric N:: prefix
+    has_weights = any(WEIGHT_RE.match(item) for item in items)
     if not has_weights:
         return rng.choice(items)
 
     choices: list[str] = []
     weights: list[float] = []
     for item in items:
-        if "::" in item:
-            weight_str, _, val = item.partition("::")
+        m = WEIGHT_RE.match(item)
+        if m:
             try:
-                weight = float(weight_str)
+                weight = float(m.group(1))
             except ValueError:
                 weight = 1.0
-            val = val.strip()
+            val = m.group(2).strip()
+            if not val:
+                val = item.strip()
         else:
             weight = 1.0
             val = item.strip()
@@ -872,6 +928,9 @@ def pick_random(rng: random.Random, items: list[str], sequential_index: int | No
 
     if not choices:
         return ""
+    # all weights <= 0 would raise ValueError in rng.choices — fall back to uniform
+    if sum(weights) <= 0:
+        return rng.choice(choices)
     return rng.choices(choices, weights=weights, k=1)[0]
 
 

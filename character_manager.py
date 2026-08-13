@@ -7,6 +7,8 @@ files so __character/Name__ works with the existing expander.
 import os
 import json
 
+from . import expander
+
 CHARACTERS_SUBDIR = "characters"        # profiles.json lives here
 WILDCARD_CHAR_SUBDIR = "character"      # under wildcards/ dir
 PROFILES_FILE = "profiles.json"
@@ -18,6 +20,24 @@ def init(plugin_dir: str):
     global _plugin_dir
     _plugin_dir = plugin_dir
     os.makedirs(os.path.join(plugin_dir, CHARACTERS_SUBDIR), exist_ok=True)
+
+
+def _safe_char_name(name: str) -> str | None:
+    """Validate a character name usable as a filename.
+
+    Rejects empty names, path separators, traversal, and leading dots
+    (would escape the wildcards/character/ dir or hide files).
+    """
+    if not name or not name.strip():
+        return None
+    name = name.strip()
+    if name.startswith(".") or name.startswith("/") or name.startswith("\\"):
+        return None
+    if any(c in name for c in ("/", "\\", ":", "*", "?", '"', "<", ">", "|")):
+        return None
+    if "\x00" in name or name in (".", ".."):
+        return None
+    return name
 
 
 def _profiles_path() -> str:
@@ -79,13 +99,17 @@ def remove_wildcard(name: str):
 
 def save_character(name: str, profile: dict) -> str:
     """Save or update a character profile. Syncs to wildcard file."""
-    if not name or not name.strip():
-        return "Character name is required."
-    name = name.strip()
+    safe = _safe_char_name(name)
+    if safe is None:
+        return "Invalid character name (no path separators, dots, or special characters)."
+    if not isinstance(profile, dict):
+        return "Character profile must be an object."
+    name = safe
     profiles = load_profiles()
     profiles[name] = profile
     save_profiles(profiles)
     sync_to_wildcard(name, profile)
+    expander.invalidate_cache()
     return f"Character '{name}' saved → wildcards/character/{name}.txt"
 
 
@@ -97,4 +121,23 @@ def delete_character(name: str) -> str:
     del profiles[name]
     save_profiles(profiles)
     remove_wildcard(name)
+    expander.invalidate_cache()
     return f"Character '{name}' deleted."
+
+
+def import_characters(data: dict) -> tuple[int, int]:
+    """Merge imported character profiles (validated).
+
+    Returns (imported_count, skipped_count) where skipped are entries whose
+    name or profile dict is invalid (never written to disk or wildcard file).
+    """
+    imported = 0
+    skipped = 0
+    for name, profile in data.items():
+        safe = _safe_char_name(name)
+        if safe is None or not isinstance(profile, dict):
+            skipped += 1
+            continue
+        save_character(safe, profile)
+        imported += 1
+    return imported, skipped

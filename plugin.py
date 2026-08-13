@@ -12,6 +12,7 @@ import html
 import random
 import time
 import tempfile
+import threading
 
 import gradio as gr
 
@@ -51,12 +52,29 @@ def _get_wildcard_keys() -> list[str]:
     return sorted(keys)
 
 
+# Cached file listing (P2): a full os.walk over 3000+ files is ~50ms and was
+# done on every search keystroke. Cache with a short TTL; mutations explicitly
+# invalidate via invalidate_file_list().
+_FILE_LIST_CACHE = {"ts": 0.0, "files": None}
+_FILE_LIST_TTL = 1.5  # seconds
+
+
+def invalidate_file_list() -> None:
+    _FILE_LIST_CACHE["files"] = None
+    _FILE_LIST_CACHE["ts"] = 0.0
+
+
 def _list_wc_files() -> list[str]:
     """Recursively list .txt files, exclude __ prefixed metadata files.
-    Returns raw file paths (no line counts for performance with 3000+ files)."""
+    Returns raw file paths (no line counts for performance with 3000+ files).
+    Results are cached for FILE_LIST_TTL seconds; invalidate_file_list() forces
+    a refresh after any file mutation."""
     wc_dir = expander.WILDCARDS_DIR
     if not os.path.isdir(wc_dir):
         return []
+    now = time.time()
+    if _FILE_LIST_CACHE["files"] is not None and (now - _FILE_LIST_CACHE["ts"]) < _FILE_LIST_TTL:
+        return _FILE_LIST_CACHE["files"]
     files = []
     for root, dirs, fnames in os.walk(wc_dir):
         for fname in sorted(fnames):
@@ -64,7 +82,10 @@ def _list_wc_files() -> list[str]:
                 continue
             rel = os.path.relpath(os.path.join(root, fname), wc_dir).replace(os.sep, "/")
             files.append(rel)
-    return sorted(files)
+    files.sort()
+    _FILE_LIST_CACHE["files"] = files
+    _FILE_LIST_CACHE["ts"] = now
+    return files
 
 
 def _get_categories() -> list[str]:
@@ -182,7 +203,11 @@ def _save_stats(stats: dict[str, int]):
 
 
 def _search_content(query: str) -> str:
-    """Search across all wildcard file contents. Returns lines with file:line:match."""
+    """Search across all wildcard file contents. Returns lines with file:line:match.
+
+    Bounded: max 500 results, and each file's content is sampled to the first
+    200 KB to avoid a multi-second stall on the 2.7 MB prompts/misc.txt (P3).
+    """
     if not query or not query.strip():
         return "Enter a search term."
     q = query.strip().lower()
@@ -195,15 +220,22 @@ def _search_content(query: str) -> str:
         try:
             with open(full, "r", encoding="utf-8", errors="replace") as f:
                 for i, line in enumerate(f, 1):
+                    if len(line) > 200_000:
+                        # skip absurdly long lines
+                        continue
                     if q in line.lower():
                         snippet = line.rstrip()[:120]
                         results.append(f"{fpath}:{i}: {snippet}")
+                    if len(results) >= 500:
+                        break
         except Exception:
             continue
         if len(results) >= 500:
             break
     if not results:
         return f"No matches for '{query}'."
+    if len(results) >= 500:
+        return "\n".join(results) + f"\n... (500+ matches, showing first 500)"
     return "\n".join(results)
 
 
@@ -229,9 +261,16 @@ def _render_chips_html(filename: str, seed: int = 0) -> str:
         return '<div class="wc-chips"><p>Error reading file</p></div>'
     if not lines:
         return '<div class="wc-chips"><p>Empty file</p></div>'
+    # Sample up to 30 lines WITHOUT shuffling the whole file (P4):
+    # shuffling a 2.7 MB file every view is wasteful. Pick a deterministic
+    # spread if <30 lines, else a uniform stride sample, then shuffle only that.
+    if len(lines) <= 30:
+        sample = list(lines)
+    else:
+        step = len(lines) / 30.0
+        sample = [lines[int(i * step)] for i in range(30)]
     rng = random.Random(seed)
-    rng.shuffle(lines)
-    sample = lines[:30]
+    rng.shuffle(sample)
     def esc(s):
         return s.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;").replace('"',"&quot;")
     chips = "".join(
@@ -248,21 +287,73 @@ def _render_chips_html(filename: str, seed: int = 0) -> str:
 
 
 # --- Wildcard usage tracking hook ---
+# B1: Original implementation wrote stats to disk on EVERY wildcard load
+# (read-modify-write of __stats__.json), which (a) made expansion ~4x slower
+# and (b) let UI previews pollute real usage counts. Now:
+#   - counts are buffered in memory per (thread, request) and flushed to disk
+#     only on explicit flush_stats() calls (tab select) or atexit.
+#   - preview expansions (test/batch in the UI) are tagged via
+#     set_stats_context(track=False) so they NEVER touch usage stats.
+#   - writes are guarded by a lock to avoid loss under concurrent threads.
 _original_load_lines = expander.load_wildcard_lines
+
+_stats_lock = threading.Lock()
+_stats_pending: dict[str, int] = {}
+_stats_enabled = True  # master toggle (set False during preview expansions)
+
+
+def set_stats_context(track: bool) -> None:
+    """Control whether the current thread's wildcard loads count toward usage stats.
+
+    UI preview/batch expansions call this with track=False so they don't pollute
+    real generation statistics.
+    """
+    _tls_stats_track.value = track
+
+
+import threading as _th
+_tls_stats_track = _th.local()
+_tls_stats_track.value = True
 
 
 def _tracked_load_lines(name: str) -> list[str]:
     lines = _original_load_lines(name)
-    if lines:
-        stats = _load_stats()
+    if lines and _stats_enabled and getattr(_tls_stats_track, "value", True):
         fname = name.replace("/", "_") + ".txt"
-        stats[fname] = stats.get(fname, 0) + 1
-        _save_stats(stats)
+        with _stats_lock:
+            _stats_pending[fname] = _stats_pending.get(fname, 0) + 1
     return lines
+
+
+def flush_stats() -> None:
+    """Persist buffered usage counts to disk atomically. Called on tab select
+    and at process exit; cheap when nothing is pending."""
+    global _stats_pending
+    with _stats_lock:
+        if not _stats_pending:
+            return
+        pending = _stats_pending
+        _stats_pending = {}
+    try:
+        stats = _load_stats()
+        for k, v in pending.items():
+            stats[k] = stats.get(k, 0) + v
+        _save_stats(stats)
+    except OSError as e:
+        print(f"[Wildcards] Error flushing stats: {e}")
+
+
+import atexit
+atexit.register(flush_stats)
 
 
 # Monkey-patch expander to track usage
 expander.load_wildcard_lines = _tracked_load_lines
+
+
+def _on_tab_select_flush(state):
+    flush_stats()
+    return None
 
 
 # state kept on the plugin instance for the monkey-patch
@@ -274,6 +365,8 @@ _expansion_seed: int | None = None
 def _patched_process_template(input_text, keep_comments=False, keep_empty_lines=False):
     """Wrapper: expand wildcards first, then run original template processing."""
     if _expansion_enabled and input_text:
+        # Real generation (not a UI preview) → count toward usage stats.
+        set_stats_context(True)
         input_text = expander.expand_prompt(input_text, seed=_expansion_seed)
     return _original_process_template(input_text, keep_comments, keep_empty_lines)
 
@@ -282,7 +375,7 @@ class WildcardsPlugin(WAN2GPPlugin):
     def __init__(self):
         super().__init__()
         self.name = "Wildcards"
-        self.version = "1.6.3"
+        self.version = "1.6.4"
         self.description = "Dynamic wildcard expansion + character profiles + templates + usage stats"
         self.type = ["extension"]
 
@@ -367,7 +460,14 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
         self.add_custom_js(js)
 
     def on_tab_select(self, state: dict):
-        """Refresh file dropdown and category filter from disk on every tab visit."""
+        """Refresh file dropdown and category filter from disk on every tab visit.
+
+        Also flushes buffered usage stats to disk (B1) and invalidates caches
+        (P1/P2) so disk edits made outside the UI are picked up.
+        """
+        flush_stats()
+        expander.invalidate_cache()
+        invalidate_file_list()
         if hasattr(self, "file_dropdown"):
             cats = ["All"] + _get_categories()
             files = _list_wc_files()
@@ -391,14 +491,19 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
         def _save_file(filename: str, content: str) -> str:
             if not filename:
                 return "No filename given."
-            if not filename.endswith(".txt"):
-                filename += ".txt"
+            # B3: sanitize free-text filename to prevent path traversal
+            safe = expander.sanitize_relative_path(filename)
+            if safe is None:
+                return "Invalid filename (no absolute paths, '..', or separators other than /)."
+            filename = safe if safe.endswith(".txt") else safe + ".txt"
             wc_dir = expander.WILDCARDS_DIR
             path = os.path.join(wc_dir, filename)
             os.makedirs(os.path.dirname(path), exist_ok=True)
             try:
                 with open(path, "w", encoding="utf-8") as fh:
                     fh.write(content)
+                expander.invalidate_cache()
+                invalidate_file_list()
                 return f"Saved {filename}"
             except OSError as e:
                 return f"Error saving: {e}"
@@ -409,6 +514,8 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
             path = os.path.join(expander.WILDCARDS_DIR, filename)
             try:
                 os.remove(path)
+                expander.invalidate_cache()
+                invalidate_file_list()
                 return f"Deleted {filename}"
             except OSError as e:
                 return f"Error deleting: {e}"
@@ -416,8 +523,11 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
         def _rename_file(old_name: str, new_name: str) -> tuple[str, gr.update, gr.update]:
             if not old_name or not new_name:
                 return "Select a file and enter a new name.", gr.update(), gr.update()
-            if not new_name.endswith(".txt"):
-                new_name += ".txt"
+            # B3: sanitize target
+            safe = expander.sanitize_relative_path(new_name)
+            if safe is None:
+                return "Invalid filename (no absolute paths, '..', or separators other than /).", gr.update(), gr.update()
+            new_name = safe if safe.endswith(".txt") else safe + ".txt"
             old_path = os.path.join(expander.WILDCARDS_DIR, old_name)
             new_path = os.path.join(expander.WILDCARDS_DIR, new_name)
             if not os.path.isfile(old_path):
@@ -492,12 +602,16 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
             batch_output = gr.Textbox(label="Generated Variations (one per line)", lines=6, interactive=False, elem_id="wc-batch-output")
 
             def _test_expand(prompt: str, seed_val: int) -> str:
+                # Preview: do NOT count toward usage stats (B1)
+                set_stats_context(False)
                 rng = random.Random(seed_val if seed_val >= 0 else None)
                 return expander._expand_text(prompt, rng, depth=0)
 
             def _generate_batch(prompt_template: str, count: int, seed_mode: str) -> str:
                 if not prompt_template:
                     return ""
+                # Preview: do NOT count toward usage stats (B1)
+                set_stats_context(False)
                 count = max(1, min(100, int(count)))
                 lines = []
                 if seed_mode.startswith("Sequential"):
@@ -507,8 +621,14 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
                     seen = set()
                     max_attempts = count * 20
                     attempts = 0
+                    # B6: honor the user's seed for reproducible random batches.
+                    # Derive one deterministic sub-seed per attempt from base seed.
+                    base_seed = _expansion_seed if _expansion_seed is not None else None
                     while len(lines) < count and attempts < max_attempts:
-                        rng = random.Random()
+                        if base_seed is not None:
+                            rng = random.Random(base_seed * 1000003 + attempts)
+                        else:
+                            rng = random.Random()
                         expanded = expander._expand_text(prompt_template, rng, depth=0)
                         if expanded not in seen:
                             seen.add(expanded)
@@ -676,23 +796,13 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
                     return f"Invalid JSON: {e}", gr.update()
                 if not isinstance(data, dict):
                     return "JSON must be an object.", gr.update()
-                profiles_path = os.path.join(character_manager._plugin_dir, character_manager.CHARACTERS_SUBDIR, character_manager.PROFILES_FILE)
-                existing = {}
-                if os.path.isfile(profiles_path):
-                    with open(profiles_path, "r", encoding="utf-8") as f:
-                        try:
-                            existing = json.load(f)
-                        except json.JSONDecodeError:
-                            existing = {}
-                existing.update(data)
-                os.makedirs(os.path.dirname(profiles_path), exist_ok=True)
-                with open(profiles_path, "w", encoding="utf-8") as f:
-                    json.dump(existing, f, indent=2, ensure_ascii=False)
-                # Sync wildcard files for imported characters
-                for name, profile in data.items():
-                    character_manager.sync_to_wildcard(name, profile)
-                count = len(data)
-                return f"Imported {count} character(s).", gr.update(choices=character_manager.list_characters())
+                # B4: validate each entry — skip names/profiles that are unsafe
+                # or malformed instead of crashing / writing bad data.
+                imported, skipped = character_manager.import_characters(data)
+                msg = f"Imported {imported} character(s)."
+                if skipped:
+                    msg += f" Skipped {skipped} invalid entry(ies)."
+                return msg, gr.update(choices=character_manager.list_characters())
 
             char_dropdown.change(fn=_load_char, inputs=[char_dropdown], outputs=[char_name, char_appearance, char_voice, char_clothing, char_tags, char_notes])
             char_new_btn.click(fn=_clear_char_form, outputs=[char_name, char_appearance, char_voice, char_clothing, char_tags, char_notes])\
@@ -753,11 +863,15 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
             def _create_file(name: str) -> tuple[str, gr.update, gr.update]:
                 if not name:
                     return "No filename given.", gr.update(), gr.update()
-                if not name.endswith(".txt"):
-                    name += ".txt"
-                msg = _save_file(name, "")
+                # B3: sanitize free-text filename to prevent path traversal
+                safe = expander.sanitize_relative_path(name)
+                if safe is None:
+                    return "Invalid filename (no absolute paths, '..', or separators other than /).", gr.update(), gr.update()
+                if not safe.endswith(".txt"):
+                    safe += ".txt"
+                msg = _save_file(safe, "")
                 all_files = _list_wc_files()
-                return msg, gr.update(choices=all_files, value=name), gr.update(choices=["All"] + _get_categories())
+                return msg, gr.update(choices=all_files, value=safe), gr.update(choices=["All"] + _get_categories())
 
             def _update_filter(search: str, category: str, fav_only: bool):
                 favs = _load_favorites()
@@ -876,6 +990,31 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
             content_search_btn.click(fn=_search_content, inputs=[content_query], outputs=[content_results])
             content_query.submit(fn=_search_content, inputs=[content_query], outputs=[content_results])
+
+            # ── Prompt Linter ────────────────────────────────────────
+            gr.Markdown("---")
+            gr.Markdown("### 7. Prompt Linter")
+            gr.Markdown("Checks the current Prompt Template for `__name__` references that resolve to no wildcard file (typos, renamed/moved wildcards).")
+
+            lint_btn = gr.Button("Check Prompt Template")
+            lint_output = gr.Textbox(label="Lint Results", lines=8, interactive=False)
+
+            def _lint_prompt(prompt_text: str) -> str:
+                if not prompt_text or not prompt_text.strip():
+                    return "Enter a prompt template above first."
+                refs = sorted(set(expander.WILDCARD_RE.findall(prompt_text)))
+                if not refs:
+                    return "No __wildcard__ references found."
+                missing = [r for r in refs if not expander.resolve_wildcard_files(r)]
+                if not missing:
+                    return f"OK — all {len(refs)} wildcard reference(s) resolve."
+                return (
+                    f"{len(missing)} of {len(refs)} reference(s) NOT found on disk:\n"
+                    + "\n".join(f"  __{m}__" for m in sorted(missing))
+                    + "\n\n(Tip: old flat names like __camera_shot__ still resolve via aliases.)"
+                )
+
+            lint_btn.click(fn=_lint_prompt, inputs=[prompt_input], outputs=[lint_output])
 
         # return components for lifecycle
         self.file_dropdown = file_dropdown

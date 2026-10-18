@@ -1,10 +1,10 @@
 """Tests conftest: load plugin modules under synthetic package `wp`.
 
-Placing config in tests/ makes tests/ the pytest rootdir, so the repo-root
-__init__.py is collected as part of the `wp` package. Its `from .plugin import
-WildcardsPlugin` pulls in gradio + Wan2GP `shared`, which aren't installed in
-this test venv. We stub those heavy imports so the package can initialize,
-while keeping expander and character_manager as the REAL on-disk modules.
+The repo root is a Wan2GP plugin package: it has an ``__init__.py`` whose
+``from .plugin import WildcardsPlugin`` pulls in gradio + Wan2GP ``shared``,
+which aren't installed in a plain test venv. We stub those heavy imports so the
+package can initialize while keeping expander / character_manager / linter / ai
+as the REAL on-disk modules.
 """
 import os
 import sys
@@ -46,5 +46,14 @@ if "wp" not in sys.modules:
     expander.set_wildcards_dir(os.path.join(REPO, "wildcards"))
     sys.modules["expander"] = expander
     sys.modules["character_manager"] = character_manager
+    # New modules: also expose them as top-level names so test files can use
+    # plain `import linter` / `import ai` / `import plugin`.
+    for _name in ("linter", "ai", "plugin"):
+        _mod = importlib.import_module(f"wp.{_name}")
+        sys.modules[_name] = _mod
+    # Importing plugin.py installs the usage-stats wrapper around
+    # expander.load_wildcard_lines; disable it so a test run can never write
+    # __stats__.json into the real collection.
+    sys.modules["plugin"]._stats_enabled = False
 
 collect_ignore_glob = ["__init__.py"]

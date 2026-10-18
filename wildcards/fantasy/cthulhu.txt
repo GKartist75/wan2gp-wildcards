@@ -1,7 +1,78 @@
-__creatures/cthulhu/earth_native__
-__creatures/cthulhu/extinct__
-__creatures/cthulhu/extra_dimensional__
-__creatures/cthulhu/extra_terrestrial__
-__creatures/cthulhu/non_sapient__
-__creatures/cthulhu/outergods__
-__creatures/cthulhu/sapient__
+# Cthulhu Mythos entities (used by __cthulhu__ / __fantasy/cthulhu__)
+Azathoth
+Nyarlathotep
+Yog-Sothoth
+Shub-Niggurath
+Cthulhu
+Hastur
+Nodens
+Ubbo-Sathla
+Tsathoggua
+Yig
+Cthugha
+Ithaqua
+Dagon
+Hydra
+Mother Hydra
+Zoth-Ommog
+Chaugnar Faugn
+Nug and Yeb
+Y'golonac
+Abhoth
+Bokrug
+Byatis
+Cyaegha
+Eihort
+Glaaki
+Ghatanothoa
+Han
+Idh-yaa
+Iod
+Kassogtha
+Mnomquah
+Mordiggian
+Nctosa and Nctolhu
+Oorn
+Othuum
+Rhan-Tegoth
+Rlim Shaikorth
+Shathak
+Sho-Gath
+S'tya-Yg'Nalle
+Summanus
+Tulzscha
+Ulthar
+Vulthoom
+Yhoundeh
+Zhothaqquah
+Deep One
+Deep One hybrid
+Elder Thing
+Flying Polyp
+Great Race of Yith
+Mi-go
+Shoggoth
+Star-spawn of Cthulhu
+Tcho-Tcho
+Hound of Tindalos
+Nightgaunt
+Gug
+Serpent Person
+Formless Spawn
+Fire Vampire
+Rat-Thing
+Bloated Woman
+Dimensional Shambler
+Elder Deep One
+Moon-Beast
+Spider of Leng
+Shantak
+Byakhee
+Colour Out of Space
+Dhole
+Gnoph-Keh
+Voormi
+Men of Leng
+Yugg
+K'n-yan
+Zoog

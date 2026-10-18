@@ -1,15 +1,140 @@
-__creatures/adnd/aberration__
-__creatures/adnd/beast__
-__creatures/adnd/celestial__
-__creatures/adnd/construct__
-__creatures/adnd/dragon__
-__creatures/adnd/elemental__
-__creatures/adnd/fey__
-__creatures/adnd/fiend__
-__creatures/adnd/giant__
-__creatures/adnd/humanoid__
-__creatures/adnd/monstrosity__
-__creatures/adnd/ooze__
-__creatures/adnd/plant__
-__creatures/adnd/swarm__
-__creatures/adnd/undead__
+# Classic AD&D / D&D creatures (used by __adnd__ / __fantasy/adnd__)
+ancient red dragon
+aboleth
+ankheg
+basilisk
+beholder
+bugbear
+bullywug
+carrion crawler
+chimera
+cloaker
+cockatrice
+darkmantle
+death knight
+demilich
+displacer beast
+doppelganger
+dracolich
+dryad
+dwarf fighter
+efreeti
+elemental (air)
+elemental (earth)
+elemental (fire)
+elemental (water)
+ettercap
+ettin
+faerie dragon
+flumph
+fomorian
+frost giant
+gargoyle
+gelatinous cube
+genie (dao)
+genie (djinni)
+genie (efreeti)
+genie (marid)
+ghast
+ghost
+ghoul
+giant eagle
+giant rat
+giant spider
+gibbering mouther
+githyanki
+githzerai
+gnoll
+gnome illusionist
+goblin
+gorgon
+gray ooze
+green hag
+griffon
+harpy
+hell hound
+hezrou
+hill giant
+hippogriff
+hobgoblin
+homonculus
+hook horror
+hydra
+imp
+intellect devourer
+invisible stalker
+iron golem
+kobold
+kraken
+lamia
+lich
+lizardfolk
+manticore
+medusa
+merfolk
+mimic
+mind flayer
+minotaur
+mummy
+myconid
+naga (guardian)
+naga (spirit)
+night hag
+nightmare
+nothic
+ochre jelly
+ogre
+ogre mage
+otyugh
+owlbear
+pegasus
+phase spider
+pixie
+pseudodragon
+purple worm
+quasit
+rakshasa
+remorhaz
+roper
+roper (elite)
+rust monster
+sahuagin
+salamander
+satyr
+shadow
+shambling mound
+shield guardian
+skeleton
+slaad (blue)
+slaad (death)
+slaad (gray)
+slaad (green)
+slaad (red)
+specter
+sphinx (androsphinx)
+sphinx (gynosphinx)
+stirge
+stone giant
+storm giant
+succubus
+treant
+troglodyte
+troll
+umber hulk
+vampire
+vampire spawn
+water weird
+wereboar
+wererat
+weretiger
+werewolf
+wight
+will-o'-wisp
+winter wolf
+wraith
+wyvern
+xorn
+yeti
+yuan-ti abomination
+yuan-ti malison
+zombie

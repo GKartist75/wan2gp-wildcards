@@ -29,7 +29,6 @@ sandslash
 nidoran��
 nidorina
 nidoqueen
-nidoran�� 
 nidorino
 nidoking
 clefairy
@@ -385,9 +384,9 @@ primal groudon
 groudon
 rayquaza
 jirachi
-attack forme deoxys 
-defense forme deoxys 
-speed forme deoxys 
+attack forme deoxys
+defense forme deoxys
+speed forme deoxys
 deoxys
 turtwig
 grotle
@@ -670,10 +669,10 @@ landorus
 kyurem-r
 kyurem-z
 kyurem
-keldeo \(ordinary form\) 
-keldeo \(resolute form\) 
-meloetta \(aria form\) 
-meloetta \(pirouette form\) 
+keldeo \(ordinary form\)
+keldeo \(resolute form\)
+meloetta \(aria form\)
+meloetta \(pirouette form\)
 genesect
 chespin
 quilladin
@@ -745,7 +744,7 @@ noibat
 noivern
 xerneas
 yveltal
-zygarde 10 forme 
+zygarde 10 forme
 zygarde cell
 zygarde complete
 zygarde core
@@ -783,8 +782,8 @@ rockruff
 dusk lycanroc
 midnight lycanroc
 lycanroc
-wishiwashi \(school form\) 
-wishiwashi \(solo form\) 
+wishiwashi \(school form\)
+wishiwashi \(solo form\)
 mareanie
 toxapex
 mudbray
@@ -891,7 +890,7 @@ cramorant
 arrokuda
 barraskewda
 toxel
-low key toxtricity 
+low key toxtricity
 toxtricity
 sizzlipede
 centiskorch

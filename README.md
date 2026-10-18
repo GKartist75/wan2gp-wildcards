@@ -23,7 +23,7 @@ Wildcard prompt expansion plugin for [Wan2GP](https://github.com/deepbeepmeep/Wa
 | `{a\|b\|c}` | Random inline choice | `{cinematic\|vintage\|raw}` |
 | `N::value` | Weighted option inside a `.txt` file | `3::sunset` = 3× more likely |
 | `__$var=value__` | Assign a literal to a **named variable** (no random) | `__$food=apple__` stores "apple" |
-| `__$var:file__` | Pick from a file, store the result as a variable | `__$a:name__` stores "Alice" |
+| `__$var:file__` | Pick from a file, store the result as a variable | `__$a:characters/names__` stores "Alice" |
 | `__$var__` | Reuse a stored variable | `__$a__` → "Alice" again |
 
 > 💡 **Every wildcard moved into category folders, but no old prompt breaks.** Names like
@@ -35,8 +35,8 @@ Wildcard prompt expansion plugin for [Wan2GP](https://github.com/deepbeepmeep/Wa
 ## How It Works
 
 ```
-A __camera/shot__ of __$a:name__ wearing a __color__ hat.
-__$a__ smiles at __$b:name__.
+A __camera/shot__ of __$a:characters/names__ wearing a __color__ hat.
+__$a__ smiles at __$b:characters/names__.
 
         │  plugin expands each reference
         ▼
@@ -44,11 +44,11 @@ __$a__ smiles at __$b:name__.
 A close-up shot of Alice wearing a crimson hat.
 Alice smiles at Bob.
 
-  __camera/shot__  random line from camera/shot.txt
-  __color__        random line pooled from every file in color/
-  __$a:name__      picks a name and stores it as $a
-  __$a__           reuses the stored $a, so it stays "Alice"
-  __$b:name__      picks a different name and stores it as $b
+  __camera/shot__            random line from camera/shot.txt
+  __color__                  random line pooled from every file in color/
+  __$a:characters/names__    picks a name and stores it as $a
+  __$a__                     reuses the stored $a, so it stays "Alice"
+  __$b:characters/names__    picks a different name and stores it as $b
 ```
 
 The same infographic is available as a [Mermaid diagram](docs/infographic-mermaid.md), a
@@ -60,7 +60,7 @@ The same infographic is available as a [Mermaid diagram](docs/infographic-mermai
 in the same prompt, which is what makes "multiple people" prompting work:
 
 ```
-Prompt:  __$person1:name__ stands next to __$person2:name__.
+Prompt:  __$person1:characters/names__ stands next to __$person2:characters/names__.
          __$person1__ wears a blue hat, __$person2__ wears a red hat.
 
 Expands: Alice stands next to Bob.

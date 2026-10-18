@@ -55,8 +55,6 @@ except ImportError:  # imported as a top-level module (ad-hoc tooling)
     from aliases import WILDCARD_ALIASES
 
 
-
-
 def set_wildcards_dir(path: str) -> None:
     global WILDCARDS_DIR
     WILDCARDS_DIR = path
@@ -386,7 +384,7 @@ def reference_names(text: str) -> list[str]:
     """Return ordered, de-duplicated ``__wildcard__`` names referenced in text.
 
     Capture syntax (``__$var:file__``) is not counted; use
-    :func:`capture_references` for that.
+    :func:`capture_files` for that.
     """
     names: list[str] = []
     for match in WILDCARD_RE.finditer(text or ""):

@@ -6,3 +6,8 @@ __pycache__/
 .pytest_cache/
 tests/__pycache__/
 *.egg-info
+
+# Runtime usage counters written by the plugin (wildcards/__stats__.json).
+# Never commit these: they are per-machine usage data, not collection data.
+wildcards/__stats__.json
+__stats__.json

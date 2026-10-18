@@ -601,7 +601,22 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
             return [gr.update(choices=files), gr.update(choices=cats), char_update, ai_status]
         return [None, None, char_update, ai_status]
 
-    def create_ui(self, api_session):
+    # This constructor deliberately takes no parameters. Wan2GP inspects the
+    # signature to decide whether a plugin wants the API session
+    # (shared/utils/plugins.py::_component_constructor_accepts_api): a
+    # constructor with a positional parameter is handed a
+    # `create_gradio_webui_session()` object and every `gr.Button.click` in it
+    # is monkey-patched so session-aware callbacks can submit jobs. This plugin
+    # never touches the API session, and taking the parameter is actively
+    # harmful: Wan2GP's `_callback_uses_api_session()` compares each handler's
+    # referenced globals against `self._session`, which is still `None` while
+    # the session is lazily uninitialised, so any handler that merely reads a
+    # module-level global holding `None` (here `_expansion_seed`) is
+    # mis-detected as session-aware. `_generate_batch` was wrapped that way and
+    # then required the main UI's `wangp_main_load_queue_trigger` bridge
+    # component. Without the parameter Wan2GP calls the plain `constructor()`
+    # path - the same one every official Wan2GP tab plugin uses.
+    def create_ui(self):
 
         def _read_file(filename: str) -> str:
             return _wc_read_file(filename)

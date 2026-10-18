@@ -3,6 +3,7 @@
 create_ui() itself needs a running Gradio app; everything that does real work
 lives at module level so it can be tested here without a browser.
 """
+import inspect
 import os
 import sys
 
@@ -199,3 +200,27 @@ def test_stats_context_restores_nested_values():
             assert plugin._tls_stats_track.value is True
         assert plugin._tls_stats_track.value is False
     assert plugin._tls_stats_track.value is True
+
+
+# ── Wan2GP integration surface ─────────────────────────────────────────────
+
+def test_create_ui_takes_no_positional_parameters():
+    """Wan2GP inspects this signature to decide if a plugin wants the API session.
+
+    ``shared/utils/plugins.py::_component_constructor_accepts_api`` reports True
+    for any constructor with a positional parameter; Wan2GP then hands
+    ``create_ui`` a ``GradioWanGPSession`` and monkey-patches every
+    ``gr.Button.click`` inside the tab so session-aware callbacks can also submit
+    jobs. This plugin never touches that session, and declaring the parameter was
+    actively harmful: Wan2GP's ``_callback_uses_api_session()`` compares each
+    handler's referenced globals against ``self._session``, which is still
+    ``None`` while the session is lazily uninitialised, so ``_generate_batch``
+    (it reads the module global ``_expansion_seed``, which is ``None`` at build
+    time) was mis-detected as session-aware and then required the main UI's
+    ``wangp_main_load_queue_trigger`` bridge component.
+    """
+    bound = plugin.WildcardsPlugin().create_ui
+    assert list(inspect.signature(bound).parameters) == [], (
+        "create_ui must take no parameters beyond self (see the note above it)"
+    )
+

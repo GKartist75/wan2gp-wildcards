@@ -90,6 +90,19 @@ Change `__$food=apple__` to `__$food=cherry__` and every `__$food__` follows alo
 3. Click **Download and Install**
 4. Enable it → **Save Settings** → **Restart**
 
+### Working from a source checkout
+
+To run a local checkout inside Wan2GP without copying it, link the repository into the plugins
+folder. On Windows a *junction* does the job and needs no administrator rights (a real symlink
+does):
+
+```bat
+mklink /J "C:\Wan2GP\plugins\wan2gp-wildcards" "D:\dev\wan2gp-wildcards"
+```
+
+Wan2GP imports that folder as a Python package, so **the link name must match the repository
+name** (`wan2gp-wildcards`). Restart Wan2GP, then enable **Wildcards** in Settings → Plugins.
+
 ---
 
 ## Usage Guide
@@ -245,8 +258,16 @@ non-UTF-8 file, or a documentation example that points at a wildcard that does n
   profiles can no longer clobber shipped wildcards; profile and template writes are atomic.
 * **Robustness**: reports and status messages are ASCII-safe (Windows consoles default to cp1252),
   and a plain `pytest` now works from the repo root thanks to a root `pytest.ini`.
+* **Wan2GP integration**: `create_ui` no longer declares an unused API-session parameter. Wan2GP
+  inspects that signature and, if it looks API-aware, wraps every button in the tab as a job
+  callback; the parameter was never used and (through a Wan2GP mis-detection of `None` globals)
+  wrapped the Generate button, which then required main-UI bridge components. A test now pins the
+  signature.
+* **Hygiene**: `wildcards/__stats__.json` is gitignored and no longer tracked — it is per-machine
+  usage data, not collection data.
 * **Docs**: accurate index and stats, no duplicated infographic, new troubleshooting section.
-* **Tests**: 132 tests, including collection-wide integrity checks and a CI workflow.
+* **Tests**: 137 tests, including collection-wide integrity checks, the plain-constructor guard and
+  a CI workflow.
 
 ### v1.6.4 — Bug fixes, performance, prompt linter
 

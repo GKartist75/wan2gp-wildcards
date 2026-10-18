@@ -957,7 +957,7 @@ Javan Rhinoceros
 Javanese
 Jellyfish
 Jerboa
-Jewel Beetle 
+Jewel Beetle
 John Dory
 Jonah Crab
 Joro Spider
@@ -1749,7 +1749,7 @@ Ural owl
 Urutu Snake
 Utonagan
 Vampire Bat
-Vampire Crab 
+Vampire Crab
 Vampire Squid
 Vaquita
 Velociraptor

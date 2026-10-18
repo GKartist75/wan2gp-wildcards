@@ -204,7 +204,7 @@ legwear               - legwear types
 neckwear              - neckwear and ties
 choker                - choker types
 belt                  - belt types
-eardrops              - earring types (flat pool)
+earrings              - earring types (flat pool)
 purse                 - purse and bag types
 clothing-female       - women's clothing (flat pool)
 clothing-male         - men's clothing (flat pool)
@@ -430,127 +430,92 @@ othermedia, painting, sculptural, shading-techniques, textile,
 beards, mood, occupations, home, artmovement, generalstyle,
 platform, seasons, timeofday
 
-## Subdirectory additions (from billions of wildcards)
+## Library layout
 
-### characters/ (245 files)
-beings - cthulu-mythos, cyberpunk, doctor-who, elder scrolls, halo, etc.
-professions - historical, magical (crafter/caster/knowledge/nature/dark/light/illusion), scifi, fiction, modern
-itemslots, weapons, classes, magical-beings
+3017 value files in 78 folders. All paths are lowercase, and
+wildcard names are matched case-insensitively and through the alias table, so
+prompts written against older names (see the catalog above) keep working.
 
-### styles/ (163 files)
-art-styles (101 movements), artists/ (70+ movements with named artists)
-ambient-effects, animations, camera settings, creative-concepts
-rendering-techniques, resolutions, punk-styles, image-styles, quality
+Format: `folder/ (files)` — description — nested folders
 
-### clothings/ (121 files)
-baroque - female/male dress (types, arms, collar, accessories)
-edoperiod - female/male attire
-cyberpunk, magical, nsfw, regular, scifi - female/male per body part
-
-### heraldry/ (15 files)
-badges, blazon, colors, ordinaries, charges, supporters, mantling, crests, etc.
-
-### mushrooms/ (18 files)
-annulus, bioluminescence, bruising, gill, growth-form, habitat, hymenium
-latex, mycorrhizal-association, pileus, poisonous/medicinal properties, stipe, etc.
-
-### magical/ (407 files)
-academy - places (administration, alchemy, archives, classrooms, dorms, etc.)
-magic types - evocation, enchantment, illusion, necromancy, etc.
-profession-magic-use, academy extra items, academy atmosphere
-
-## Subdirectory additions (from YetAnotherWildcardCollection)
-
-### Artists/ (29 files)
-Themed/ - anime, backgrounds, cartoons, concept, digital, fineart, line-art, manga, painting, surreal, vectors
-e621/ - anime, blurry, chibi, chubby, dragon-feral, female-hourglass, fluffy, hardlight, humanoid, etc.
-
-### Background/ (13 files)
-Ambience, buildings-and-rooms, country-city, disaster, environment, events, fantasy, heritage-sites, parks-and-monuments, planets-and-space, seasons, simple, weather
-
-### Body/ (37 files)
-Body-Type/ (fit, heavy, light, poor-condition, shape, short, tall)
-Ears, Eyes/ (eye-shape, pupil-color, pupil-shape, sclera-color), Face-Shape
-Genitalia/ (breasts-*, penis-*, pussy-*, nipple-type)
-Hair/ (color, eyebrows, facial, female, length, male, misc-styles, texture)
-Horns, Misc-Appendages, Misc-Head, Misc-Lower-Torso, Misc-Upper-Torso, Nose-Shape
-
-### Characters/ (13 files)
-Actors, Actress, Animal-Crossing, Celebrity, Composite/Animal-Crossing, FNAF, Fictional, Franchise-Girls, League-of-Legends, MLP, Super-Hero, Super-Villain, Yoshi
-
-### Clothing/ (37 files)
-Armor, Bags, Belt, Bottomwear, Corsets, Costumes, Dress, Eyewear, Footwear, Headwear, Jewelry-Accessories, Legwear, Misc, Outfits, Robes, Suits, Tattoos, Topwear, Underwear/ (bra-*, panty-*, swimwear-*, lingerie, piercings)
-
-### Colors/ (17 files)
-Basic, per-color (black/blue/brown/green/grey/magenta/orange/pink/purple/red/white/yellow), Misc, Monochrome, Palettes, Skin
-
-### Concepts/ (3 files)
-Gestures, Occupations, Postures-and-Poses
-
-### Materials/ (20 files)
-Bone, Ceramic, Cloth, Crystal, Fantasy, Fictional, Fossil, Fur, Glass, Leather, Metal, Mineral, Misc, Nano, Plastic, Resin, Rock, Sci-Fi, Synthetic, Wood
-
-### NSFW/ (26 files)
-Bondage-Positions, Fetish-Gear, Fetishes/ (13 subcategories), Nudity/ (exposed body parts), POV, Sex-Positions, Sex-Toys
-
-### Prompts/ (28 files)
-Art-Quality-Styles, Art-Styling, Boudoir, Business-Woman, Characters-With-Accessories, Fantasy-Landscape, Fine-Art-Female, Glamour-Shots, Hardcore, Historical-Characters, Hobby-Female, Lingerie-Female, LOTR-*, Medieval-Female, Misc, Misc-Subjects, Occupation-Female, Portrait-Female, RPG-*, Scenarios, Scifi-Female, Sexy, Stripper, Surreal-Landscape, Swimwear, XXX
-
-### Props/ (11 files)
-Appliances, Artifacts, Desserts, Drinks, Flowers, Food, Instruments, Sports, Utensils, Vehicles, Weapons
-
-### Species/ (63 files)
-Per-species: Alien, Aquatic, Avian, Bear, Bovine, Cat, Creature, Deer, Digimon, Dinosaur, Dog, Dragon, Eevee, Equine, Fox, Furry, Goat, Humanoid, Insect, Lion, Misc, Monkey, Monster, Pokemon (1,204), Rabbit, Robot, Rodent, Scalie, Slug, Taur, Tiger, Wolf
-Composite/ (33 hybrid files combining species with prefixes)
-
-### States/ (14 files)
-Age, Clothing-Removal, Emoji, Emotions/ (anger, happy, lust, misc, sadness, surprise), Gender, Gender-All, Looking, Nationality-Race, Size
-
-### Styling/ (6 files)
-Aesthetics, Composition, Lighting, Medium, Quality-Modifiers, Viewpoint
-
-### Vocab-and-Lists/ (9 files)
-Adjective, Anime, Cartoons, Game-Consoles, Games, Movies, Noun, Preposition, Verb
-
-
-## Remaining billions sections (939 files)
-
-astronomy/ (4) - celestial-bodies, spacecrafts, relations
-atmosphere/ (74) - abstract, artistic, caves, celestial, colorful, cozy, cultural, dark, desert, dreamy, fantasy, magical, mystical, nature, oceanic, sci-fi, space, surreal, and 54 more
-audio/ (34) - albumcover, genre, melody, music, notation, notes, sound
-books/ (12) - genres, types, bookbinding-styles, book-covers, typography, printing
-brain-psychology/ (4) - terms, practices, concepts, neural-circuit-patterns
-castle_exteriors/ (14) - types, walls, towers, entrances, grounds, decorative-elements, defensive-features, fortifications, lighting
-chemistry/ (3) - elements, gems, minerals
-christmas/ (11) - artstyles, atmosphere, characters, decorations, food, lightings, scapes, scenes, traditions
-components/ (17) - bearings, fasteners, electrical-connectors, electronic, hydraulic, pneumatic, springs, structural
-constructions/ (126) - types (cyberpunk/fictional/magical/regular/scifi), rooms, interior-design, materials, lighting-sources
-creatures/ (43) - appendages, body-shapes, being-types, descriptors, dragons, ears, horns, skin-fur-types, tails, wings, species (birds, fish, mammals, reptiles, mythical)
-easter/ (10) - artstyles, atmosphere, characters, costumes, decorations, food, places, symbols, traditions
-fruits/ (6) - climate, flesh, seed, surface, aroma
-habitats/ (41) - biomes, cave, civil, crater, fantasy, housing, magical, places, types, wonderland
-halloween/ (15) - artstyles, atmosphere, costumes, decorations, food, grimaces, lighting, pumpkin-carving, symbols, traditions
-jewelry/ (18) - age, brilliance, carat, clarities, cut, durability, facets, fire, hardness, luster, origin, rarity, setting, style, symbolism, treatments
-lighting/ (27) - ambient, artificial, atmospheric, cinematic, colored, dramatic, fantasy, mood, natural, neon, period, practical, sci-fi, stage, studio, volumetric
-lunar-newyear/ (10) - artstyles, atmosphere, characters, decorations, food, lightings, scapes, scenes, symbols, traditions
-machines/ (31) - types (agricultural, communication, complex, construction, control, energy, household, industrial, medical, military, mining, musical, navigation, optical, printing, robotics, scientific, textile, transportation, weapons)
-matter/ (3) - state, movement
-person/ (34) - ages, beard, body-feature, bodyshapes, cheek, chest, ear, ethnicity, eyebrows, eyelashes, face-shape, forehead, head, hip, legs, lip, mouth, neck, nose, poses, skin, waist
-phenomena/ (9) - abstract, astronomy, cyberpunk, magical, math, natural, physics, psychology, sci-fi
-plants/ (13) - flower, fruit, growth-habit, inflorescence, leaf, root, seed, sepal, stem, foliage-arrangement
-properties/ (84) - colors, fabrics, patterns, materials, textures, shapes (2D/3D), size, structure, paint, Visual/Appearance
-rpg/ (127) - tiles, paths, species, equipment (weapons, armor, accessories), abilities (combat, spells), traps, secrets, furniture, items
-scenes/ (39) - settings (landscapes, urban), features, cyberpunk scenes, fantasy scenes, scifi scenes
-scifi/ (18) - atmosphere, biopunk, computer, cyberpunk, nanotech, space, spacecrafts (antennae, engine, hull, markings, sensor, shape, size, type, window)
-st-patrick/ (10) - artstyles, atmosphere, characters, costumes, decorations, food, lightings, places, symbols, traditions
-styles-architectural/ (8) - african, asian, european, indigenous, islamic, pre-columbian, south-american
-styles-drawing/ (16) - background, body-depiction, color, composition, expression, face-head-depiction, form, line-stroke, narrative, perspective, shading, style, texture, tools
-subjects-school/ (12) - art, biology, chemistry, economy, history, literature, math, music, physics, technology
-subtypes/ (2) - cyberpunk, scifi
-superheroes/ (4) - dc, marvel, female, male
-supervillains/ (4) - dc, marvel, female, male
-valentine/ (10) - artstyles, atmosphere, characters, decorations, food, lightings, scapes, scenes, symbols, traditions
-vehicles/ (20) - types (airborne, cars, spacecraft, water), accessories, customization, exterior-features, lights, windows, size
+action/ (4) — movement, dance, combat, interaction
+aesthetic/ (5) — art movements, vibes, cultural aesthetics
+animals/ (36) — aquatic, birds, cats, dogs and more — subfolders: aquatic, birds, cats, dogs
+art/ (41) — art media, movements and techniques
+art-styles/ (8) — anime, cartoon, comics, design, drawing, painting, photography
+artists/ (29) — named-artist styles (themed/, e621/) — subfolders: e621, themed
+astronomy/ (4) — celestial bodies, spacecraft, relations
+atmosphere/ (74) — atmospheric settings (caves, desert, space, surreal, ...)
+audio/ (34) — genre, melody, music, notation, sound — subfolders: albumcover, genre, melody, music, notation, notes, sound
+background/ (13) — heritage sites, buildings, planets, weather, seasons
+body/ (179) — body types, hair, eyes, ears, face, genitalia, wings — subfolders: body-type, ears, eyes, face, genitalia, gestures, hair, hands, piercings, shoulders, tail, wings
+books/ (12) — genres, covers, typography, printing
+brain-psychology/ (4) — terms, practices, concepts, neural patterns
+camera/ (20) — shot, angle, lens, movement, technique
+castle_exteriors/ (14) — types, walls, towers, fortifications, grounds
+character/ (8) — profiles written by the plugin UI (age, archetype, body, gender, ...)
+characters/ (258) — beings, classes, professions, weapons, names, franchises — subfolders: beings, classes, composite, itemslots, magical-beings, names, professions, weapons
+chemistry/ (3) — elements, gems, minerals
+christmas/ (11) — artstyles, decorations, food, scenes, traditions — subfolders: christmas-carol
+clothing/ (253) — modern and period attire by body part — subfolders: period, underwear
+color/ (32) — named colors, palettes, skin tones
+components/ (17) — bearings, fasteners, connectors, springs, structural
+composition/ (2) — composition rules
+concepts/ (3) — gestures, occupations, postures
+constructions/ (126) — building types, rooms, interior design, light sources — subfolders: features, interior-design, interior-design-fictional, light-sources-indoor, light-sources-outdoor, rooms, types
+creatures/ (45) — appendages, body shapes, dragons, wings, species — subfolders: dragons, species
+descriptive/ (50) — descriptive adjectives
+easter/ (10) — artstyles, decorations, food, places, symbols
+effect/ (10) — visual effects
+emotion/ (5) — emotional states
+environment/ (47) — natural and built environments
+fantasy/ (9) — AD&D, Cthulhu, Tolkien
+food/ (21) — meals, drinks, ingredients, utensils
+fruits/ (6) — climate, flesh, seed, surface, aroma
+habitats/ (41) — biomes, caves, housing, magical places — subfolders: places
+halloween/ (15) — costumes, decorations, pumpkin carving, symbols — subfolders: pumpkin-carving
+heraldry/ (15) — badges, blazon, colors, charges, crests, supporters
+jewelry/ (18) — gems, cuts, settings, rarity, styles
+lighting/ (34) — lighting setups (ambient, cinematic, neon, studio, ...)
+lunar-newyear/ (10) — traditions, decorations, food, symbols
+machines/ (31) — machine types and parts — subfolders: parts, types
+magical/ (407) — magic types, academy, spells — subfolders: academy, prompts, types
+material/ (25) — materials and surfaces
+matter/ (3) — states of matter, movement
+misc/ (40) — assorted lists
+motion/ (4) — motion descriptors
+mushrooms/ (18) — parts, growth forms, ecology
+nsfw/ (123) — explicit content (adult only) — subfolders: ass, breasts, fetishes, nudity, objects, panties, positions, pussy, sex-acts
+people/ (23) — people descriptors
+person/ (34) — body features, ethnicity, poses (per-genre subfolders) — subfolders: cyberpunk, magical, nsfw, regular, scifi
+phenomena/ (9) — natural and supernatural phenomena — subfolders: astronomy, cyberpunk, magical, math, scifi
+plants/ (26) — flowers, leaves, roots, stems, growth
+poses/ (23) — body poses
+prompts/ (28) — ready-made prompt fragments
+properties/ (84) — colors, fabrics, patterns, textures, shapes, materials — subfolders: colors, fabrics, materials-art, materials-books, materials-construction, materials-jewelry, materials-magic, materials-moers, materials-nsfw, materials-vehicles, paint, patterns, shape, size, structure, textures, visual
+props/ (11) — appliances, food, instruments, vehicles, weapons
+quality/ (4) — quality modifiers
+rpg/ (127) — tiles, paths, species, equipment, abilities, items — subfolders: abilities, equipment, extras, paths, rpg-tiles, species
+scenes/ (39) — landscapes, urban, cyberpunk, fantasy and sci-fi scenes — subfolders: cyberpunk, regular, scifi, settings
+scifi/ (49) — cyberpunk, space, spacecraft, computer — subfolders: atmosphere, computer, spacecrafts
+species/ (63) — per-species lists (aliens, dragons, Pokemon, ...) — subfolders: composite
+st-patrick/ (10) — artstyles, decorations, food, symbols
+states/ (14) — emotions, age, gender, clothing removal, size — subfolders: emotions
+styles/ (163) — art styles, camera, clothing, depiction, rendering techniques — subfolders: artists, camera, clothing, depiction-styles, image-techniques, quality, rendering-techniques
+styles-architectural/ (8) — regional architecture
+styles-drawing/ (16) — drawing and illustration technique — subfolders: body_depiction, face_head_depiction
+styling/ (6) — aesthetics, composition, lighting, medium, quality, viewpoint
+subjects-school/ (12) — school subjects
+subtypes/ (2) — cyberpunk, scifi
+superheroes/ (4) — dc, marvel — subfolders: dc, marvel
+supervillains/ (4) — dc, marvel — subfolders: dc, marvel
+time/ (9) — time of day, era
+transition/ (3) — scene transitions
+valentine/ (10) — artstyles, decorations, food, symbols
+vehicles/ (20) — airborne, cars, spacecraft, water — subfolders: types
+vocab-and-lists/ (9) — word lists (adjective, noun, verb, preposition, ...)
+weather/ (4) — weather conditions
+words/ (26) — adjectives, verbs, substantives per genre — subfolders: brain-psychology, cyberpunk, magical, nsfw, scifi, vogonic-guide
 
 ## art-styles
 art-styles/anime              - anime & manga illustration styles (Ghibli, Akira, Chainsaw Man...)
@@ -561,4 +526,3 @@ art-styles/photography        - photography & cinematic styles (Film Noir, Vogue
 art-styles/design             - design & 3D render styles (Bauhaus, Pixar, Low Poly, Pixel Art...)
 art-styles/digital-painting   - digital painting styles (Artgerm, Sakimichan, Loish...)
 art-styles/painting           - traditional painting styles (Van Gogh, Monet, Rembrandt...)
-words/ (26) - adjectives, verbs, substantives, magical/scifi/cyberpunk words, brain-psychology, constructors

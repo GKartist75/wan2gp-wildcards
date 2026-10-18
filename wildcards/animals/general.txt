@@ -704,7 +704,7 @@ European Starling
 European Wildcat
 Evening Bat
 Evening Grosbeak
-Executioner Wasp 
+Executioner Wasp
 Eyelash Viper
 Fairy-Wren
 Falcon
@@ -907,7 +907,7 @@ Grouper
 Grouse
 Guinea Fowl
 Guinea Pig
-Gulper Eel 
+Gulper Eel
 Guppy
 Habu Snake
 Haddock
@@ -1045,7 +1045,7 @@ Javan Rhinoceros
 Javanese
 Jellyfish
 Jerboa
-Jewel Beetle 
+Jewel Beetle
 John Dory
 Jonah Crab
 Joro Spider
@@ -1933,7 +1933,7 @@ Ural owl
 Urutu Snake
 Utonagan
 Vampire Bat
-Vampire Crab 
+Vampire Crab
 Vampire Squid
 Vaquita
 Velociraptor

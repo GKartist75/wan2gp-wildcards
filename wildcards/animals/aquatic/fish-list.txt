@@ -10,28 +10,28 @@ Alfonsino
 Algae eater
 Alligatorfish
 Alligator gar
-Amberjack 
+Amberjack
 American sole
 Amur pike
 Anchovy
 Anemonefish
 Angelfish
-Angler 
+Angler
 Angler catfish
 Anglerfish
 Antarctic cod
 Antarctic icefish
-Antenna codlet 
+Antenna codlet
 Arapaima
-Archerfish 
+Archerfish
 Arctic char
-Armored gurnard 
-Armored searobin 
-Armorhead 
-Armorhead catfish 
+Armored gurnard
+Armored searobin
+Armorhead
+Armorhead catfish
 Armoured catfish
-Arowana 
-Arrowtooth eel 
+Arowana
+Arrowtooth eel
 Asiatic glassfish
 Atka mackerel
 Atlantic bonito
@@ -41,12 +41,12 @@ Atlantic salmon
 Atlantic sharpnose shark
 Atlantic saury
 Atlantic silverside
-Australasian salmon 
+Australasian salmon
 Australian grayling
 Australian herring
 Australian lungfish
-Australian prowfish 
-Ayu 
+Australian prowfish
+Ayu
 Baikal oilfish
 Bala shark
 Ballan wrasse

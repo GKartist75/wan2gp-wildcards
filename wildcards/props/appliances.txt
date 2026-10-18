@@ -37,9 +37,9 @@ Stove
 The Auto-Dryer
 The Brain Extractor
 The Dehydrator
-The Flux Capacitor 
+The Flux Capacitor
 The Food Fabricator
-The Hygienator 
+The Hygienator
 The Memory Eraser
 The Replicator
 The Shrink Ray

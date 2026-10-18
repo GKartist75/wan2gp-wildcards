@@ -6,13 +6,12 @@ and test expansion.
 """
 
 import os
-import re
 import json
-import html
 import random
 import time
 import tempfile
 import threading
+from contextlib import contextmanager
 
 import gradio as gr
 
@@ -20,6 +19,8 @@ from shared.utils.plugins import WAN2GPPlugin
 from shared.utils import prompt_parser
 from . import expander
 from . import character_manager
+from . import linter
+from . import ai
 
 PLUGIN_ID = "wildcards"
 PLUGIN_LABEL = "Wildcards"
@@ -29,27 +30,26 @@ WILDCARDS_SUBDIR = "wildcards"  # under plugin dir
 def _get_wildcard_keys() -> list[str]:
     """All valid wildcard keys for autocomplete, e.g. __camera__, __camera/shot__.
 
-    Also includes backward-compat aliases for renamed/moved files
-    so users still see old names in the dropdown.
+    Includes directory pools at every depth (a nested folder of lists is a
+    usable pool), every real file, and the backward-compat aliases, so the
+    dropdown shows both canonical and legacy names.
     """
     wc_dir = expander.WILDCARDS_DIR
     if not os.path.isdir(wc_dir):
         return []
     keys: set[str] = set()
-    for entry in sorted(os.listdir(wc_dir)):
-        sub = os.path.join(wc_dir, entry)
-        if os.path.isdir(sub) and not entry.startswith("_"):
-            keys.add(f"__{entry}__")
-    for root, dirs, fnames in os.walk(wc_dir):
-        for fname in sorted(fnames):
-            if not fname.endswith(".txt") or fname == "__index__.txt":
-                continue
-            rel = os.path.relpath(os.path.join(root, fname), wc_dir)
-            keys.add(f"__{rel[:-4]}__")  # strip .txt
-    # Backward-compat: include old alias names so autocomplete still shows them
+    for root, dirs, _files in os.walk(wc_dir):
+        dirs[:] = [d for d in dirs if not d.startswith("__")]
+        rel_dir = os.path.relpath(root, wc_dir).replace(os.sep, "/")
+        if rel_dir != ".":
+            keys.add(f"__{rel_dir}__")  # directory pool (nested included)
+    for full in expander.iter_wildcard_files(wc_dir):
+        rel = os.path.relpath(full, wc_dir).replace(os.sep, "/")
+        keys.add(f"__{rel[:-4]}__")  # strip .txt
     for old_name in expander.WILDCARD_ALIASES:
         keys.add(f"__{old_name}__")
     return sorted(keys)
+
 
 
 # Cached file listing (P2): a full os.walk over 3000+ files is ~50ms and was
@@ -65,23 +65,20 @@ def invalidate_file_list() -> None:
 
 
 def _list_wc_files() -> list[str]:
-    """Recursively list .txt files, exclude __ prefixed metadata files.
-    Returns raw file paths (no line counts for performance with 3000+ files).
-    Results are cached for FILE_LIST_TTL seconds; invalidate_file_list() forces
-    a refresh after any file mutation."""
+    """Recursively list .txt files, excluding __ prefixed metadata files and
+    __ prefixed directories. Returns paths relative to wildcards/ with forward
+    slashes. Results are cached for FILE_LIST_TTL seconds;
+    invalidate_file_list() forces a refresh after any file mutation."""
     wc_dir = expander.WILDCARDS_DIR
     if not os.path.isdir(wc_dir):
         return []
     now = time.time()
     if _FILE_LIST_CACHE["files"] is not None and (now - _FILE_LIST_CACHE["ts"]) < _FILE_LIST_TTL:
         return _FILE_LIST_CACHE["files"]
-    files = []
-    for root, dirs, fnames in os.walk(wc_dir):
-        for fname in sorted(fnames):
-            if not fname.endswith(".txt") or fname.startswith("__"):
-                continue
-            rel = os.path.relpath(os.path.join(root, fname), wc_dir).replace(os.sep, "/")
-            files.append(rel)
+    files = [
+        os.path.relpath(full, wc_dir).replace(os.sep, "/")
+        for full in expander.iter_wildcard_files(wc_dir)
+    ]
     files.sort()
     _FILE_LIST_CACHE["files"] = files
     _FILE_LIST_CACHE["ts"] = now
@@ -247,8 +244,112 @@ def _get_files_for_cat(cat: str) -> list[str]:
     return [p for p in _list_wc_files() if p.startswith(prefix)]
 
 
-def _render_chips_html(filename: str, seed: int = 0) -> str:
-    """Read file, pick up to 30 lines, return clickable chip HTML."""
+# --- Wildcard file CRUD ----------------------------------------------------
+# Kept at module level (not inside create_ui) so the sanitizing/overwrite rules
+# are unit-testable without a browser or Gradio.
+
+def _validate_wc_target(name: str) -> tuple[str | None, str]:
+    """Validate a user-supplied relative wildcard filename.
+
+    Returns ``(safe_name, "")`` or ``(None, error_message)``. ``.txt`` is
+    appended when missing; ``__``-prefixed paths are refused because they hold
+    plugin metadata (favorites/templates/stats/index).
+    """
+    safe = expander.sanitize_relative_path(name)
+    if safe is None:
+        return None, "Invalid filename (no absolute paths, '..', or separators other than /)."
+    if any(part.startswith("__") for part in safe.split("/")):
+        return None, "Names starting with '__' are reserved for plugin metadata."
+    if not safe.endswith(".txt"):
+        safe += ".txt"
+    return safe, ""
+
+
+def _wc_read_file(filename: str) -> str:
+    if not filename:
+        return ""
+    path = os.path.join(expander.WILDCARDS_DIR, filename)
+    if not os.path.isfile(path):
+        return ""
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            return fh.read()
+    except OSError:
+        return ""
+
+
+def _wc_write_file(filename: str, content: str, *, create_only: bool = False) -> str:
+    """Write a wildcard file. ``create_only`` refuses to overwrite (no clobber)."""
+    safe, error = _validate_wc_target(filename)
+    if safe is None:
+        return error
+    path = os.path.join(expander.WILDCARDS_DIR, safe)
+    if create_only and os.path.exists(path):
+        return f"{safe} already exists — pick another name, or open and edit it."
+    try:
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", encoding="utf-8") as fh:
+            fh.write(content)
+    except OSError as e:
+        return f"Error saving: {e}"
+    expander.invalidate_cache()
+    invalidate_file_list()
+    return f"Created {safe}" if create_only else f"Saved {safe}"
+
+
+def _wc_delete_file(filename: str) -> str:
+    if not filename:
+        return "No file selected."
+    safe, error = _validate_wc_target(filename)
+    if safe is None:
+        return error
+    path = os.path.join(expander.WILDCARDS_DIR, safe)
+    if not os.path.isfile(path):
+        return f"File not found: {safe}"
+    try:
+        os.remove(path)
+    except OSError as e:
+        return f"Error deleting: {e}"
+    expander.invalidate_cache()
+    invalidate_file_list()
+    return f"Deleted {safe}"
+
+
+def _wc_rename_file(old_name: str, new_name: str) -> str:
+    """Rename a wildcard file. Refuses reserved names and existing targets."""
+    if not old_name or not new_name:
+        return "Select a file and enter a new name."
+    old_safe, error = _validate_wc_target(old_name)
+    if old_safe is None:
+        return f"Invalid source file: {error}"
+    new_safe, error = _validate_wc_target(new_name)
+    if new_safe is None:
+        return error
+    if old_safe == new_safe:
+        return "The new name is identical to the current one."
+    old_path = os.path.join(expander.WILDCARDS_DIR, old_safe)
+    new_path = os.path.join(expander.WILDCARDS_DIR, new_safe)
+    if not os.path.isfile(old_path):
+        return f"File not found: {old_safe}"
+    if os.path.exists(new_path):
+        return f"{new_safe} already exists — delete or rename it first."
+    try:
+        os.makedirs(os.path.dirname(new_path), exist_ok=True)
+        os.rename(old_path, new_path)
+    except OSError as e:
+        return f"Error renaming: {e}"
+    expander.invalidate_cache()
+    invalidate_file_list()
+    return f"Renamed {old_safe} -> {new_safe}"
+
+
+def _render_chips_html(filename: str, seed: int | None = None) -> str:
+    """Read file, pick up to 30 lines, return clickable chip HTML.
+
+    ``seed=None`` (the default) reshuffles the chips on every call, which is
+    what the "Shuffle Values" button relies on; pass an int for a repeatable
+    preview.
+    """
     if not filename:
         return '<div class="wc-chips"><p class="wc-hint">\u2190 Select a category + file to see values</p></div>'
     full = os.path.join(expander.WILDCARDS_DIR, filename)
@@ -306,9 +407,21 @@ def set_stats_context(track: bool) -> None:
     """Control whether the current thread's wildcard loads count toward usage stats.
 
     UI preview/batch expansions call this with track=False so they don't pollute
-    real generation statistics.
+    real generation statistics. Prefer the :func:`stats_context` context manager,
+    which restores the previous value even if the handler raises.
     """
     _tls_stats_track.value = track
+
+
+@contextmanager
+def stats_context(track: bool):
+    """Temporarily set the usage-tracking flag for this thread."""
+    previous = getattr(_tls_stats_track, "value", True)
+    _tls_stats_track.value = track
+    try:
+        yield
+    finally:
+        _tls_stats_track.value = previous
 
 
 import threading as _th
@@ -365,7 +478,7 @@ _expansion_seed: int | None = None
 def _patched_process_template(input_text, keep_comments=False, keep_empty_lines=False):
     """Wrapper: expand wildcards first, then run original template processing."""
     if _expansion_enabled and input_text:
-        # Real generation (not a UI preview) → count toward usage stats.
+        # Real generation (not a UI preview) -> count toward usage stats.
         set_stats_context(True)
         input_text = expander.expand_prompt(input_text, seed=_expansion_seed)
     return _original_process_template(input_text, keep_comments, keep_empty_lines)
@@ -375,8 +488,8 @@ class WildcardsPlugin(WAN2GPPlugin):
     def __init__(self):
         super().__init__()
         self.name = "Wildcards"
-        self.version = "1.6.4"
-        self.description = "Dynamic wildcard expansion + character profiles + templates + usage stats"
+        self.version = "1.7.0"
+        self.description = "Dynamic wildcard expansion + character profiles + templates + usage stats + AI-assisted generation"
         self.type = ["extension"]
 
     def setup_ui(self):
@@ -386,6 +499,14 @@ class WildcardsPlugin(WAN2GPPlugin):
         self.request_component("refresh_form_trigger")
         self.request_component("main_tabs")
         self.request_global("get_current_model_settings")
+        # Wan2GP's own local prompt enhancer (Qwen3.5/3.8 text models) powers the
+        # optional AI generator. Requesting the *callable* instead of the model
+        # objects matters: the callable reads Wan2GP's live globals, whereas the
+        # model attributes are snapshotted (as None) before the model is loaded.
+        self.request_global("server_config")
+        self.request_global("ensure_prompt_enhancer_loaded")
+        self.request_global("prompt_enhancer_image_caption_model")
+        self.request_global("prompt_enhancer_image_caption_processor")
         self.add_tab(tab_id=PLUGIN_ID, label=PLUGIN_LABEL, component_constructor=self.create_ui)
 
         plugin_dir = os.path.dirname(os.path.abspath(__file__))
@@ -460,86 +581,46 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
         self.add_custom_js(js)
 
     def on_tab_select(self, state: dict):
-        """Refresh file dropdown and category filter from disk on every tab visit.
+        """Refresh the file/category/character dropdowns on every tab visit.
 
-        Also flushes buffered usage stats to disk (B1) and invalidates caches
-        (P1/P2) so disk edits made outside the UI are picked up.
+        Also flushes buffered usage stats (B1), invalidates caches (P1/P2) so
+        edits made outside the UI are picked up, and re-reads the local-LLM
+        status (the user may have just enabled it in the Configuration tab).
         """
         flush_stats()
         expander.invalidate_cache()
         invalidate_file_list()
+        char_update = gr.update(choices=character_manager.list_characters())
+        try:
+            ai_status = ai.build_llm_from_plugin(self).status_text()
+        except Exception as e:  # never let a status probe break tab switching
+            ai_status = f"Local LLM status unavailable: {e}"
         if hasattr(self, "file_dropdown"):
             cats = ["All"] + _get_categories()
             files = _list_wc_files()
-            return [gr.update(choices=files), gr.update(choices=cats)]
-        return [None, None]
+            return [gr.update(choices=files), gr.update(choices=cats), char_update, ai_status]
+        return [None, None, char_update, ai_status]
 
     def create_ui(self, api_session):
 
         def _read_file(filename: str) -> str:
-            if not filename:
-                return ""
-            path = os.path.join(expander.WILDCARDS_DIR, filename)
-            if not os.path.isfile(path):
-                return ""
-            try:
-                with open(path, "r", encoding="utf-8") as fh:
-                    return fh.read()
-            except OSError:
-                return ""
+            return _wc_read_file(filename)
 
         def _save_file(filename: str, content: str) -> str:
             if not filename:
                 return "No filename given."
-            # B3: sanitize free-text filename to prevent path traversal
-            safe = expander.sanitize_relative_path(filename)
-            if safe is None:
-                return "Invalid filename (no absolute paths, '..', or separators other than /)."
-            filename = safe if safe.endswith(".txt") else safe + ".txt"
-            wc_dir = expander.WILDCARDS_DIR
-            path = os.path.join(wc_dir, filename)
-            os.makedirs(os.path.dirname(path), exist_ok=True)
-            try:
-                with open(path, "w", encoding="utf-8") as fh:
-                    fh.write(content)
-                expander.invalidate_cache()
-                invalidate_file_list()
-                return f"Saved {filename}"
-            except OSError as e:
-                return f"Error saving: {e}"
+            return _wc_write_file(filename, content)
 
         def _delete_file(filename: str) -> str:
-            if not filename:
-                return "No file selected."
-            path = os.path.join(expander.WILDCARDS_DIR, filename)
-            try:
-                os.remove(path)
-                expander.invalidate_cache()
-                invalidate_file_list()
-                return f"Deleted {filename}"
-            except OSError as e:
-                return f"Error deleting: {e}"
+            return _wc_delete_file(filename)
 
         def _rename_file(old_name: str, new_name: str) -> tuple[str, gr.update, gr.update]:
-            if not old_name or not new_name:
-                return "Select a file and enter a new name.", gr.update(), gr.update()
-            # B3: sanitize target
-            safe = expander.sanitize_relative_path(new_name)
-            if safe is None:
-                return "Invalid filename (no absolute paths, '..', or separators other than /).", gr.update(), gr.update()
-            new_name = safe if safe.endswith(".txt") else safe + ".txt"
-            old_path = os.path.join(expander.WILDCARDS_DIR, old_name)
-            new_path = os.path.join(expander.WILDCARDS_DIR, new_name)
-            if not os.path.isfile(old_path):
-                return f"File not found: {old_name}", gr.update(), gr.update()
-            try:
-                os.makedirs(os.path.dirname(new_path), exist_ok=True)
-                os.rename(old_path, new_path)
-                files = _list_wc_files()
-                cats = ["All"] + _get_categories()
-                return f"Renamed to {new_name}", gr.update(choices=files), gr.update(choices=cats)
-            except OSError as e:
-                return f"Error renaming: {e}", gr.update(), gr.update()
+            message = _wc_rename_file(old_name, new_name)
+            if not message.startswith("Renamed"):
+                return message, gr.update(), gr.update()
+            files = _list_wc_files()
+            cats = ["All"] + _get_categories()
+            return message, gr.update(choices=files), gr.update(choices=cats)
 
         def _refresh_list() -> gr.update:
             return gr.update(choices=_list_wc_files(), value=None)
@@ -550,12 +631,17 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
         with gr.Column():
             gr.Markdown(f"## Wildcard Prompt Expansion  —  v{self.version}")
-            gr.Markdown("> Expansion active when enabled in **Plugins** tab. Type `__` for wildcard autocomplete.")
+            gr.Markdown(
+                "> Expansion is active when enabled in the **Plugins** tab. Type `__` in any prompt "
+                "for autocomplete.\n>\n"
+                "> **Sections:** 1 Prompt Builder · 2 Templates · 3 Character Profiles · "
+                "4 File Browser · 5 Usage Stats · 6 Content Search · 7 Linter · 8 AI Generator"
+            )
 
             seed_input = gr.Number(label="Seed (-1 = random)", value=-1, precision=0)
             seed_input.change(fn=_set_seed, inputs=[seed_input])
 
-            # ── Prompt Builder ──────────────────────────────────────────
+            # -- Prompt Builder ------------------------------------------
             gr.Markdown("---")
             gr.Markdown("### 1. Prompt Builder")
 
@@ -581,11 +667,15 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
             def _render_chips(filename: str) -> str:
                 return _render_chips_html(filename)
 
+            def _shuffle_chips(filename: str) -> str:
+                # Fresh seed per click so Shuffle always changes something.
+                return _render_chips_html(filename, random.randrange(1 << 30))
+
             wc_cat.change(fn=_filter_cat_files, inputs=[wc_cat], outputs=[wc_file])
             wc_file.change(fn=_render_chips, inputs=[wc_file], outputs=[wc_chips])
-            wc_shuffle.click(fn=_render_chips, inputs=[wc_file], outputs=[wc_chips])
+            wc_shuffle.click(fn=_shuffle_chips, inputs=[wc_file], outputs=[wc_chips])
 
-            # ── Batch Generation Row ──
+            # -- Batch Generation Row --
             with gr.Row():
                 test_btn = gr.Button("Generate 1 row", scale=1)
                 batch_count = gr.Number(label="Variations", value=6, precision=0, minimum=1, maximum=100, scale=1)
@@ -602,28 +692,30 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
             batch_output = gr.Textbox(label="Generated Variations (one per line)", lines=6, interactive=False, elem_id="wc-batch-output")
 
             def _test_expand(prompt: str, seed_val: int) -> str:
-                # Preview: do NOT count toward usage stats (B1)
-                set_stats_context(False)
-                rng = random.Random(seed_val if seed_val >= 0 else None)
-                return expander._expand_text(prompt, rng, depth=0)
+                # Preview: do NOT count toward usage stats (B1), and always
+                # restore the tracking flag even if expansion raises.
+                with stats_context(False):
+                    rng = random.Random(seed_val if seed_val >= 0 else None)
+                    return expander._expand_text(prompt, rng, depth=0)
 
             def _generate_batch(prompt_template: str, count: int, seed_mode: str) -> str:
                 if not prompt_template:
                     return ""
                 # Preview: do NOT count toward usage stats (B1)
-                set_stats_context(False)
-                count = max(1, min(100, int(count)))
-                lines = []
-                if seed_mode.startswith("Sequential"):
-                    for i in range(count):
-                        lines.append(expander.expand_prompt_sequential(prompt_template, i))
-                else:
-                    seen = set()
-                    max_attempts = count * 20
+                with stats_context(False):
+                    count = max(1, min(100, int(count)))
+                    if seed_mode.startswith("Sequential"):
+                        return "\n".join(
+                            expander.expand_prompt_sequential(prompt_template, i)
+                            for i in range(count)
+                        )
+                    # Random mode with optional dedupe, honouring the user's seed
+                    # so batches are reproducible (B6).
+                    base_seed = _expansion_seed
+                    lines: list[str] = []
+                    seen: set[str] = set()
                     attempts = 0
-                    # B6: honor the user's seed for reproducible random batches.
-                    # Derive one deterministic sub-seed per attempt from base seed.
-                    base_seed = _expansion_seed if _expansion_seed is not None else None
+                    max_attempts = count * 20
                     while len(lines) < count and attempts < max_attempts:
                         if base_seed is not None:
                             rng = random.Random(base_seed * 1000003 + attempts)
@@ -634,7 +726,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
                             seen.add(expanded)
                             lines.append(expanded)
                         attempts += 1
-                return "\n".join(lines)
+                    return "\n".join(lines)
 
             def _update_prompt_from_state(state_val, batch_text: str):
                 if not batch_text:
@@ -655,7 +747,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
                 outputs=[self.main_tabs],
             )
 
-            # ── Prompt Templates ──────────────────────────────────────
+            # -- Prompt Templates --------------------------------------
             gr.Markdown("---")
             gr.Markdown("### 2. Prompt Templates")
             gr.Markdown("Save and reuse prompt templates with wildcards intact (not expanded).")
@@ -722,12 +814,18 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
                 outputs=[file_msg, tmpl_dropdown],
             )
 
-            # ── Character Profiles ──────────────────────────────────────
+            # -- Character Profiles --------------------------------------
             gr.Markdown("---")
             gr.Markdown("### 3. Character Profiles")
+            _reserved = character_manager.reserved_names()
+            _reserved_note = (
+                "\n\nReserved names (built-in wildcard lists — pick something else): "
+                + ", ".join(f"`{r}`" for r in _reserved)
+            ) if _reserved else ""
             gr.Markdown(
                 "Define named characters. Use `__character/Name__` in your prompt to inject appearance. "
-                "Voice/clothing/tags are metadata for other plugins."
+                "Multi-line appearance = multiple variants. Voice/clothing/tags are metadata for other plugins."
+                + _reserved_note
             )
 
             char_dropdown = gr.Dropdown(
@@ -779,13 +877,8 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
                 return (msg, gr.update(choices=character_manager.list_characters(), value=None)) + ("",) * 6
 
             def _export_characters() -> str:
-                """Export all character profiles as JSON string."""
-                import os, json
-                profiles_path = os.path.join(character_manager._plugin_dir, character_manager.CHARACTERS_SUBDIR, character_manager.PROFILES_FILE)
-                if not os.path.isfile(profiles_path):
-                    return "{}"
-                with open(profiles_path, "r", encoding="utf-8") as f:
-                    return f.read()
+                """Export all character profiles as a JSON string."""
+                return character_manager.export_profiles_json()
 
             def _import_characters(json_str: str) -> tuple[str, gr.update]:
                 if not json_str.strip():
@@ -795,14 +888,9 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
                 except json.JSONDecodeError as e:
                     return f"Invalid JSON: {e}", gr.update()
                 if not isinstance(data, dict):
-                    return "JSON must be an object.", gr.update()
-                # B4: validate each entry — skip names/profiles that are unsafe
-                # or malformed instead of crashing / writing bad data.
-                imported, skipped = character_manager.import_characters(data)
-                msg = f"Imported {imported} character(s)."
-                if skipped:
-                    msg += f" Skipped {skipped} invalid entry(ies)."
-                return msg, gr.update(choices=character_manager.list_characters())
+                    return "JSON must be an object of {name: profile}.", gr.update()
+                result = character_manager.import_profiles(data)
+                return result.summary(), gr.update(choices=character_manager.list_characters())
 
             char_dropdown.change(fn=_load_char, inputs=[char_dropdown], outputs=[char_name, char_appearance, char_voice, char_clothing, char_tags, char_notes])
             char_new_btn.click(fn=_clear_char_form, outputs=[char_name, char_appearance, char_voice, char_clothing, char_tags, char_notes])\
@@ -814,7 +902,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
             char_import_box.submit(fn=_import_characters, inputs=[char_import_box], outputs=[char_msg, char_dropdown])\
                 .then(fn=lambda: gr.update(visible=False), outputs=[char_import_box])
 
-            # ── Wildcard File Browser ───────────────────────────────────
+            # -- Wildcard File Browser -----------------------------------
             gr.Markdown("---")
             gr.Markdown("### 4. Wildcard File Browser")
             gr.Markdown("Subdirectories are auto-created when saving a file with `/` in the name (e.g. `mytheme/sunset.txt`).")
@@ -863,15 +951,13 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
             def _create_file(name: str) -> tuple[str, gr.update, gr.update]:
                 if not name:
                     return "No filename given.", gr.update(), gr.update()
-                # B3: sanitize free-text filename to prevent path traversal
-                safe = expander.sanitize_relative_path(name)
+                safe, error = _validate_wc_target(name)
                 if safe is None:
-                    return "Invalid filename (no absolute paths, '..', or separators other than /).", gr.update(), gr.update()
-                if not safe.endswith(".txt"):
-                    safe += ".txt"
-                msg = _save_file(safe, "")
+                    return error, gr.update(), gr.update()
+                msg = _wc_write_file(safe, "", create_only=True)
                 all_files = _list_wc_files()
-                return msg, gr.update(choices=all_files, value=safe), gr.update(choices=["All"] + _get_categories())
+                value = safe if safe in all_files else None
+                return msg, gr.update(choices=all_files, value=value), gr.update(choices=["All"] + _get_categories())
 
             def _update_filter(search: str, category: str, fav_only: bool):
                 favs = _load_favorites()
@@ -954,7 +1040,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
                 outputs=[file_msg],
             )
 
-            # ── Wildcard Usage Stats ───────────────────────────────────
+            # -- Wildcard Usage Stats -----------------------------------
             gr.Markdown("---")
             gr.Markdown("### 5. Wildcard Usage Stats")
 
@@ -970,7 +1056,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
             stats_output = gr.Textbox(label="Usage Stats", lines=8, interactive=False)
             stats_btn.click(fn=_show_stats, outputs=[stats_output])
 
-            # ── Cross-File Search ─────────────────────────────────────
+            # -- Cross-File Search -------------------------------------
             gr.Markdown("---")
             gr.Markdown("### 6. Cross-File Content Search")
 
@@ -991,32 +1077,141 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
             content_search_btn.click(fn=_search_content, inputs=[content_query], outputs=[content_results])
             content_query.submit(fn=_search_content, inputs=[content_query], outputs=[content_results])
 
-            # ── Prompt Linter ────────────────────────────────────────
+            # -- Prompt Linter ----------------------------------------
             gr.Markdown("---")
-            gr.Markdown("### 7. Prompt Linter")
-            gr.Markdown("Checks the current Prompt Template for `__name__` references that resolve to no wildcard file (typos, renamed/moved wildcards).")
+            gr.Markdown("### 7. Linter")
+            gr.Markdown(
+                "Checks the current Prompt Template for references that resolve to nothing "
+                "(`__name__` typos, `__$var:file__` captures, `__$var__` used without being set), "
+                "and can audit the whole collection for broken nested references."
+            )
 
-            lint_btn = gr.Button("Check Prompt Template")
-            lint_output = gr.Textbox(label="Lint Results", lines=8, interactive=False)
+            with gr.Row():
+                lint_btn = gr.Button("Check Prompt Template", scale=1)
+                lint_all_btn = gr.Button("Audit All Wildcard Files", scale=1)
+            lint_output = gr.Textbox(label="Lint Results", lines=10, interactive=False)
 
             def _lint_prompt(prompt_text: str) -> str:
                 if not prompt_text or not prompt_text.strip():
                     return "Enter a prompt template above first."
-                refs = sorted(set(expander.WILDCARD_RE.findall(prompt_text)))
-                if not refs:
-                    return "No __wildcard__ references found."
-                missing = [r for r in refs if not expander.resolve_wildcard_files(r)]
-                if not missing:
-                    return f"OK — all {len(refs)} wildcard reference(s) resolve."
-                return (
-                    f"{len(missing)} of {len(refs)} reference(s) NOT found on disk:\n"
-                    + "\n".join(f"  __{m}__" for m in sorted(missing))
-                    + "\n\n(Tip: old flat names like __camera_shot__ still resolve via aliases.)"
-                )
+                return linter.format_text_report(linter.lint_text(prompt_text))
+
+            def _lint_collection() -> str:
+                # Preview-style read-only scan: never touch usage stats.
+                with stats_context(False):
+                    report = linter.lint_collection()
+                return linter.format_collection_report(report)
 
             lint_btn.click(fn=_lint_prompt, inputs=[prompt_input], outputs=[lint_output])
+            lint_all_btn.click(fn=_lint_collection, outputs=[lint_output])
+
+            # -- AI Wildcard Generator -------------------------------
+            gr.Markdown("---")
+            gr.Markdown("### 8. AI Wildcard Generator")
+            gr.Markdown(
+                "Invents brand-new wildcard entries for a topic using **Wan2GP's own local LLM** "
+                "(the Prompt Enhancer / Qwen model already installed with Wan2GP) — or, with no "
+                "model loaded, composes variations offline from the wildcards you already have. "
+                "Enable the model in Wan2GP under *Configuration > Extensions > Prompt Enhancer / Deepy*."
+            )
+
+            def _llm() -> ai.PromptEnhancerLLM:
+                return ai.build_llm_from_plugin(self)
+
+            ai_status_output = gr.Textbox(label="Local LLM status", lines=2, interactive=False, value="")
+            ai_topic = gr.Textbox(
+                label="Topic",
+                placeholder="e.g. weathered neon street signs, or ferns, or vintage astronaut helmets",
+                lines=1,
+            )
+            ai_style = gr.Textbox(label="Style / vocabulary hint (optional)", placeholder="e.g. cyberpunk, terse, technical", lines=1)
+            with gr.Row():
+                ai_count = gr.Number(label="Entries", value=24, precision=0, minimum=1, maximum=200, scale=1)
+                ai_temp = gr.Slider(label="Temperature", minimum=0.1, maximum=1.5, value=0.85, step=0.05, scale=2)
+                ai_seed = gr.Number(label="Seed (-1 = random)", value=-1, precision=0, scale=1)
+            with gr.Row():
+                ai_check_btn = gr.Button("Check LLM", size="sm", scale=1)
+                ai_load_btn = gr.Button("Load model now", size="sm", scale=1)
+                ai_gen_btn = gr.Button("Generate with local LLM", variant="primary", scale=2)
+                ai_offline_btn = gr.Button("Compose offline (no LLM)", scale=2)
+            ai_output = gr.TextArea(label="Generated entries (one per line — edit freely)", lines=8)
+            with gr.Row():
+                ai_save_name = gr.Textbox(label="Save as wildcard file", placeholder="e.g. mytheme/neon-signs", scale=2)
+                ai_save_btn = gr.Button("Save as file", scale=1)
+                ai_to_template_btn = gr.Button("Send to Prompt Template", scale=1)
+                ai_to_batch_btn = gr.Button("Send to Variations box", scale=1)
+
+            def _ai_status() -> str:
+                return _llm().status_text()
+
+            def _ai_load():
+                with stats_context(False):
+                    return _llm().warm_up()
+
+            def _ai_generate(topic, count, style, temperature, seed_val):
+                if not topic or not topic.strip():
+                    return "Enter a topic first."
+                with stats_context(False):
+                    llm = _llm()
+                    result = llm.generate_entries(
+                        topic,
+                        count=int(count),
+                        style=style or "",
+                        temperature=float(temperature),
+                        seed=None if seed_val is None or seed_val < 0 else int(seed_val),
+                    )
+                if not result.ok:
+                    return f"{result.error}\n\nGenerated lines so far:\n{result.text()}" if result.entries else result.error
+                return result.text()
+
+            def _ai_compose_offline(topic, count, seed_val):
+                if not topic or not topic.strip():
+                    return "Enter a topic (or a prompt template) first."
+                with stats_context(False):
+                    variations = ai.compose_variations(
+                        topic,
+                        count=int(count),
+                        seed=None if seed_val is None or seed_val < 0 else int(seed_val),
+                    )
+                if not variations:
+                    return "Nothing to compose — check the topic."
+                return "\n".join(variations)
+
+            def _ai_save(name: str, entries: str) -> str:
+                if not name or not name.strip():
+                    return "Enter a target filename first (e.g. mytheme/neon-signs)."
+                lines = [l.strip() for l in (entries or "").splitlines() if l.strip()]
+                if not lines:
+                    return "Nothing to save — generate entries first."
+                return _wc_write_file(name.strip(), "\n".join(lines) + "\n")
+
+            ai_check_btn.click(fn=_ai_status, outputs=[ai_status_output])
+            ai_load_btn.click(fn=_ai_load, outputs=[ai_status_output])
+            ai_gen_btn.click(
+                fn=_ai_generate,
+                inputs=[ai_topic, ai_count, ai_style, ai_temp, ai_seed],
+                outputs=[ai_output],
+            )
+            ai_offline_btn.click(
+                fn=_ai_compose_offline,
+                inputs=[ai_topic, ai_count, ai_seed],
+                outputs=[ai_output],
+            )
+            ai_save_btn.click(fn=_ai_save, inputs=[ai_save_name, ai_output], outputs=[file_msg])
+            ai_to_template_btn.click(
+                fn=lambda text: text,
+                inputs=[ai_output],
+                outputs=[prompt_input],
+            )
+            ai_to_batch_btn.click(
+                fn=lambda text: text,
+                inputs=[ai_output],
+                outputs=[batch_output],
+            )
 
         # return components for lifecycle
         self.file_dropdown = file_dropdown
         self.cat_filter = cat_filter
-        self.on_tab_outputs = [self.file_dropdown, self.cat_filter]
+        self.char_dropdown = char_dropdown
+        self.ai_status_output = ai_status_output
+        self.on_tab_outputs = [self.file_dropdown, self.cat_filter, self.char_dropdown, self.ai_status_output]

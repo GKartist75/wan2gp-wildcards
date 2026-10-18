@@ -73,6 +73,27 @@ def wildcard_path(name: str) -> str:
     return os.path.join(_wildcard_char_dir(), f"{name}.txt")
 
 
+def existing_wildcard(name: str) -> str | None:
+    """The on-disk character file for ``name``, matched case-insensitively.
+
+    Windows resolves ``Aria.txt`` to a shipped ``aria.txt``; Linux does not, so
+    ``os.path.isfile`` alone would let a Linux user create a second, oddly-cased
+    file where a Windows user would be stopped (or, worse, would overwrite the
+    built-in). Comparing against the directory listing keeps both platforms -
+    and the promise that a profile never shadows a shipped character - identical.
+    """
+    char_dir = _wildcard_char_dir()
+    target = f"{name}.txt".lower()
+    try:
+        entries = os.listdir(char_dir)
+    except OSError:
+        return None
+    for entry in entries:
+        if entry.lower() == target:
+            return os.path.join(char_dir, entry)
+    return None
+
+
 def load_profiles() -> dict:
     path = _profiles_path()
     if not os.path.isfile(path):
@@ -179,7 +200,7 @@ def save_character(name: str, profile: dict) -> str:
         return "Character profile must be an object."
     name = safe
     profiles = load_profiles()
-    if name not in profiles and os.path.isfile(wildcard_path(name)):
+    if name not in profiles and existing_wildcard(name):
         return (
             f"'{name}' is a built-in wildcard (wildcards/character/{name}.txt). "
             "Pick a different character name."

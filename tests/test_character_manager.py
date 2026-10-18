@@ -114,6 +114,22 @@ def test_save_refuses_to_clobber_builtin_wildcard(tmp_plugin):
     assert character_manager.get_character("age") is None
 
 
+def test_builtin_guard_ignores_case(tmp_plugin):
+    """A shipped `aria.txt` must also block a profile named `ARIA`.
+
+    Windows resolves both names to one file, so `os.path.isfile` catches this
+    there; on Linux it does not, and the guard used to let a second, oddly-cased
+    file appear next to the shipped one.
+    """
+    shipped = _shipped(tmp_plugin, "aria")
+    message = character_manager.save_character("ARIA", {"appearance": "mine"})
+    assert "built-in" in message
+    assert character_manager.get_character("ARIA") is None
+    with open(shipped, encoding="utf-8") as handle:
+        assert handle.read() == "built-in value\n"
+    assert os.listdir(os.path.dirname(shipped)) == ["aria.txt"]
+
+
 def test_save_can_update_a_profile_it_owns(tmp_plugin):
     assert "saved" in character_manager.save_character("Hero", {"appearance": "one"})
     assert "saved" in character_manager.save_character("Hero", {"appearance": "two"})

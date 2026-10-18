@@ -4,7 +4,7 @@ Wildcard prompt expansion plugin for [Wan2GP](https://github.com/deepbeepmeep/Wa
 
 **3,017 wildcard files** · **313,000+ values** · **78 category directories** · **727 legacy aliases** · one-click local-LLM prompt generation.
 
-> **v1.7.0** — Data-integrity release. Every broken nested reference is fixed, every path is
+> **v1.7.1** — Data-integrity release. Every broken nested reference is fixed, every path is
 > lowercase (so the collection works on Linux/Colab, not just Windows), duplicates are gone, and a
 > test suite plus a built-in auditor now guard the whole collection. Also new: an **AI Wildcard
 > Generator** that invents new entries using Wan2GP's own local LLM (with a fully offline fallback),
@@ -198,7 +198,7 @@ Search the *contents* of every wildcard file at once (capped at 500 results, lon
 ## Testing
 
 ```bash
-python -m pytest          # from the repo root: 137 tests
+python -m pytest          # from the repo root: 139 tests
 ```
 
 You can also run it from inside `tests/`. No Wan2GP install is required — the tests stub the Gradio
@@ -255,13 +255,27 @@ and names every failed check.
 
 ## Changelog
 
+### v1.7.1 — Case-insensitive lookup fixed on Linux
+
+* **Bug**: a wrong-case reference such as `__CAMERA/SHOT__` returned literal text on Linux, Colab and
+  Docker while working fine on Windows. Segment matching compared `SHOT` against the file `shot.txt`
+  and gave up, then fell through to a `glob` that only forgives the wrong case on a case-insensitive
+  filesystem. The resolver now also matches a `.txt` stem, so the lookup no longer depends on the
+  host filesystem at all. Found by the new Linux CI job on its very first run.
+* **Bug**: the same assumption hid in the character guard: on Linux a profile named `ARIA` slipped
+  past the check that protects a shipped `character/aria.txt` (on Windows both names are one file).
+  The guard now compares against the directory listing, so a profile can never shadow a built-in.
+* **Tests**: 139 tests. The new regression test swaps in a strict, Linux-like `glob`, so this class of
+  bug now fails on Windows too instead of hiding until CI.
+
 ### v1.7.0 — Data integrity, AI generation, auditing
 
 * **Data**: repaired every broken nested reference (AD&D, Cthulhu, wings), removed duplicate values
   and empty files, stripped trailing whitespace, and verified all 3,017 files decode as UTF-8.
 * **Cross-platform**: all 521 uppercase wildcard paths are now lowercase. On case-sensitive
   filesystems (Linux, Colab, Docker) those lookups previously fell through to literal `__name__`
-  text. A case-insensitive resolution fallback covers prompts written with any casing.
+  text. A case-insensitive resolution fallback covers prompts written with any casing (the file-segment
+  half of that fallback was still Windows-only until v1.7.1).
 * **Engine**: `expander.py` slimmed down (aliases extracted to `aliases.py`), hardened against
   recursion, unreadable directories and Windows-reserved filenames, with a bounded thread-safe file
   cache and a public `capture_files()` / `reference_names()` API.
@@ -283,7 +297,7 @@ and names every failed check.
 * **Layout**: the **AI Wildcard Generator** moved up to section 2, directly after the Prompt Builder,
   since it is the first thing most people reach for; templates and the auditing tools follow.
 * **Docs**: accurate index and stats, no duplicated infographic, new troubleshooting section.
-* **Tests**: 137 unit tests, collection-wide integrity checks, a guard pinning the `create_ui`
+* **Tests**: 139 unit tests, collection-wide integrity checks, a guard pinning the `create_ui`
   signature, an optional `tests/integration_wan2gp.py` that drives the real Wan2GP loader and Gradio
   (that is what caught the wrongly wrapped Generate button), and CI on Windows + Linux.
 

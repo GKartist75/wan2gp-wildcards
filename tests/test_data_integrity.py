@@ -101,6 +101,37 @@ def test_resolution_is_case_insensitive():
     assert expander.WILDCARD_RE  # sanity: module loaded
 
 
+def test_resolution_does_not_lean_on_a_case_insensitive_filesystem(monkeypatch):
+    """The same lookup has to work where the filesystem is case-sensitive.
+
+    Windows forgives a wrong-case path twice over: the filesystem resolves the
+    directory and glob matches the filename, so a broken segment lookup stays
+    invisible until the ubuntu job runs. Substitute a strict, Linux-like glob and
+    prove the direct segment-by-segment lookup does the work by itself.
+    """
+    real_glob = expander.globmod.glob
+
+    def strict_glob(pattern):
+        hits = []
+        for hit in real_glob(pattern):
+            current = expander.WILDCARDS_DIR
+            relative = os.path.relpath(hit, expander.WILDCARDS_DIR).replace("\\", "/")
+            # Accept only when every segment matches on-disk casing exactly.
+            for part in relative.split("/"):
+                if part not in expander._listdir(current):
+                    break
+                current = os.path.join(current, part)
+            else:
+                hits.append(hit)
+        return hits
+
+    monkeypatch.setattr(expander.globmod, "glob", strict_glob)
+    expander.invalidate_cache()
+    canonical = expander.resolve_wildcard_files("camera/shot")
+    assert canonical
+    assert expander.resolve_wildcard_files("CAMERA/SHOT") == canonical
+
+
 def test_no_trailing_whitespace():
     offenders = []
     for full in expander.iter_wildcard_files(WILDCARDS):

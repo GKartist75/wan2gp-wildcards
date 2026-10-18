@@ -69,6 +69,29 @@ def _listdir(path: str) -> list[str]:
         return []
 
 
+def _match_entry(entries: list[str], part: str) -> str | None:
+    """Pick the on-disk entry named ``part``, ignoring case.
+
+    Three passes, best match first: the exact name, then a case-insensitive full
+    name (directories, extension-less files), then a case-insensitive ``.txt``
+    *stem*. That last pass is what makes ``__CAMERA/SHOT__`` find ``shot.txt``:
+    without it the segment ``SHOT`` matches nothing, and resolution used to fall
+    through to glob, which only forgives the wrong case on a case-insensitive
+    filesystem - so a capitalised reference worked on Windows and silently
+    returned nothing on Linux/Colab.
+    """
+    if part in entries:
+        return part
+    lowered = part.lower()
+    for entry in entries:
+        if entry.lower() == lowered:
+            return entry
+    for entry in entries:
+        if entry.lower().endswith(".txt") and entry[:-4].lower() == lowered:
+            return entry
+    return None
+
+
 def _resolve_path_ci(rel: str) -> str | None:
     """Resolve ``rel`` under WILDCARDS_DIR, matching each segment case-insensitively.
 
@@ -80,12 +103,7 @@ def _resolve_path_ci(rel: str) -> str | None:
     for part in rel.replace("\\", "/").split("/"):
         if not part:
             continue
-        entries = _listdir(current)
-        if part in entries:
-            current = os.path.join(current, part)
-            continue
-        lowered = part.lower()
-        match = next((e for e in entries if e.lower() == lowered), None)
+        match = _match_entry(_listdir(current), part)
         if match is None:
             return None
         current = os.path.join(current, match)

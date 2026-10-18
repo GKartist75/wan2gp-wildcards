@@ -107,9 +107,9 @@ name** (`wan2gp-wildcards`). Restart Wan2GP, then enable **Wildcards** in Settin
 
 ## Usage Guide
 
-The plugin adds one tab with eight sections: **Prompt Builder**, **Prompt Templates**,
-**Character Profiles**, **Wildcard File Browser**, **Usage Stats**, **Cross-File Search**,
-**Linter** and **AI Wildcard Generator**.
+The plugin adds one tab with eight sections: **Prompt Builder**, **AI Wildcard Generator**,
+**Prompt Templates**, **Character Profiles**, **Wildcard File Browser**, **Usage Stats**,
+**Cross-File Search** and **Linter**.
 
 ### 1. Prompt Builder
 
@@ -124,57 +124,7 @@ Type a template, pick a seed, hit **Generate 1 row** or **Generate N**.
 * **Inline autocomplete**: type `__` in the Prompt Template box and a dropdown of matching wildcards
   appears at the cursor. Arrow keys / Enter / Tab / click to insert, Escape to dismiss.
 
-### 2. Prompt Templates
-
-Save prompts with their wildcards **intact** (not expanded) and reload them later:
-type a template, enter a name, **Save Current**; select one and **Load** to restore it.
-**Delete** removes it. Stored in `wildcards/__templates__.json`.
-
-### 3. Character Profiles
-
-Named characters, each synced to a wildcard file so `__character/Name__` works like any other
-wildcard.
-
-* **Save** writes `wildcards/character/{Name}.txt` (one line per variation) and stores the profile
-  in `characters/profiles.json`.
-* Multi-line **appearance** becomes multiple variants of the wildcard.
-* **Export JSON** / **Import JSON** round-trip all profiles. Imports are validated: unsafe names,
-  non-object profiles and attempts to overwrite a shipped wildcard are skipped and reported.
-* Names already used by a shipped wildcard in `wildcards/character/` (`age`, `archetype`, `body`,
-  `gender`, `identity`, `phrase`, `profession`, `species`) are **reserved** — the UI lists them and
-  refuses to overwrite them.
-* Profiles are written atomically (temp file + rename), so a crash cannot truncate `profiles.json`.
-
-### 4. Wildcard File Browser
-
-* **Create** — new file; subdirectories are created automatically (`mytheme/sunset.txt`).
-* **Rename** / **Save** / **Delete** — standard file management.
-* **★ Toggle Favorite** + **★ Favorites only** — keep favourites handy.
-* **Search** filters files by name.
-* Create / Rename / Save reject absolute paths, `..` traversal, drive letters and Windows-reserved
-  names, and refuse to touch the plugin's own `__`-prefixed metadata files.
-
-### 5. Wildcard Usage Stats
-
-`__stats__.json` tracks how often each wildcard file is used. Click
-**Show Top 50 Used Wildcards** for your most-used pools. Counts are buffered in memory and flushed
-when you leave the tab or exit the app — previews never pollute real usage counts.
-
-### 6. Cross-File Content Search
-
-Search the *contents* of every wildcard file at once (capped at 500 results, long lines skipped).
-
-### 7. Linter
-
-* **Check Prompt Template** — flags anything in the current template that resolves to nothing:
-  a mistyped `__name__`, a `__$var:missing/file__` capture pointing at a pool that does not exist,
-  or a `__$var__` used without ever being set. It uses the *real* resolver, so aliases and
-  case-insensitive names resolve exactly as they will during generation.
-* **Audit All Wildcard Files** — walks the whole collection and reports unresolved nested
-  references, empty files, duplicate values and broken aliases. On a healthy collection it prints a
-  one-line summary instead of a wall of text.
-
-### 8. AI Wildcard Generator
+### 2. AI Wildcard Generator
 
 Invent brand-new wildcard entries for any topic using **Wan2GP's own local LLM** — the Prompt
 Enhancer / Qwen model that may already be installed with Wan2GP — or compose variations **offline**
@@ -192,6 +142,56 @@ from the wildcards you already have.
    Template**, or **Send to Variations box**.
 
 Nothing is sent to the internet: the generator reuses Wan2GP's local model runtime.
+
+### 3. Prompt Templates
+
+Save prompts with their wildcards **intact** (not expanded) and reload them later:
+type a template, enter a name, **Save Current**; select one and **Load** to restore it.
+**Delete** removes it. Stored in `wildcards/__templates__.json`.
+
+### 4. Character Profiles
+
+Named characters, each synced to a wildcard file so `__character/Name__` works like any other
+wildcard.
+
+* **Save** writes `wildcards/character/{Name}.txt` (one line per variation) and stores the profile
+  in `characters/profiles.json`.
+* Multi-line **appearance** becomes multiple variants of the wildcard.
+* **Export JSON** / **Import JSON** round-trip all profiles. Imports are validated: unsafe names,
+  non-object profiles and attempts to overwrite a shipped wildcard are skipped and reported.
+* Names already used by a shipped wildcard in `wildcards/character/` (`age`, `archetype`, `body`,
+  `gender`, `identity`, `phrase`, `profession`, `species`) are **reserved** — the UI lists them and
+  refuses to overwrite them.
+* Profiles are written atomically (temp file + rename), so a crash cannot truncate `profiles.json`.
+
+### 5. Wildcard File Browser
+
+* **Create** — new file; subdirectories are created automatically (`mytheme/sunset.txt`).
+* **Rename** / **Save** / **Delete** — standard file management.
+* **★ Toggle Favorite** + **★ Favorites only** — keep favourites handy.
+* **Search** filters files by name.
+* Create / Rename / Save reject absolute paths, `..` traversal, drive letters and Windows-reserved
+  names, and refuse to touch the plugin's own `__`-prefixed metadata files.
+
+### 6. Wildcard Usage Stats
+
+`__stats__.json` tracks how often each wildcard file is used. Click
+**Show Top 50 Used Wildcards** for your most-used pools. Counts are buffered in memory and flushed
+when you leave the tab or exit the app — previews never pollute real usage counts.
+
+### 7. Cross-File Content Search
+
+Search the *contents* of every wildcard file at once (capped at 500 results, long lines skipped).
+
+### 8. Linter
+
+* **Check Prompt Template** — flags anything in the current template that resolves to nothing:
+  a mistyped `__name__`, a `__$var:missing/file__` capture pointing at a pool that does not exist,
+  or a `__$var__` used without ever being set. It uses the *real* resolver, so aliases and
+  case-insensitive names resolve exactly as they will during generation.
+* **Audit All Wildcard Files** — walks the whole collection and reports unresolved nested
+  references, empty files, duplicate values and broken aliases. On a healthy collection it prints a
+  one-line summary instead of a wall of text.
 
 ---
 
@@ -265,6 +265,8 @@ non-UTF-8 file, or a documentation example that points at a wildcard that does n
   signature.
 * **Hygiene**: `wildcards/__stats__.json` is gitignored and no longer tracked — it is per-machine
   usage data, not collection data.
+* **Layout**: the **AI Wildcard Generator** moved up to section 2, directly after the Prompt Builder,
+  since it is the first thing most people reach for; templates and the auditing tools follow.
 * **Docs**: accurate index and stats, no duplicated infographic, new troubleshooting section.
 * **Tests**: 137 tests, including collection-wide integrity checks, the plain-constructor guard and
   a CI workflow.

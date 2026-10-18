@@ -762,9 +762,114 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
                 outputs=[self.main_tabs],
             )
 
+            # -- AI Wildcard Generator -------------------------------
+            gr.Markdown("---")
+            gr.Markdown("### 2. AI Wildcard Generator")
+            gr.Markdown(
+                "Invents brand-new wildcard entries for a topic using **Wan2GP's own local LLM** "
+                "(the Prompt Enhancer / Qwen model already installed with Wan2GP) — or, with no "
+                "model loaded, composes variations offline from the wildcards you already have. "
+                "Enable the model in Wan2GP under *Configuration > Extensions > Prompt Enhancer / Deepy*."
+            )
+
+            def _llm() -> ai.PromptEnhancerLLM:
+                return ai.build_llm_from_plugin(self)
+
+            ai_status_output = gr.Textbox(label="Local LLM status", lines=2, interactive=False, value="")
+            ai_topic = gr.Textbox(
+                label="Topic",
+                placeholder="e.g. weathered neon street signs, or ferns, or vintage astronaut helmets",
+                lines=1,
+            )
+            ai_style = gr.Textbox(label="Style / vocabulary hint (optional)", placeholder="e.g. cyberpunk, terse, technical", lines=1)
+            with gr.Row():
+                ai_count = gr.Number(label="Entries", value=24, precision=0, minimum=1, maximum=200, scale=1)
+                ai_temp = gr.Slider(label="Temperature", minimum=0.1, maximum=1.5, value=0.85, step=0.05, scale=2)
+                ai_seed = gr.Number(label="Seed (-1 = random)", value=-1, precision=0, scale=1)
+            with gr.Row():
+                ai_check_btn = gr.Button("Check LLM", size="sm", scale=1)
+                ai_load_btn = gr.Button("Load model now", size="sm", scale=1)
+                ai_gen_btn = gr.Button("Generate with local LLM", variant="primary", scale=2)
+                ai_offline_btn = gr.Button("Compose offline (no LLM)", scale=2)
+            ai_output = gr.TextArea(label="Generated entries (one per line — edit freely)", lines=8)
+            ai_msg = gr.Textbox(label="Save result", interactive=False)
+            with gr.Row():
+                ai_save_name = gr.Textbox(label="Save as wildcard file", placeholder="e.g. mytheme/neon-signs", scale=2)
+                ai_save_btn = gr.Button("Save as file", scale=1)
+                ai_to_template_btn = gr.Button("Send to Prompt Template", scale=1)
+                ai_to_batch_btn = gr.Button("Send to Variations box", scale=1)
+
+            def _ai_status() -> str:
+                return _llm().status_text()
+
+            def _ai_load():
+                with stats_context(False):
+                    return _llm().warm_up()
+
+            def _ai_generate(topic, count, style, temperature, seed_val):
+                if not topic or not topic.strip():
+                    return "Enter a topic first."
+                with stats_context(False):
+                    llm = _llm()
+                    result = llm.generate_entries(
+                        topic,
+                        count=int(count),
+                        style=style or "",
+                        temperature=float(temperature),
+                        seed=None if seed_val is None or seed_val < 0 else int(seed_val),
+                    )
+                if not result.ok:
+                    return f"{result.error}\n\nGenerated lines so far:\n{result.text()}" if result.entries else result.error
+                return result.text()
+
+            def _ai_compose_offline(topic, count, seed_val):
+                if not topic or not topic.strip():
+                    return "Enter a topic (or a prompt template) first."
+                with stats_context(False):
+                    variations = ai.compose_variations(
+                        topic,
+                        count=int(count),
+                        seed=None if seed_val is None or seed_val < 0 else int(seed_val),
+                    )
+                if not variations:
+                    return "Nothing to compose — check the topic."
+                return "\n".join(variations)
+
+            def _ai_save(name: str, entries: str) -> str:
+                if not name or not name.strip():
+                    return "Enter a target filename first (e.g. mytheme/neon-signs)."
+                lines = [l.strip() for l in (entries or "").splitlines() if l.strip()]
+                if not lines:
+                    return "Nothing to save — generate entries first."
+                return _wc_write_file(name.strip(), "\n".join(lines) + "\n")
+
+            ai_check_btn.click(fn=_ai_status, outputs=[ai_status_output])
+            ai_load_btn.click(fn=_ai_load, outputs=[ai_status_output])
+            ai_gen_btn.click(
+                fn=_ai_generate,
+                inputs=[ai_topic, ai_count, ai_style, ai_temp, ai_seed],
+                outputs=[ai_output],
+            )
+            ai_offline_btn.click(
+                fn=_ai_compose_offline,
+                inputs=[ai_topic, ai_count, ai_seed],
+                outputs=[ai_output],
+            )
+            ai_save_btn.click(fn=_ai_save, inputs=[ai_save_name, ai_output], outputs=[ai_msg])
+            ai_to_template_btn.click(
+                fn=lambda text: text,
+                inputs=[ai_output],
+                outputs=[prompt_input],
+            )
+            ai_to_batch_btn.click(
+                fn=lambda text: text,
+                inputs=[ai_output],
+                outputs=[batch_output],
+            )
+
             # -- Prompt Templates --------------------------------------
             gr.Markdown("---")
-            gr.Markdown("### 2. Prompt Templates")
+            gr.Markdown("### 3. Prompt Templates")
             gr.Markdown("Save and reuse prompt templates with wildcards intact (not expanded).")
 
             file_msg = gr.Textbox(label="Result", interactive=False)
@@ -831,7 +936,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
             # -- Character Profiles --------------------------------------
             gr.Markdown("---")
-            gr.Markdown("### 3. Character Profiles")
+            gr.Markdown("### 4. Character Profiles")
             _reserved = character_manager.reserved_names()
             _reserved_note = (
                 "\n\nReserved names (built-in wildcard lists — pick something else): "
@@ -919,7 +1024,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
             # -- Wildcard File Browser -----------------------------------
             gr.Markdown("---")
-            gr.Markdown("### 4. Wildcard File Browser")
+            gr.Markdown("### 5. Wildcard File Browser")
             gr.Markdown("Subdirectories are auto-created when saving a file with `/` in the name (e.g. `mytheme/sunset.txt`).")
 
             with gr.Row():
@@ -1057,7 +1162,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
             # -- Wildcard Usage Stats -----------------------------------
             gr.Markdown("---")
-            gr.Markdown("### 5. Wildcard Usage Stats")
+            gr.Markdown("### 6. Wildcard Usage Stats")
 
             def _show_stats() -> str:
                 stats = _load_stats()
@@ -1073,7 +1178,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
             # -- Cross-File Search -------------------------------------
             gr.Markdown("---")
-            gr.Markdown("### 6. Cross-File Content Search")
+            gr.Markdown("### 7. Cross-File Content Search")
 
             with gr.Row():
                 content_query = gr.Textbox(
@@ -1094,7 +1199,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
             # -- Prompt Linter ----------------------------------------
             gr.Markdown("---")
-            gr.Markdown("### 7. Linter")
+            gr.Markdown("### 8. Linter")
             gr.Markdown(
                 "Checks the current Prompt Template for references that resolve to nothing "
                 "(`__name__` typos, `__$var:file__` captures, `__$var__` used without being set), "
@@ -1119,110 +1224,6 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
             lint_btn.click(fn=_lint_prompt, inputs=[prompt_input], outputs=[lint_output])
             lint_all_btn.click(fn=_lint_collection, outputs=[lint_output])
-
-            # -- AI Wildcard Generator -------------------------------
-            gr.Markdown("---")
-            gr.Markdown("### 8. AI Wildcard Generator")
-            gr.Markdown(
-                "Invents brand-new wildcard entries for a topic using **Wan2GP's own local LLM** "
-                "(the Prompt Enhancer / Qwen model already installed with Wan2GP) — or, with no "
-                "model loaded, composes variations offline from the wildcards you already have. "
-                "Enable the model in Wan2GP under *Configuration > Extensions > Prompt Enhancer / Deepy*."
-            )
-
-            def _llm() -> ai.PromptEnhancerLLM:
-                return ai.build_llm_from_plugin(self)
-
-            ai_status_output = gr.Textbox(label="Local LLM status", lines=2, interactive=False, value="")
-            ai_topic = gr.Textbox(
-                label="Topic",
-                placeholder="e.g. weathered neon street signs, or ferns, or vintage astronaut helmets",
-                lines=1,
-            )
-            ai_style = gr.Textbox(label="Style / vocabulary hint (optional)", placeholder="e.g. cyberpunk, terse, technical", lines=1)
-            with gr.Row():
-                ai_count = gr.Number(label="Entries", value=24, precision=0, minimum=1, maximum=200, scale=1)
-                ai_temp = gr.Slider(label="Temperature", minimum=0.1, maximum=1.5, value=0.85, step=0.05, scale=2)
-                ai_seed = gr.Number(label="Seed (-1 = random)", value=-1, precision=0, scale=1)
-            with gr.Row():
-                ai_check_btn = gr.Button("Check LLM", size="sm", scale=1)
-                ai_load_btn = gr.Button("Load model now", size="sm", scale=1)
-                ai_gen_btn = gr.Button("Generate with local LLM", variant="primary", scale=2)
-                ai_offline_btn = gr.Button("Compose offline (no LLM)", scale=2)
-            ai_output = gr.TextArea(label="Generated entries (one per line — edit freely)", lines=8)
-            with gr.Row():
-                ai_save_name = gr.Textbox(label="Save as wildcard file", placeholder="e.g. mytheme/neon-signs", scale=2)
-                ai_save_btn = gr.Button("Save as file", scale=1)
-                ai_to_template_btn = gr.Button("Send to Prompt Template", scale=1)
-                ai_to_batch_btn = gr.Button("Send to Variations box", scale=1)
-
-            def _ai_status() -> str:
-                return _llm().status_text()
-
-            def _ai_load():
-                with stats_context(False):
-                    return _llm().warm_up()
-
-            def _ai_generate(topic, count, style, temperature, seed_val):
-                if not topic or not topic.strip():
-                    return "Enter a topic first."
-                with stats_context(False):
-                    llm = _llm()
-                    result = llm.generate_entries(
-                        topic,
-                        count=int(count),
-                        style=style or "",
-                        temperature=float(temperature),
-                        seed=None if seed_val is None or seed_val < 0 else int(seed_val),
-                    )
-                if not result.ok:
-                    return f"{result.error}\n\nGenerated lines so far:\n{result.text()}" if result.entries else result.error
-                return result.text()
-
-            def _ai_compose_offline(topic, count, seed_val):
-                if not topic or not topic.strip():
-                    return "Enter a topic (or a prompt template) first."
-                with stats_context(False):
-                    variations = ai.compose_variations(
-                        topic,
-                        count=int(count),
-                        seed=None if seed_val is None or seed_val < 0 else int(seed_val),
-                    )
-                if not variations:
-                    return "Nothing to compose — check the topic."
-                return "\n".join(variations)
-
-            def _ai_save(name: str, entries: str) -> str:
-                if not name or not name.strip():
-                    return "Enter a target filename first (e.g. mytheme/neon-signs)."
-                lines = [l.strip() for l in (entries or "").splitlines() if l.strip()]
-                if not lines:
-                    return "Nothing to save — generate entries first."
-                return _wc_write_file(name.strip(), "\n".join(lines) + "\n")
-
-            ai_check_btn.click(fn=_ai_status, outputs=[ai_status_output])
-            ai_load_btn.click(fn=_ai_load, outputs=[ai_status_output])
-            ai_gen_btn.click(
-                fn=_ai_generate,
-                inputs=[ai_topic, ai_count, ai_style, ai_temp, ai_seed],
-                outputs=[ai_output],
-            )
-            ai_offline_btn.click(
-                fn=_ai_compose_offline,
-                inputs=[ai_topic, ai_count, ai_seed],
-                outputs=[ai_output],
-            )
-            ai_save_btn.click(fn=_ai_save, inputs=[ai_save_name, ai_output], outputs=[file_msg])
-            ai_to_template_btn.click(
-                fn=lambda text: text,
-                inputs=[ai_output],
-                outputs=[prompt_input],
-            )
-            ai_to_batch_btn.click(
-                fn=lambda text: text,
-                inputs=[ai_output],
-                outputs=[batch_output],
-            )
 
         # return components for lifecycle
         self.file_dropdown = file_dropdown

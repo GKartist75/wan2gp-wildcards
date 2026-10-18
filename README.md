@@ -198,16 +198,31 @@ Search the *contents* of every wildcard file at once (capped at 500 results, lon
 ## Testing
 
 ```bash
-python -m pytest          # from the repo root
+python -m pytest          # from the repo root: 137 tests
 ```
 
 You can also run it from inside `tests/`. No Wan2GP install is required — the tests stub the Gradio
 and `shared.*` imports and exercise the real `expander`, `linter`, `ai`, `character_manager` and
-`plugin` modules.
+`plugin` modules. CI runs the suite on Windows and Linux, on Python 3.10 and 3.13.
 
 The suite includes collection-wide integrity checks that fail the build if anyone
 re-introduces a broken nested reference, an uppercase path, a duplicate value, trailing whitespace, a
 non-UTF-8 file, or a documentation example that points at a wildcard that does not exist.
+
+### Optional: the real Wan2GP loader
+
+`tests/integration_wan2gp.py` does not use the stubs. It drives the plugin through Wan2GP's own
+loader and Gradio, so it checks what the unit suite cannot: the import path for a hyphenated plugin
+directory, the constructor-signature contract with `create_ui`, that the tab really renders, that its
+sections appear in the documented order, and that expansion fires inside Wan2GP's own
+`prompt_parser`. Run it with Wan2GP's interpreter:
+
+```bash
+C:\Wan2GP\env_uv\Scripts\python.exe tests\integration_wan2gp.py
+```
+
+Set `WAN2GP_ROOT` (and optionally `WAN2GP_PLUGIN_ID`) if Wan2GP lives elsewhere. It exits non-zero
+and names every failed check.
 
 ### Repository layout
 
@@ -220,7 +235,7 @@ non-UTF-8 file, or a documentation example that points at a wildcard that does n
 | `linter.py` | Prompt and collection linting |
 | `character_manager.py` | Profile store + wildcard sync |
 | `wildcards/` | The collection itself (`__index__.txt` is a human-readable catalog) |
-| `tests/` | pytest suite |
+| `tests/` | pytest suite, plus `integration_wan2gp.py` for real-loader checks |
 
 ---
 
@@ -268,8 +283,9 @@ non-UTF-8 file, or a documentation example that points at a wildcard that does n
 * **Layout**: the **AI Wildcard Generator** moved up to section 2, directly after the Prompt Builder,
   since it is the first thing most people reach for; templates and the auditing tools follow.
 * **Docs**: accurate index and stats, no duplicated infographic, new troubleshooting section.
-* **Tests**: 137 tests, including collection-wide integrity checks, the plain-constructor guard and
-  a CI workflow.
+* **Tests**: 137 unit tests, collection-wide integrity checks, a guard pinning the `create_ui`
+  signature, an optional `tests/integration_wan2gp.py` that drives the real Wan2GP loader and Gradio
+  (that is what caught the wrongly wrapped Generate button), and CI on Windows + Linux.
 
 ### v1.6.4 — Bug fixes, performance, prompt linter
 

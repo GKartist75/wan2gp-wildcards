@@ -356,7 +356,26 @@ def expand_prompt(prompt: str, seed: int | None = None) -> str:
     if not prompt or not WILDCARDS_DIR:
         return prompt
 
-    rng = random.Random(seed)
+    return expand_prompt_with_rng(prompt, random.Random(seed))
+
+
+def expand_prompt_with_rng(prompt: str, rng: random.Random) -> str:
+    """Expand ``prompt`` using a caller-supplied RNG.
+
+    Batch generation and previews need to control the RNG themselves (so a seed
+    box produces reproducible variations) without importing the private
+    recursive expander, so this is the supported entry point for that.
+
+    Args:
+        prompt: Input prompt string.
+        rng: The random.Random instance to draw picks from.
+
+    Returns:
+        Expanded prompt string.
+    """
+    if not prompt or not WILDCARDS_DIR:
+        return prompt
+
     return _expand_text(prompt, rng, depth=0)
 
 

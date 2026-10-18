@@ -210,5 +210,25 @@ def test_cache_invalidates_on_file_change():
         expander.set_wildcards_dir(os.path.join(REPO_ROOT, "wildcards"))
 
 
+def test_expand_prompt_with_rng_matches_a_seeded_expansion():
+    prompt = "A __camera/shot__ of __color/named__"
+    expected = expander.expand_prompt(prompt, seed=4242)
+    assert expander.expand_prompt_with_rng(prompt, random.Random(4242)) == expected
+
+
+def test_expand_prompt_with_rng_lets_the_caller_control_picks():
+    # Two different RNG draws from the same prompt must be able to differ, which
+    # is what batch generation relies on.
+    prompt = "__color/named__"
+    first = expander.expand_prompt_with_rng(prompt, random.Random(1))
+    second = expander.expand_prompt_with_rng(prompt, random.Random(2))
+    assert first != second
+
+
+def test_expand_prompt_with_rng_passes_through_empty_text():
+    assert expander.expand_prompt_with_rng("", random.Random(1)) == ""
+    assert expander.expand_prompt_with_rng(None, random.Random(1)) is None
+
+
 if __name__ == "__main__":
     raise SystemExit(pytest.main([__file__, "-v"]))

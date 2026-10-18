@@ -696,7 +696,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
                 # restore the tracking flag even if expansion raises.
                 with stats_context(False):
                     rng = random.Random(seed_val if seed_val >= 0 else None)
-                    return expander._expand_text(prompt, rng, depth=0)
+                    return expander.expand_prompt_with_rng(prompt, rng)
 
             def _generate_batch(prompt_template: str, count: int, seed_mode: str) -> str:
                 if not prompt_template:
@@ -721,7 +721,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
                             rng = random.Random(base_seed * 1000003 + attempts)
                         else:
                             rng = random.Random()
-                        expanded = expander._expand_text(prompt_template, rng, depth=0)
+                        expanded = expander.expand_prompt_with_rng(prompt_template, rng)
                         if expanded not in seen:
                             seen.add(expanded)
                             lines.append(expanded)

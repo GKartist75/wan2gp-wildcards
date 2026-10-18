@@ -1,12 +1,12 @@
 {
-  "camera_shot.txt": 1,
-  "CAMERA_SHOT.txt": 1,
-  "creatures_wings.txt": 1,
-  "style.txt": 3,
-  "lighting.txt": 3,
-  "composition.txt": 3,
-  "color-palette.txt": 3,
-  "mood.txt": 3,
-  "camera.txt": 3,
-  "quality.txt": 3
+  "camera_shot.txt": 2,
+  "CAMERA_SHOT.txt": 2,
+  "creatures_wings.txt": 2,
+  "style.txt": 6,
+  "lighting.txt": 6,
+  "composition.txt": 6,
+  "color-palette.txt": 6,
+  "mood.txt": 6,
+  "camera.txt": 6,
+  "quality.txt": 6
 }

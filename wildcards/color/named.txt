@@ -92,11 +92,8 @@ palladium
 rhodium
 Advent Purple
 Agreeable Gray
-Aluminum
 Amaranth
-Amber
 Amber Brown
-Amethyst
 Antique Gray
 Apricot
 Army Brown
@@ -115,7 +112,6 @@ Blood Red
 Blue Screen of Death
 Bone
 Birch
-Brass
 Bright Red
 Brick Red
 Bright Green
@@ -131,29 +127,22 @@ Burlap Brown
 Burnt Orange
 Camel
 Carolina Blue
-Caramel
 Carnation Pink
 Celadon
 Cetacean Blue
-Cerise
 Champagne Pink
 Coffee Brown
 Chambray Blue
-Chartreuse
 Cherry Blossom Pink
 Cherry Red
 Chocolate Brown
-Chrome
 Christmas Red
 Cloud Burst Blue
 Cobalt Blue
 Columbia Green
 Comic Book Red
 Concrete
-Copper
 Coyote Brown
-Cream
-Crimson
 Cement Gray
 Charcoal Gray
 Cool Gray
@@ -166,7 +155,6 @@ Comic Book Yellow
 Construction Orange
 Coral Pink
 Cotton Candy Pink
-Cyan
 Christmas Green
 Cornflower Blue
 Cortana Blue
@@ -225,13 +213,11 @@ Heather Gray
 Heliconia
 Highlighter Pink
 Honolulu Blue
-Hot Pink
 Hunter Blaze Orange
 Hunter Green
 Ice Gray
 Indigo Blue
 Irish Green
-Ivory
 Jade Green
 Kelly Green
 King Blue
@@ -250,17 +236,13 @@ Lip Pink
 Light Pink
 Legendary Gray
 Light Gray
-Lavender
 Light purple
-Lilac
 Light Zerg Purple
 Lime Green
 Linen
 Legal Pad Yellow
 Lemon Yellow
 Light Yellow
-Magenta
-Mauve
 Mint Blue
 Marines Blue
 Malibu Blue
@@ -276,7 +258,6 @@ Millennial Pink
 Midnight Green
 Military Green
 Mint Green
-Mocha
 Monarch Orange
 Moss
 Mulberry
@@ -306,7 +287,6 @@ Pine Green
 Pale Gold
 Pastel Blue
 Pastel Red
-Pewter
 Plum Purple
 Pale Yellow
 Pastel Gray
@@ -325,7 +305,6 @@ Periwinkle
 Petrol
 Pale Blue
 Paper Bag Brown
-Platinum
 Pumpkin Spice Orange
 Road Sign Yellow
 Rich Gray
@@ -381,7 +360,6 @@ Teal Blue
 Templeton Gray
 Tennis Court Blue
 Tennis Court Green
-Terracotta
 Tiger Orange
 Timberwolf Gray
 Tortoise Shell Brown
@@ -392,7 +370,6 @@ Varsity Red
 Vermillion
 Very Gray
 Vibrant Pink
-Violet
 Viridian
 Watermelon
 Whiskey Brown
@@ -404,11 +381,8 @@ Wine Red
 Yellow Green
 hazel
 grey
-Sapphire
 aquamarine
-dark brown
 ice blue
-light blue
 grey-blue
 aqua background
 beige background

@@ -108,14 +108,19 @@ _PREAMBLE_RE = re.compile(
     r"sorry\b|unable\b|as an ai\b|apologies\b)",
     re.IGNORECASE,
 )
-_QUOTES = "\"'`\u2018\u2019\u201c\u201d"
+_QUOTES = "\"'`\u2018\u2019\u201c\u201d*"
+# Markdown table rule rows ("| --- |") survive pipe-splitting as dashes/colons.
+_TABLE_RULE_RE = re.compile(r"[-:\s]{3,}")
 
 
 def parse_entries(text: str, limit: int | None = None) -> list[str]:
     """Turn a model reply into clean, de-duplicated wildcard lines.
 
-    Strips code fences, list numbering/bullets, surrounding quotes and trailing
-    punctuation, drops preambles and lines that are too long to be a fragment.
+    Strips code fences, list numbering/bullets, markdown tables and emphasis,
+    surrounding quotes and trailing punctuation, drops preambles and lines that
+    are too long to be a fragment. Models routinely answer in tables or in bold,
+    and ``|`` / ``**`` / ``*`` would otherwise be saved into the user's wildcard
+    file and echoed into every prompt that draws from it.
     """
     entries: list[str] = []
     seen: set[str] = set()
@@ -124,9 +129,14 @@ def parse_entries(text: str, limit: int | None = None) -> list[str]:
         if not line or _FENCE_RE.match(line):
             continue
         line = _ENUM_RE.sub("", line).strip()
+        if "|" in line:
+            # Table row: keep the cell contents, drop the pipes.
+            line = ", ".join(cell.strip() for cell in line.split("|") if cell.strip())
         line = line.strip(_QUOTES).strip()
         line = line.rstrip(",;:").strip()
         if not line or line.endswith(":"):
+            continue
+        if _TABLE_RULE_RE.fullmatch(line):
             continue
         if _PREAMBLE_RE.match(line):
             continue

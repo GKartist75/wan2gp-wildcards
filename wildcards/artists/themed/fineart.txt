@@ -260,7 +260,6 @@ Roger de La Fresnaye
 Abraham Mignon
 Charles Dana Gibson
 Alexandre-Évariste Fragonard
-Alexandre-Évariste Fragonard
 Frans van Mieris the Younger
 Aertgen van Leyden
 Emily Carr
@@ -354,7 +353,6 @@ Robert McCall
 Aleksey Savrasov
 Wayne Barlowe
 Giorgio De Chirico
-Giorgio de Chirico
 Ernest Procter
 Adriaen Brouwer
 Ilya Glazunov
@@ -591,7 +589,6 @@ Claes Corneliszoon Moeyaert
 David Bomberg
 Abraham Bosschaert
 Giuseppe De Nittis
-Giuseppe de Nittis
 John La Farge
 Frits Thaulow
 John Duncan
@@ -786,7 +783,6 @@ Henricus Hondius II
 Gertrude Harvey
 Grant Wood
 Cagnaccio di San Pietro
-Cagnaccio Di San Pietro
 Doris Boulton-Maude
 Adolf Hirémy-Hirschl
 Harold von Schmidt

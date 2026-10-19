@@ -140,7 +140,6 @@ landscape with animals
 landscape with Asymmetry
 landscape with Atmospheric Perspective
 landscape with Balance
-landscape with balance
 landscape with Bright Colors
 landscape with chroma
 landscape with colors
@@ -173,7 +172,6 @@ landscape with Geometric
 landscape with Gradation
 landscape with Hard Texture
 landscape with Harmony
-landscape with harmony
 landscape with Horizontal Balance
 landscape with hue
 landscape with intensity
@@ -188,11 +186,9 @@ landscape with Neutral Colors
 landscape with One-Point Perspective
 landscape with Organic
 landscape with Pattern
-landscape with pattern
 landscape with people
 landscape with perspective
 landscape with Proportion
-landscape with proportion
 landscape with Quadrilateral
 landscape with Radial Balance
 landscape with Rectilinear
@@ -216,7 +212,6 @@ landscape with sun
 landscape with Symmetry
 landscape with temperature
 landscape with Texture
-landscape with texture
 landscape with Three-Point Perspective
 landscape with time
 landscape with tint
@@ -225,10 +220,8 @@ landscape with Triangulation
 landscape with Trimetric Perspective
 landscape with Two-Point Perspective
 landscape with Unity
-landscape with unity
 landscape with value
 landscape with Variety
-landscape with variety
 landscape with Vertical Balance
 landscape with Visual Weight
 landscape with Warm Colors
@@ -1794,7 +1787,6 @@ Annual Delphinium
 Anthurium
 Antirrhinum majus
 Artichoke thistle
-Asparagus
 Aster
 Astilbe
 Baby's Breath
@@ -1878,7 +1870,6 @@ Gay Feather
 Genista
 Gerbera
 Gerbera Ruby Red
-Ginger
 Gladiolus
 Gladiolus hybrid nanus
 Goat's Beard
@@ -1904,7 +1895,6 @@ Lace fern
 Larkspur
 Lathyrus odoratus
 Lavandula
-Lavender
 Liatris
 Lilac
 Lily
@@ -1927,7 +1917,6 @@ Monte Cassino
 Moon orchid
 Musa
 Myrsine
-Myrtle
 Myrtus
 Nephrolepis
 Nerine
@@ -1998,7 +1987,6 @@ Strawberry banksia
 Strawflower
 Summer poinsettia
 Summer's Darling
-Sunflower
 Sweet Pea
 Sweet William
 Sword Fern
@@ -2023,7 +2011,6 @@ Wolfsbane
 Zantedeschia
 Zinna
 Zinnia elegans
-acacia
 alder
 arborvitae
 ash

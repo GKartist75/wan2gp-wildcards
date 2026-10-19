@@ -1584,7 +1584,6 @@ Paul Klee
 Oskar Fischinger
 Henri Biva
 Victor Brauner
-Alexandre-Évariste Fragonard
 Gustave Courbet
 Amédée Guillemin
 Klaus Wittmann
@@ -2315,7 +2314,6 @@ Gérard Ernest Schneider
 Evelyn De Morgan
 Hishida Shunsō
 Phil Koch
-Guido Borelli Da Caluso
 André Bauchant
 Elizabeth MacNicol
 Charlotte Nasmyth
@@ -2454,7 +2452,6 @@ Antonio Canova
 Dorothy Burroughes
 Eddie Campbell
 David Burdeny
-Giuseppe De Nittis
 Jasmine Becket-Griffith
 W. Heath Robinson
 Gu Hongzhong
@@ -2894,7 +2891,6 @@ Paul Lehr
 Sacha Goldberger
 Grigoriy Myasoyedov
 Yuumei
-Cagnaccio Di San Pietro
 Arnold Franz Brasz
 Duy Huynh
 Edward Arthur Walton
@@ -2955,7 +2951,6 @@ Mike Worrall
 Hercules Seghers
 Franz Vohwinkel
 Celia Frances Bedford
-Hilma af Klint
 Bernard Fleetwood-Walker
 Celia Fiennes
 Sanford Kossin
@@ -2998,14 +2993,12 @@ Gregory Crewdson
 Olafur Eliasson
 Benjamin West
 Chesley Bonestell
-Giorgio de Chirico
 George Hendrik Breitner
 Frederick McCubbin
 Andy Fairhurst
 Heinz Anger
 Gaugin
 Edward Burne-Jones
-Frances MacDonald
 Gai Qi
 Hallsteinn Sigurðsson
 Alfredo Volpi

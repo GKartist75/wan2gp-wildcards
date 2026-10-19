@@ -122,9 +122,14 @@ def _load_favorites() -> list[str]:
         return []
     try:
         with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
+            data = json.load(f)
     except (json.JSONDecodeError, OSError):
         return []
+    if not isinstance(data, list):
+        # A foreign/hand-edited store would otherwise make ★ Toggle raise
+        # AttributeError and degrade filtering into substring matching.
+        return []
+    return [str(item) for item in data]
 
 
 def _save_favorites(favorites: list[str]):
@@ -154,17 +159,38 @@ def _load_templates() -> dict[str, str]:
         return {}
     try:
         with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
+            data = json.load(f)
     except (json.JSONDecodeError, OSError):
         return {}
+    if not isinstance(data, dict):
+        return {}
+    return {str(name): str(text) for name, text in data.items()}
 
 
 def _save_templates(templates: dict[str, str]):
-    """Persist prompt templates. Raises OSError on failure."""
+    """Persist prompt templates atomically.
+
+    Raises OSError on failure so the caller can report it. Previously this was
+    the only non-atomic store in the plugin: a crash between truncate and dump
+    left a half-written file, ``_load_templates`` swallowed the resulting
+    JSONDecodeError and returned ``{}``, and the next save then rewrote the file
+    from that empty dict — silently losing every template.
+    """
     path = os.path.join(expander.WILDCARDS_DIR, TEMPLATES_FILE)
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(templates, f, indent=2, ensure_ascii=False)
+    tmp = None
+    try:
+        fd, tmp = tempfile.mkstemp(dir=os.path.dirname(path), suffix=".tmp")
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump(templates, f, indent=2, ensure_ascii=False)
+        os.replace(tmp, path)
+        tmp = None
+    finally:
+        if tmp is not None:
+            try:
+                os.unlink(tmp)
+            except OSError:
+                pass
 
 
 def _load_stats() -> dict[str, int]:
@@ -174,9 +200,18 @@ def _load_stats() -> dict[str, int]:
         return {}
     try:
         with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
+            data = json.load(f)
     except (json.JSONDecodeError, OSError):
         return {}
+    if not isinstance(data, dict):
+        return {}
+    stats: dict[str, int] = {}
+    for key, count in data.items():
+        try:
+            stats[str(key)] = int(count)
+        except (TypeError, ValueError):
+            continue
+    return stats
 
 
 def _save_stats(stats: dict[str, int]):
@@ -248,6 +283,32 @@ def _get_files_for_cat(cat: str) -> list[str]:
 # Kept at module level (not inside create_ui) so the sanitizing/overwrite rules
 # are unit-testable without a browser or Gradio.
 
+def _as_int(value, default: int) -> int:
+    """Coerce a Gradio numeric field to ``int``.
+
+    An empty ``gr.Number`` / ``gr.Slider`` reaches its handler as ``None`` (the
+    component's ``preprocess`` passes the cleared value straight through), which
+    used to raise ``TypeError`` in the seed and count conversions instead of
+    using the field's default.
+    """
+    if value is None or value == "":
+        return default
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _as_float(value, default: float) -> float:
+    """Coerce a Gradio numeric field to ``float`` (see :func:`_as_int`)."""
+    if value is None or value == "":
+        return default
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
 def _validate_wc_target(name: str) -> tuple[str | None, str]:
     """Validate a user-supplied relative wildcard filename.
 
@@ -257,7 +318,11 @@ def _validate_wc_target(name: str) -> tuple[str | None, str]:
     """
     safe = expander.sanitize_relative_path(name)
     if safe is None:
-        return None, "Invalid filename (no absolute paths, '..', or separators other than /)."
+        # sanitize_relative_path also rejects a ':' in any component: on Windows
+        # `sub/C:name` is a drive-relative name whose colon the OS drops, so the
+        # write would land in a differently-named file (and would slip past the
+        # reserved-metadata rule below).
+        return None, "Invalid filename (no absolute paths, ':', '..', or separators other than /)."
     if any(part.startswith("__") for part in safe.split("/")):
         return None, "Names starting with '__' are reserved for plugin metadata."
     if not safe.endswith(".txt"):
@@ -464,11 +529,6 @@ atexit.register(flush_stats)
 expander.load_wildcard_lines = _tracked_load_lines
 
 
-def _on_tab_select_flush(state):
-    flush_stats()
-    return None
-
-
 # state kept on the plugin instance for the monkey-patch
 _original_process_template = prompt_parser.process_template
 _expansion_enabled = False
@@ -488,14 +548,12 @@ class WildcardsPlugin(WAN2GPPlugin):
     def __init__(self):
         super().__init__()
         self.name = "Wildcards"
-        self.version = "1.7.1"
+        self.version = "1.7.2"
         self.description = "Dynamic wildcard expansion + character profiles + templates + usage stats + AI-assisted generation"
         self.type = ["extension"]
 
     def setup_ui(self):
         self.request_component("state")
-        self.request_component("prompt")
-        self.request_component("multi_prompts_gen_type")
         self.request_component("refresh_form_trigger")
         self.request_component("main_tabs")
         self.request_global("get_current_model_settings")
@@ -637,20 +695,18 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
             cats = ["All"] + _get_categories()
             return message, gr.update(choices=files), gr.update(choices=cats)
 
-        def _refresh_list() -> gr.update:
-            return gr.update(choices=_list_wc_files(), value=None)
-
-        def _set_seed(seed_val: int):
+        def _set_seed(seed_val):
             global _expansion_seed
-            _expansion_seed = seed_val if seed_val >= 0 else None
+            seed = _as_int(seed_val, -1)
+            _expansion_seed = seed if seed >= 0 else None
 
         with gr.Column():
             gr.Markdown(f"## Wildcard Prompt Expansion  —  v{self.version}")
             gr.Markdown(
                 "> Expansion is active when enabled in the **Plugins** tab. Type `__` in any prompt "
                 "for autocomplete.\n>\n"
-                "> **Sections:** 1 Prompt Builder · 2 Templates · 3 Character Profiles · "
-                "4 File Browser · 5 Usage Stats · 6 Content Search · 7 Linter · 8 AI Generator"
+                "> **Sections:** 1 Prompt Builder · 2 AI Wildcard Generator · 3 Prompt Templates · "
+                "4 Character Profiles · 5 File Browser · 6 Usage Stats · 7 Content Search · 8 Linter"
             )
 
             seed_input = gr.Number(label="Seed (-1 = random)", value=-1, precision=0)
@@ -706,19 +762,20 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
             test_output = gr.Textbox(label="Preview (single expansion)", lines=2, interactive=False)
             batch_output = gr.Textbox(label="Generated Variations (one per line)", lines=6, interactive=False, elem_id="wc-batch-output")
 
-            def _test_expand(prompt: str, seed_val: int) -> str:
+            def _test_expand(prompt: str, seed_val) -> str:
                 # Preview: do NOT count toward usage stats (B1), and always
                 # restore the tracking flag even if expansion raises.
                 with stats_context(False):
-                    rng = random.Random(seed_val if seed_val >= 0 else None)
+                    seed = _as_int(seed_val, -1)
+                    rng = random.Random(seed if seed >= 0 else None)
                     return expander.expand_prompt_with_rng(prompt, rng)
 
-            def _generate_batch(prompt_template: str, count: int, seed_mode: str) -> str:
+            def _generate_batch(prompt_template: str, count, seed_mode: str) -> str:
                 if not prompt_template:
                     return ""
                 # Preview: do NOT count toward usage stats (B1)
                 with stats_context(False):
-                    count = max(1, min(100, int(count)))
+                    count = max(1, min(100, _as_int(count, 6)))
                     if seed_mode.startswith("Sequential"):
                         return "\n".join(
                             expander.expand_prompt_sequential(prompt_template, i)
@@ -813,9 +870,9 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
                     llm = _llm()
                     result = llm.generate_entries(
                         topic,
-                        count=int(count),
+                        count=_as_int(count, 24),
                         style=style or "",
-                        temperature=float(temperature),
+                        temperature=_as_float(temperature, 0.85),
                         seed=None if seed_val is None or seed_val < 0 else int(seed_val),
                     )
                 if not result.ok:
@@ -828,7 +885,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
                 with stats_context(False):
                     variations = ai.compose_variations(
                         topic,
-                        count=int(count),
+                        count=_as_int(count, 24),
                         seed=None if seed_val is None or seed_val < 0 else int(seed_val),
                     )
                 if not variations:
@@ -914,7 +971,10 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
                 if name not in templates:
                     return f"Template '{name}' not found.", gr.update()
                 del templates[name]
-                _save_templates(templates)
+                try:
+                    _save_templates(templates)
+                except OSError as e:
+                    return f"Error deleting: {e}", gr.update()
                 choices = sorted(templates.keys()) if templates else []
                 return f"Deleted '{name}'.", gr.update(choices=choices, value=None)
 

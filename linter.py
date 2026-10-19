@@ -8,6 +8,7 @@ collected into a report.
 from __future__ import annotations
 
 import os
+import unicodedata
 from collections import Counter
 
 try:  # imported as part of the package (plugin runtime, tests)
@@ -111,9 +112,10 @@ def _display_path(path: str, root: str) -> str:
 def lint_files(paths, root: str | None = None, *, check_duplicates: bool = True) -> dict:
     """Lint a list of wildcard files.
 
-    Reports unresolved nested references, whitespace-insensitive duplicate
-    lines and empty files. Resolution results are memoised because a large
-    collection repeats the same reference names thousands of times.
+    Reports unresolved nested references (``__name__`` and the ``__$var:file__``
+    captures the engine also resolves inside files), whitespace-insensitive
+    duplicate lines and empty files. Resolution results are memoised because a
+    large collection repeats the same reference names thousands of times.
     """
     root = root or expander.WILDCARDS_DIR
     resolved: dict[str, bool] = {}
@@ -127,6 +129,7 @@ def lint_files(paths, root: str | None = None, *, check_duplicates: bool = True)
 
     broken: list[dict] = []
     duplicates: list[dict] = []
+    near_duplicates: list[dict] = []
     empty_files: list[str] = []
     files_scanned = 0
     lines_scanned = 0
@@ -134,7 +137,7 @@ def lint_files(paths, root: str | None = None, *, check_duplicates: bool = True)
     for path in paths:
         display = _display_path(path, root)
         try:
-            with open(path, "r", encoding="utf-8", errors="replace") as handle:
+            with open(path, "r", encoding="utf-8-sig", errors="replace") as handle:
                 raw_lines = handle.read().split("\n")
         except OSError:
             continue
@@ -142,6 +145,12 @@ def lint_files(paths, root: str | None = None, *, check_duplicates: bool = True)
 
         counts: Counter = Counter()
         first_seen: dict[str, int] = {}
+        # Whitespace/case/Unicode-normalisation-insensitive view of the same
+        # lines: "Frances Macdonald" and "Frances MacDonald" are one artist to a
+        # reader (and both get drawn), but an exact-string counter sees two.
+        folded: Counter = Counter()
+        folded_first: dict[str, tuple[str, int]] = {}
+        folded_texts: dict[str, set[str]] = {}
         values = 0
         for number, raw in enumerate(raw_lines, 1):
             line = raw.strip()
@@ -153,7 +162,12 @@ def lint_files(paths, root: str | None = None, *, check_duplicates: bool = True)
                 counts[line] += 1
                 if counts[line] == 1:
                     first_seen[line] = number
-            for name in expander.reference_names(line):
+                key = unicodedata.normalize("NFKC", line).casefold()
+                folded[key] += 1
+                if folded[key] == 1:
+                    folded_first[key] = (line, number)
+                folded_texts.setdefault(key, set()).add(line)
+            for name in expander.reference_names(line) + expander.capture_files(line):
                 if not resolves(name):
                     broken.append({"file": display, "line": number, "name": name})
 
@@ -163,10 +177,19 @@ def lint_files(paths, root: str | None = None, *, check_duplicates: bool = True)
                     duplicates.append(
                         {"file": display, "line": first_seen[text], "text": text, "count": count}
                     )
+            for key, count in folded.items():
+                # Only spellings that differ beyond case/normalisation are
+                # interesting; byte-identical repeats are already reported above.
+                if count > 1 and len(folded_texts[key]) > 1:
+                    text, number = folded_first[key]
+                    near_duplicates.append(
+                        {"file": display, "line": number, "text": text, "count": count}
+                    )
         if values == 0:
             empty_files.append(display)
 
     duplicates.sort(key=lambda d: (d["file"], d["line"]))
+    near_duplicates.sort(key=lambda d: (d["file"], d["line"]))
     return {
         "files": files_scanned,
         "lines": lines_scanned,
@@ -174,7 +197,11 @@ def lint_files(paths, root: str | None = None, *, check_duplicates: bool = True)
         "broken_total": len(broken),
         "duplicates": duplicates,
         "duplicate_total": len(duplicates),
+        "near_duplicates": near_duplicates,
+        "near_duplicate_total": len(near_duplicates),
         "empty_files": empty_files,
+        # near_duplicates are reported but do not fail the audit: the collection
+        # is curated data, and only an exact repeat is unambiguously a defect.
         "ok": not broken and not empty_files,
     }
 
@@ -234,6 +261,16 @@ def format_collection_report(report: dict) -> str:
             lines.append(f"    ... and {report['duplicate_total'] - MAX_DETAILS} more")
     else:
         lines.append("OK: No duplicate values inside any file.")
+
+    if report.get("near_duplicates"):
+        shown = report["near_duplicates"][:MAX_DETAILS]
+        lines.append(
+            f"WARN: {report['near_duplicate_total']} value(s) repeat a different spelling "
+            "(same text ignoring case/unicode normalisation) — drawn twice per pick:"
+        )
+        lines += [f"    {d['file']}:{d['line']}: {d['text'][:80]}" for d in shown]
+        if report["near_duplicate_total"] > MAX_DETAILS:
+            lines.append(f"    ... and {report['near_duplicate_total'] - MAX_DETAILS} more")
 
     if report["ok"]:
         lines.insert(0, "OK: Collection is healthy.")

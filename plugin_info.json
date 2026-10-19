@@ -1,9 +1,9 @@
 {
   "name": "Wildcards",
   "author": "GKartist75 (with PI Agent)",
-  "version": "1.7.1",
-  "description": "Dynamic wildcard expansion for prompts + named variables + templates + character profiles + usage stats, all audited by a built-in linter. Use __name__ syntax for random picks, __$var=value__ to set a variable manually, __$var:file__ for reusable captured variables. v1.7 turns the collection cross-platform (lowercase paths, case-insensitive lookups that work on Linux too), adds an AI Wildcard Generator that invents new entries with Wan2GP's own local LLM (or offline), and adds a collection-wide integrity auditor.",
+  "version": "1.7.2",
+  "description": "Dynamic wildcard expansion for prompts + named variables + templates + character profiles + usage stats, all audited by a built-in linter. Use __name__ syntax for random picks, __$var=value__ to set a variable manually, __$var:file__ for reusable captured variables. v1.7 turns the collection cross-platform (lowercase paths, case-insensitive lookups that work on Linux too), adds an AI Wildcard Generator that invents new entries with Wan2GP's own local LLM (or offline), and adds a collection-wide integrity auditor. v1.7.2 makes the expansion passes reach a real fixed point (captures set inside referenced files now resolve), bounds runaway reference cycles, prefers a .txt file over a same-named directory, and de-duplicates the collection.",
   "type": ["extension"],
-  "date": "2026-10-18",
+  "date": "2026-10-19",
   "wan2gp_version": ""
 }

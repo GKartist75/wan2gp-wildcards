@@ -230,5 +230,156 @@ def test_expand_prompt_with_rng_passes_through_empty_text():
     assert expander.expand_prompt_with_rng(None, random.Random(1)) is None
 
 
+# ── capture reuse through nested files and variants ─────────────────────────
+
+def _sandbox(tmp_path, files: dict):
+    """Point the expander at an isolated collection of single-line files."""
+    for rel, content in files.items():
+        path = tmp_path / rel
+        path.parent.mkdir(parents=True, exist_ok=True)
+        if isinstance(content, bytes):
+            path.write_bytes(content)
+        else:
+            path.write_text(content, encoding="utf-8")
+    expander.set_wildcards_dir(str(tmp_path))
+    expander.invalidate_cache()
+
+
+def test_capture_inside_a_referenced_file_can_be_reused(tmp_path):
+    # The README promises captured values persist "across sentences, wildcards
+    # and nested references", but the reuse pass used to run before the wildcard
+    # pass, so a `__$var=...__` set *inside* a referenced file was invisible to
+    # the prompt that referenced it.
+    _sandbox(tmp_path, {"setup.txt": "__$tint=sepia__ scene\n"})
+    try:
+        out = expander.expand_prompt("__setup__ and __$tint__", seed=1)
+    finally:
+        expander.set_wildcards_dir(os.path.join(REPO_ROOT, "wildcards"))
+        expander.invalidate_cache()
+    assert out == "sepia scene and sepia"
+
+
+def test_capture_whose_pool_name_comes_from_a_variant_is_resolved(tmp_path):
+    # `__$x:{a|b}/leaf__` is capture syntax whose path is only valid *after* the
+    # variant is chosen, so the passes have to be re-run once it is.
+    _sandbox(tmp_path, {"a/leaf.txt": "alpha leaf\n", "b/leaf.txt": "beta leaf\n"})
+    try:
+        out = expander.expand_prompt("__$x:{a|b}/leaf__ / __$x__", seed=1)
+    finally:
+        expander.set_wildcards_dir(os.path.join(REPO_ROOT, "wildcards"))
+        expander.invalidate_cache()
+    picked, _, reused = out.partition(" / ")
+    assert picked in ("alpha leaf", "beta leaf")
+    assert reused == picked
+
+
+# ── file encoding tolerance ────────────────────────────────────────────────
+
+def test_non_utf8_file_expands_instead_of_raising(tmp_path):
+    # One cp1252 file (what Notepad/Excel produces on Windows) used to raise
+    # UnicodeDecodeError out of the expansion, aborting the whole generation.
+    _sandbox(tmp_path, {"latin.txt": b"caf\xe9 latte\n"})
+    try:
+        out = expander.expand_prompt("__latin__", seed=1)
+    finally:
+        expander.set_wildcards_dir(os.path.join(REPO_ROOT, "wildcards"))
+        expander.invalidate_cache()
+    assert "latte" in out
+    assert "__" not in out
+
+
+def test_bom_does_not_turn_a_comment_into_a_value(tmp_path):
+    # `str.strip()` does not remove \ufeff, so with plain utf-8 the first
+    # `# comment` line was served as a wildcard value.
+    _sandbox(tmp_path, {"bom.txt": b"\xef\xbb\xbf# comment line\nsunset\n"})
+    try:
+        lines = expander.load_wildcard_lines("bom")
+        out = expander.expand_prompt("__bom__", seed=1)
+    finally:
+        expander.set_wildcards_dir(os.path.join(REPO_ROOT, "wildcards"))
+        expander.invalidate_cache()
+    assert lines == ["sunset"]
+    assert out == "sunset"
+
+
+# ── resolution edge cases ──────────────────────────────────────────────────
+
+def test_exact_file_wins_over_a_same_named_directory(tmp_path):
+    # Five shipped pairs have both `x.txt` and `x/`; the file must win, else the
+    # pool is unreachable through its own name.
+    _sandbox(tmp_path, {"pool.txt": "file value\n", "pool/one.txt": "pool one\n"})
+    try:
+        assert [os.path.basename(p) for p in expander.resolve_wildcard_files("pool")] == ["pool.txt"]
+        assert expander.expand_prompt("__pool__", seed=1) == "file value"
+        # The directory stays reachable through the files inside it.
+        assert [os.path.basename(p) for p in expander.resolve_wildcard_files("pool/one")] == ["one.txt"]
+    finally:
+        expander.set_wildcards_dir(os.path.join(REPO_ROOT, "wildcards"))
+        expander.invalidate_cache()
+
+
+def test_reference_cannot_escape_the_collection(tmp_path):
+    # The glob fallback was unchecked, so a prompt could pull in any .txt file
+    # sitting next to the collection.
+    secret = tmp_path / "secret-notes.txt"
+    secret.write_text("OUTSIDE-THE-COLLECTION\n", encoding="utf-8")
+    collection = tmp_path / "wildcards"
+    collection.mkdir()
+    (collection / "shot.txt").write_text("close-up shot\n", encoding="utf-8")
+    expander.set_wildcards_dir(str(collection))
+    expander.invalidate_cache()
+    try:
+        assert expander.resolve_wildcard_files("../secret-notes") == []
+        assert expander.expand_prompt("__../secret-notes__", seed=1) == "__../secret-notes__"
+    finally:
+        expander.set_wildcards_dir(os.path.join(REPO_ROOT, "wildcards"))
+        expander.invalidate_cache()
+
+
+def test_adjacent_references_are_not_merged(tmp_path):
+    # A greedy name class read `__a____b__` as one name and leaked it literally.
+    _sandbox(tmp_path, {"a.txt": "one\n", "b.txt": "two\n"})
+    try:
+        assert expander.expand_prompt("__a____b__", seed=1) == "onetwo"
+        assert expander.reference_names("__a____b__") == ["a", "b"]
+    finally:
+        expander.set_wildcards_dir(os.path.join(REPO_ROOT, "wildcards"))
+        expander.invalidate_cache()
+
+
+def test_nested_variants_expand_completely():
+    for _ in range(20):
+        assert expander.expand_prompt("{a|{b|c}}", seed=1) in ("a", "b", "c")
+    out = expander.expand_prompt("{a|b} and {c|d}", seed=2)
+    assert "{" not in out and "}" not in out
+
+
+# ── runaway cycles are bounded (work budget) ───────────────────────────────
+
+def test_self_referencing_file_terminates_quickly(tmp_path):
+    # DEPTH_LIMIT bounds nesting, not fan-out: a file with k references per line
+    # used to cost ~k**DEPTH_LIMIT substitutions (minutes of a frozen UI).
+    import time
+    _sandbox(tmp_path, {"rec.txt": "__rec__ " * 5 + "\n"})
+    try:
+        started = time.monotonic()
+        out = expander.expand_prompt("__rec__", seed=1)
+        elapsed = time.monotonic() - started
+    finally:
+        expander.set_wildcards_dir(os.path.join(REPO_ROOT, "wildcards"))
+        expander.invalidate_cache()
+    assert elapsed < 20, f"cycle took {elapsed:.1f}s"
+    assert len(out) < 1_000_000, f"cycle produced {len(out)} chars"
+
+
+def test_budget_does_not_truncate_ordinary_large_prompts():
+    # The budget must be far above what a real prompt needs, and legitimate
+    # nested references must still fully expand.
+    prompt = " ".join(["__camera/shot__ and __color/named__"] * 50)
+    out = expander.expand_prompt(prompt, seed=4)
+    assert "__" not in out
+    assert len(out) > 100
+
+
 if __name__ == "__main__":
     raise SystemExit(pytest.main([__file__, "-v"]))

@@ -430,13 +430,13 @@ othermedia, painting, sculptural, shading-techniques, textile,
 beards, mood, occupations, home, artmovement, generalstyle,
 platform, seasons, timeofday
 
-## Library layout
+## Library layout3017 value files in 78 folders, all lowercase. Counts below are
+**recursive**: a folder's number is every value file beneath it. wildcard names are
+matched case-insensitively and through the alias table, so prompts written against
+older names (see the catalog above) keep working.
 
-3017 value files in 78 folders. All paths are lowercase, and
-wildcard names are matched case-insensitively and through the alias table, so
-prompts written against older names (see the catalog above) keep working.
-
-Format: `folder/ (files)` — description — nested folders
+Format: `folder/ (value files)` — description — immediate subfolders.
+Folders more than two levels deep are listed under **Nested folders** at the end.
 
 action/ (4) — movement, dance, combat, interaction
 aesthetic/ (5) — art movements, vibes, cultural aesthetics
@@ -517,12 +517,77 @@ vocab-and-lists/ (9) — word lists (adjective, noun, verb, preposition, ...)
 weather/ (4) — weather conditions
 words/ (26) — adjectives, verbs, substantives per genre — subfolders: brain-psychology, cyberpunk, magical, nsfw, scifi, vogonic-guide
 
-## art-styles
-art-styles/anime              - anime & manga illustration styles (Ghibli, Akira, Chainsaw Man...)
-art-styles/cartoon            - cartoon & animation styles (Simpsons, Disney, Arcane...)
-art-styles/comics             - comic book & graphic novel styles (Marvel, DC, Moebius...)
-art-styles/drawing            - drawing techniques & sketch styles (Charcoal, Etching, Doodle...)
-art-styles/photography        - photography & cinematic styles (Film Noir, Vogue, Neon...)
-art-styles/design             - design & 3D render styles (Bauhaus, Pixar, Low Poly, Pixel Art...)
-art-styles/digital-painting   - digital painting styles (Artgerm, Sakimichan, Loish...)
-art-styles/painting           - traditional painting styles (Van Gogh, Monet, Rembrandt...)
+## Nested folders
+
+Deeper folders (below the subfolders above), grouped by parent: total value files
+in that folder, `+n` = further nested folders inside it.
+
+audio/genre/ (1 folder)
+    hip-hop (1)
+audio/music/ (1 folder)
+    sci-fi (1)
+audio/sound/ (1 folder)
+    sci-fi (1)
+characters/magical-beings/ (161 folders)
+    abaddon (1), airavata (1), al-jinn (1), alraune (1), amazon (1), ammil (1),
+    angel (1), angel-treasure (1), asrai (1), aswang (1), aziza (1), baal (1),
+    banshee (1), basilisk (1), beer-spirit (1), belial (1), bhuta (1), bigfoot
+    (1), blue-men-of-minch (1), brownie (1), cabeca-satanica (1), centaur (1),
+    cerberos (1), changeling (1), chimera (1), christmas-elf (1), chupacabra
+    (1), cockatrice (1), coffee_spirit (1), cyclope (1), dark-elf (1), death
+    (1), dementor (1), demon (1), devil (1), diablo (1), dirawong (1), diw (1),
+    djinn (1), doppelganger (1), dragon-human-form (1), dragonborn (1), draugr
+    (1), dryad (1), dullahan (1), dwarf (1), easter-bunny (1), edimmu (1), elf
+    (1), enenra (1), erlking (1), fairy (1), faun (1), fenghuang (1), firebird
+    (1), gargoyle (1), ghoul (1), giant (1), glaukos (1), gnome (1), goblin (1),
+    gorgon (1), harpy (1), heinzelmaennchen (1), hinn (1), hippogriff (1),
+    hobgoblin (1), house-elf (1), huldra (1), iblis (1), ifrit (1), imp (1),
+    incubus (1), jabberwocky (1), jiaoren (1), jinn (1), jotun (1), kachima (1),
+    kachina (1), kalku (1), kappa (1), kelpie (1), kirke (1), kitsune-fox-form
+    (1), kitsune-human-form (1), leprechaun (1), lich (1), lilith (1),
+    manananggal (1), mandrake (1), mandurugo (1), mangkukulam (1), manticore
+    (1), marid (1), mausebaer (1), medusa (1), menehune (1), mephisto (1),
+    mermaid (2), merman (2), minotaur (1), minotaurin (1), moon-rabbit (1),
+    mothman (1), mummy (1), naga (1), nasnas (1), nature-spirit (1), nessie (1),
+    nymph (1), obambo (1), ogre (1), oni (1), orc (1), pari (1), pegasus (1),
+    phoenix (1), piuchen (1), pixie (1), poltergeist (1), qilin (1), quinametzin
+    (1), rabbit-bear (1), ramanga (1), roc (1), sasquatch (1), satyr (1), selkie
+    (1), semi-ghost (1), shellycoat (1), siren (2), space-wolf (1), sphinx (1),
+    spriggan (1), strigoi (1), succubus (1), sun-wukong (1), sylph (1), thoth
+    (1), thunderbird (1), tikbalang (1), tomte (1), tree-ent (1), troll (1),
+    undine (1), unicorn (1), valkyrie (1), vampire (1), vetala (1), wendigo (1),
+    werewolf (1), wild-hunt (1), will-o-the-wisp (1), wisp (1), witch (1),
+    wolpertinger (1), wraith (1), yaksha (1), yara-me-yha-who (1), yeti (2),
+    yuki-onna (1)
+characters/professions/ (4 folders)
+    cyberpunk (10), fiction (17), magical (8), scifi (10)
+clothing/period/ (18 folders)
+    baroque (12) +2, cyberpunk (14) +3, edoperiod (12) +2, edwardian (2),
+    georgian (2), magical (14) +3, medieval (2), napoleonic (2), nsfw (18) +3,
+    qingdynasty (2), regency (2), regular (12) +3, renaissance (2), rococo (2),
+    scifi (14) +3, styles (5), tudor (2), victorian (2) +1
+constructions/rooms/ (5 folders)
+    cyberpunk (10), fictional (8), magical (11), regular (14), scifi (10)
+constructions/types/ (5 folders)
+    cyberpunk (10), fictional (6), magical (5), regular (10), scifi (10)
+magical/academy/ (2 folders)
+    extra (46), places (306) +51
+magical/prompts/ (34 folders)
+    air-magic (1), alchemy (1), arcane-magic (1), blood-magic (1), crystal-magic
+    (1), dark-magic (1), darkness-magic (1), death-magic (1), dragon-magic (1),
+    earth-magic (1), elven-magic (1), fire-magic (1), force-magic (1), holy-
+    magic (1), ice-magic (1), kinetic-magic (1), leaf-magic (1), light_magic
+    (1), lightning-magic (1), magma-magic (1), nature-magic (1), necrotic-magic
+    (1), poison-magic (1), potion-magic (1), psionic-magic (1), psychic-magic
+    (1), shadow-magic (1), space-magic (1), steel-magic (1), time-magic (1),
+    toxic-magic (1), void-magic (1), water-magic (1), wind-magic (1)
+person/regular/ (1 folder)
+    teeth (4)
+rpg/abilities/ (2 folders)
+    combat (4) +2, spells (75) +25
+rpg/equipment/ (3 folders)
+    accessoires (7), armor (6) +2, weapons (6) +2
+rpg/extras/ (3 folders)
+    enchantments (4), etchings (4), inscriptions (4)
+rpg/rpg-tiles/ (1 folder)
+    structures (3)

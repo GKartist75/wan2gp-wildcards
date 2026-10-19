@@ -72,7 +72,6 @@ landscape with Vertical Balance
 landscape with Visual Weight
 landscape with Warm Colors
 landscape with animals
-landscape with balance
 landscape with chroma
 landscape with colors
 landscape with contrast
@@ -81,17 +80,14 @@ landscape with dimensions
 landscape with earth
 landscape with fire
 landscape with form
-landscape with harmony
 landscape with hue
 landscape with intensity
 landscape with light
 landscape with lightness
 landscape with moon
 landscape with movement
-landscape with pattern
 landscape with people
 landscape with perspective
-landscape with proportion
 landscape with rhythm
 landscape with saturation
 landscape with scale
@@ -103,13 +99,10 @@ landscape with space
 landscape with stars
 landscape with sun
 landscape with temperature
-landscape with texture
 landscape with time
 landscape with tint
 landscape with tone
-landscape with unity
 landscape with value
-landscape with variety
 landscape with water
 landscape with wind
 landscape withlines

@@ -19,9 +19,19 @@ import threading
 
 WILDCARDS_DIR: str = ""  # set by plugin.py on init
 DEPTH_LIMIT = 10
+# Total nested substitutions allowed for ONE top-level expansion. DEPTH_LIMIT
+# alone bounds how deep nesting goes, not how much work it does: a cyclic file
+# with k references per line fans out to about k**DEPTH_LIMIT substitutions
+# (minutes of a frozen UI), so every expansion also draws from this budget.
+MAX_EXPANSIONS = 4096
 
-WILDCARD_RE = re.compile(r"__([a-zA-Z0-9_/.\\-]+)__")
-VARIANT_RE = re.compile(r"\{([^{}]*)\}")
+# Non-greedy: in `__a____b__` the name must end at the first closing `__`, else
+# both references are read as one unresolvable name and leak as literal text.
+WILDCARD_RE = re.compile(r"__([a-zA-Z0-9_/.\\-]+?)__")
+# A variant needs at least one `|`; `{solo}` is plain text (no random choice to
+# make), and requiring it means one pass can never rewrite a brace group with
+# itself. Nesting (`{a|{b|c}}`) is handled by repeating the pass.
+VARIANT_RE = re.compile(r"\{([^{}]*\|[^{}]*)\}")
 CAPTURE_ANY_RE = re.compile(
     r"__\$([a-zA-Z0-9_]+):([a-zA-Z0-9_/.\\-]+)__"   # __$var:file__
     r"|__\$([a-zA-Z0-9_]+)\s*=\s*(.+?)__"           # __$var=value__
@@ -117,24 +127,41 @@ def resolve_wildcard_files(name: str) -> list[str]:
       __camera_shot__  (underscore -> slash fallback)
       __camera/shot__  (direct path)
       __camera__       (directory pool)
-    Also checks WILDCARD_ALIASES for renamed/moved files (backward compat).
-    Names resolve case-insensitively so prompts written before the path
-    normalization keep working on every platform.
+    A ``name.txt`` file takes precedence over a same-named directory, so
+    ``__nsfw/positions__`` reaches ``positions.txt`` rather than silently
+    resolving to the ``positions/`` pool. Also checks WILDCARD_ALIASES for
+    renamed/moved files (backward compat). Names resolve case-insensitively so
+    prompts written before the path normalization keep working on every
+    platform.
     """
     base = name.replace("\\", "/").lstrip("/")
 
     def _try_resolve(b: str, _seen: set[str]) -> list[str]:
         result: list[str] = []
+        # An exact ``name.txt`` file wins over a same-named directory. Five such
+        # pairs exist in the collection (body/ears, nsfw/positions,
+        # nsfw/panties, nsfw/sex-acts, clothing/period/victorian/female); without
+        # this the *.txt half was unreachable through its documented name and
+        # ``__clothing/period/victorian/female__`` silently returned *male*
+        # attire from the sibling directory.
+        if not b.endswith(".txt"):
+            target = _resolve_path_ci(b + ".txt")
+            if target and os.path.isfile(target):
+                result.append(target)
         # direct file / directory pool match (case-insensitive)
-        target = _resolve_path_ci(b)
-        if target and os.path.isfile(target):
-            result.append(target)
-        elif target and os.path.isdir(target):
-            for f in sorted(_listdir(target)):
-                if f.endswith(".txt") and not f.startswith("__"):
-                    result.append(os.path.join(target, f))
-        # glob match: wildcards/name*.txt (partial-name resolution fallback)
         if not result:
+            target = _resolve_path_ci(b)
+            if target and os.path.isfile(target):
+                result.append(target)
+            elif target and os.path.isdir(target):
+                for f in sorted(_listdir(target)):
+                    if f.endswith(".txt") and not f.startswith("__"):
+                        result.append(os.path.join(target, f))
+        # glob match: wildcards/name*.txt (partial-name resolution fallback).
+        # `..` segments are refused here as well as in sanitize_relative_path:
+        # that one only guards UI input, while this runs on prompt text, so a
+        # `__../secrets__` reference could otherwise read outside the collection.
+        if not result and ".." not in b.split("/"):
             pattern = os.path.join(WILDCARDS_DIR, b) + "*.txt"
             for f in sorted(globmod.glob(pattern)):
                 if os.path.isfile(f):
@@ -179,14 +206,16 @@ def sanitize_relative_path(name: str) -> str | None:
     """Validate a user-supplied relative filename (e.g. \"mytheme/sunset.txt\").
 
     Returns the normalized name (forward slashes) if safe, else None.
-    Rejects absolute paths, drive letters, ``..`` traversal, NUL, and
-    Windows-reserved device names (CON, NUL, COM1, ... which can hang or
-    misbehave even when written into a subdirectory).
+    Rejects absolute paths, drive letters, ``..`` traversal, NUL, ``:`` in any
+    component (a mid-path colon is a drive-relative name / NTFS alternate data
+    stream on Windows, where the OS drops it and writes a *different* file than
+    the one the UI reports), and Windows-reserved device names (CON, NUL, COM1,
+    ... which can hang or misbehave even when written into a subdirectory).
     """
     if not name or not name.strip():
         return None
     name = name.strip().replace("\\", "/")
-    if "\x00" in name or name.startswith("/") or re.match(r"^[a-zA-Z]:", name):
+    if "\x00" in name or name.startswith("/") or re.match(r"^[a-zA-Z]:", name) or ":" in name:
         return None
     parts = name.split("/")
     if any(p in ("", ".", "..") for p in parts):
@@ -232,7 +261,13 @@ def load_wildcard_lines(name: str) -> list[str]:
     lines: list[str] = []
     for fpath in signature_parts:
         try:
-            with open(fpath[0], "r", encoding="utf-8") as fh:
+            # utf-8-sig strips a BOM, which `str.strip()` does not: with plain
+            # "utf-8" a file whose first line is `# comment` kept the BOM and
+            # started serving the comment as a value. errors="replace" matches
+            # the linter's read path, so one cp1252 file can no longer raise
+            # UnicodeDecodeError through the plugin and abort a generation while
+            # the audit reports the collection healthy.
+            with open(fpath[0], "r", encoding="utf-8-sig", errors="replace") as fh:
                 for line in fh:
                     line = line.strip()
                     if line and not line.startswith("#"):
@@ -301,15 +336,45 @@ def pick_random(rng: random.Random, items: list[str], sequential_index: int | No
 def _expand_text(text: str, rng: random.Random, depth: int = 0,
                  sequential_index: int | None = None,
                  _context: dict[str, str] | None = None) -> str:
-    """Recursive expansion: captures, wildcards, then variants. Depth-limited."""
+    """Recursive expansion: captures, wildcards, then variants. Depth-limited.
+
+    The passes are repeated until the text stops changing, because a later pass
+    can produce syntax an earlier one owns: a ``__$var:file__`` written inside a
+    referenced file, or a capture whose file name came out of a ``{a|b}``
+    choice. A single ordered pass left both as literal ``__$var__`` text even
+    though the value was already stored.
+    """
+    if _context is None:
+        # One shared budget per top-level expansion; "$" cannot appear in a
+        # variable name, so the key can never collide with a user variable.
+        _context = {"$budget": MAX_EXPANSIONS}
+    else:
+        # Charged *before* the depth check: a depth-limited call would
+        # otherwise be free, and the caller's fixed-point loop would keep
+        # substituting cycles into it for DEPTH_LIMIT more rounds.
+        _context["$budget"] -= 1
+        if _context["$budget"] <= 0:
+            return text
     if depth >= DEPTH_LIMIT:
         return text
-    if _context is None:
-        _context = {}
+
+    def _spent() -> bool:
+        """True when this expansion's work budget is used up.
+
+        A substitution that cannot recurse must NOT be performed at all:
+        inserting a value that still contains ``__references__`` makes the next
+        fixed-point pass replace those again, so the text grows by the file's
+        reference count on every pass (a 5-reference cycle would multiply by
+        5**DEPTH_LIMIT). Leaving the reference literal stops the growth and the
+        fixed-point loop terminates.
+        """
+        return _context["$budget"] <= 0
 
     # 0. expand __$var:file__ (pick + store) and __$var=value__ (literal assign)
     #    in ONE pass so textual order is respected — the last set in the prompt wins.
     def _replace_capture(m: re.Match) -> str:
+        if _spent():
+            return m.group(0)
         var, file, var2, value = m.group(1), m.group(2), m.group(3), m.group(4)
         if file is not None:
             lines = load_wildcard_lines(file)
@@ -326,8 +391,6 @@ def _expand_text(text: str, rng: random.Random, depth: int = 0,
         _context[var2] = expanded
         return expanded
 
-    text = CAPTURE_ANY_RE.sub(_replace_capture, text)
-
     # 0b. expand __$var__ (reuse captured value)
     def _replace_capture_get(m: re.Match) -> str:
         var = m.group(1)
@@ -335,10 +398,10 @@ def _expand_text(text: str, rng: random.Random, depth: int = 0,
             return _context[var]
         return m.group(0)  # unknown var, leave as-is
 
-    text = CAPTURE_GET_RE.sub(_replace_capture_get, text)
-
     # 1. expand __wildcard__ references
     def _replace_wildcard(m: re.Match) -> str:
+        if _spent():
+            return m.group(0)
         name = m.group(1)
         lines = load_wildcard_lines(name)
         if not lines:
@@ -346,18 +409,23 @@ def _expand_text(text: str, rng: random.Random, depth: int = 0,
         chosen = pick_random(rng, lines, sequential_index=sequential_index)
         return _expand_text(chosen, rng, depth + 1, sequential_index=sequential_index, _context=_context)
 
-    text = WILDCARD_RE.sub(_replace_wildcard, text)
-
     # 2. expand {opt1|opt2} inline variants
     def _replace_variant(m: re.Match) -> str:
+        if _spent():
+            return m.group(0)
         inner = m.group(1)
         parts = [p.strip() for p in inner.split("|")]
-        if len(parts) < 2:
-            return m.group(0)
         chosen = pick_random(rng, parts, sequential_index=sequential_index)
         return _expand_text(chosen, rng, depth + 1, sequential_index=sequential_index, _context=_context)
 
-    text = VARIANT_RE.sub(_replace_variant, text)
+    for _ in range(DEPTH_LIMIT):
+        before = text
+        text = CAPTURE_ANY_RE.sub(_replace_capture, text)
+        text = CAPTURE_GET_RE.sub(_replace_capture_get, text)
+        text = WILDCARD_RE.sub(_replace_wildcard, text)
+        text = VARIANT_RE.sub(_replace_variant, text)
+        if text == before:
+            break
     return text
 
 
@@ -439,8 +507,3 @@ def capture_files(text: str) -> list[str]:
         if file and file not in files:
             files.append(file)
     return files
-
-
-def unresolved_references(text: str) -> list[str]:
-    """Referenced wildcard names that resolve to no file (broken references)."""
-    return [n for n in reference_names(text) if not resolve_wildcard_files(n)]

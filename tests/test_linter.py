@@ -131,3 +131,51 @@ def test_lint_collection_ignores_metadata_files(tmp_path, monkeypatch):
     finally:
         monkeypatch.undo()
         expander.invalidate_cache()
+
+
+def test_lint_files_reports_missing_capture_pool(tmp_path, monkeypatch):
+    # The audit used to look only at `__name__` references, so a
+    # `__$var:missing/pool__` inside a file passed as "collection is healthy"
+    # while the engine left the literal capture syntax in the prompt.
+    wc = tmp_path / "wildcards"
+    wc.mkdir()
+    (wc / "good.txt").write_text("one\ntwo\n", encoding="utf-8")
+    (wc / "bad.txt").write_text("__$x:no/such/pool__ around\n", encoding="utf-8")
+
+    monkeypatch.setattr(expander, "WILDCARDS_DIR", str(wc))
+    expander.invalidate_cache()
+    try:
+        report = linter.lint_files(expander.iter_wildcard_files(str(wc)), str(wc))
+        assert report["broken_total"] == 1
+        assert report["broken"][0]["name"] == "no/such/pool"
+        assert report["broken"][0]["file"] == "bad.txt"
+        assert report["ok"] is False
+    finally:
+        monkeypatch.undo()
+        expander.invalidate_cache()
+
+
+def test_lint_files_reports_case_variant_duplicates(tmp_path, monkeypatch):
+    # "Frances Macdonald" / "Frances MacDonald" are one artist to a reader, but
+    # an exact-string counter saw two and the double weighting went unnoticed.
+    wc = tmp_path / "wildcards"
+    wc.mkdir()
+    (wc / "artists.txt").write_text(
+        "Frances Macdonald\nGiorgio de Chirico\nFrances MacDonald\nGiorgio de Chirico\n",
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr(expander, "WILDCARDS_DIR", str(wc))
+    expander.invalidate_cache()
+    try:
+        report = linter.lint_files(expander.iter_wildcard_files(str(wc)), str(wc))
+        # one exact repeat (Giorgio) and one case-only pair (Frances)
+        assert report["duplicate_total"] == 1
+        assert report["duplicates"][0]["text"] == "Giorgio de Chirico"
+        assert report["near_duplicate_total"] == 1
+        assert report["near_duplicates"][0]["text"] == "Frances Macdonald"
+        # Reported, but curated data is not failed for it.
+        assert report["ok"] is True
+    finally:
+        monkeypatch.undo()
+        expander.invalidate_cache()

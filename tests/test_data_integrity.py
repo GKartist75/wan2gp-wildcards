@@ -38,7 +38,9 @@ def collection():
 
 def test_collection_is_not_empty():
     files = expander.iter_wildcard_files(WILDCARDS)
-    assert len(files) >= 3000, f"only found {len(files)} wildcard files"
+    # A floor, not a target: it catches a bulk delete or a filter that stops
+    # seeing subfolders. Raise it when the collection grows.
+    assert len(files) >= 3017, f"collection shrank: only found {len(files)} wildcard files"
 
 
 def test_no_broken_nested_references(collection):
@@ -72,7 +74,7 @@ def test_every_alias_resolves(collection):
     assert collection["unresolved_aliases_total"] == 0, (
         f"{collection['unresolved_aliases_total']} alias(es) point at nothing:\n{details}"
     )
-    assert collection["aliases"] > 700
+    assert collection["aliases"] >= 727
 
 
 def test_paths_are_lowercase():
@@ -98,7 +100,9 @@ def test_resolution_is_case_insensitive():
     # Deliberately mismatched case must still find the file.
     upper = expander.resolve_wildcard_files("CAMERA/SHOT")
     assert upper, "case-insensitive lookup is broken"
-    assert expander.WILDCARD_RE  # sanity: module loaded
+    # …and the reference regex itself must accept a nested, hyphenated name
+    # without swallowing the double underscores that delimit it.
+    assert expander.WILDCARD_RE.findall("a __camera/shot__ b __color__") == ["camera/shot", "color"]
 
 
 def test_resolution_does_not_lean_on_a_case_insensitive_filesystem(monkeypatch):
@@ -157,6 +161,60 @@ def test_aliases_and_flavour_are_stable():
         assert expander.resolve_wildcard_files(name), name
 
 
+def test_no_case_variant_duplicates(collection):
+    """One pool must not list the same value twice in two spellings.
+
+    ``Frances Macdonald`` and ``Frances MacDonald`` are one artist to a reader
+    but two entries to the engine, so the value was drawn twice as often as its
+    neighbours.
+    """
+    details = "\n".join(
+        f"  {d['file']}:{d['line']} x{d['count']}: {d['text']}"
+        for d in collection["near_duplicates"][:20]
+    )
+    assert collection["near_duplicate_total"] == 0, (
+        f"{collection['near_duplicate_total']} value(s) appear twice in one file"
+        f" differing only in case/Unicode normalisation:\n{details}"
+    )
+
+
+def test_a_file_beats_a_same_named_directory():
+    """Five pools ship both ``x.txt`` and ``x/``; the file must win.
+
+    Before the fix the glob fallback or-ed both, so the file was also pooled
+    through the directory and drawn twice ("close-up" appearing twice as often
+    as every other shot), and the greedy name class then leaked the trailing
+    ``____`` as a literal.
+    """
+    for name in ("body/ears", "clothing/period/victorian/female", "nsfw/panties",
+                 "nsfw/positions", "nsfw/sex-acts"):
+        file_path = os.path.join(WILDCARDS, name + ".txt")
+        dir_path = os.path.join(WILDCARDS, name)
+        assert os.path.isfile(file_path) and os.path.isdir(dir_path), f"expected a pair at {name}"
+        hits = expander.resolve_wildcard_files(name)
+        assert [os.path.normcase(h) for h in hits] == [os.path.normcase(file_path)], (
+            f"__{name}__ should resolve to its file only, got {hits}"
+        )
+        # The directory stays usable through a file inside it.
+        inner = next(
+            f for f in sorted(os.listdir(dir_path))
+            if f.endswith(".txt") and not f.startswith("__")
+        )
+        assert expander.resolve_wildcard_files(f"{name}/{inner[:-4]}"), f"{name}/{inner} unreachable"
+
+
+def test_a_directory_pool_is_reachable_by_its_own_name():
+    """``__color__`` must pool every file in ``color/`` (dirs are wildcards too)."""
+    expander.invalidate_cache()
+    for name in ("color", "lighting", "art"):
+        assert not os.path.isfile(os.path.join(WILDCARDS, name + ".txt")), (
+            f"{name}.txt exists, so name-directory precedence covers this case"
+        )
+        hits = expander.resolve_wildcard_files(name)
+        assert len(hits) > 1, f"__{name}__ did not pool its directory: {hits}"
+        assert all(os.path.isfile(h) for h in hits)
+
+
 REF_RE = re.compile(r"__([a-zA-Z0-9_/.\-]+)__")
 
 
@@ -166,8 +224,7 @@ REF_RE = re.compile(r"__([a-zA-Z0-9_/.\-]+)__")
 def test_documentation_references_resolve(rel_path, collection):
     """Docs must not advertise wildcards that don't exist."""
     path = os.path.join(REPO_ROOT, rel_path)
-    if not os.path.isfile(path):
-        pytest.skip(f"{rel_path} not present")
+    assert os.path.isfile(path), f"{rel_path} is documented but missing"
     with open(path, "r", encoding="utf-8", errors="replace") as handle:
         text = handle.read()
     broken = sorted(

@@ -2,7 +2,15 @@
 
 Wildcard prompt expansion plugin for [Wan2GP](https://github.com/deepbeepmeep/Wan2GP).
 
-**3,017 wildcard files** · **313,000+ values** · **78 category directories** · **727 legacy aliases** · one-click local-LLM prompt generation.
+**3,017 wildcard files** · **313,700+ values** · **78 category directories** · **727 legacy aliases** · one-click local-LLM prompt generation.
+
+> **v1.7.2** — Engine-correctness release. The expansion passes now reach a real fixed point, so a
+> `__$var=value__` set inside a referenced file (or a capture whose pool name came out of a `{a|b}`
+> choice) resolves instead of leaking as literal text; a runaway-cycle budget replaces the fan-out
+> explosion that could freeze the UI for minutes; `x.txt` beats a same-named `x/` directory; the
+> partial-name fallback can no longer read outside the collection; files are read as UTF-8 with a BOM
+> and cp1252 tolerance. The collection itself lost 119 case-variant duplicates, and `__index__.txt`
+> now lists the 348 folders that sit below the second level.
 
 > **v1.7.1** — Data-integrity release. Every broken nested reference is fixed, every path is
 > lowercase (so the collection works on Linux/Colab, not just Windows), duplicates are gone, and a
@@ -29,6 +37,11 @@ Wildcard prompt expansion plugin for [Wan2GP](https://github.com/deepbeepmeep/Wa
 > 💡 **Every wildcard moved into category folders, but no old prompt breaks.** Names like
 > `__camera_shot__` still resolve to `camera/shot` through the alias table and a case-insensitive
 > fallback. Use the newer `__dir/file__` style for new prompts.
+
+> 💡 **If a pool ships both `name.txt` and a `name/` folder, the file wins.** Five pairs exist
+> (`body/ears`, `nsfw/positions`, `nsfw/panties`, `nsfw/sex-acts`, `clothing/period/victorian/female`);
+> `__nsfw/positions__` is the list in `positions.txt`, and the folder's contents stay reachable as
+> `__nsfw/positions/<file>__`.
 
 ---
 
@@ -67,7 +80,9 @@ Expands: Alice stands next to Bob.
          Alice wears a blue hat, Bob wears a red hat.
 ```
 
-Values persist for the whole expansion, across sentences, wildcards and nested references.
+Values persist for the whole expansion, across sentences, wildcards and nested references — including
+a `__$var=value__` or `__$var:file__` that lives inside a wildcard file you reference, so a shared
+"casting" file can set the cast once and the rest of the prompt can reuse it.
 
 ### Manual control — `__$var=value__`
 
@@ -170,8 +185,9 @@ wildcard.
 * **Rename** / **Save** / **Delete** — standard file management.
 * **★ Toggle Favorite** + **★ Favorites only** — keep favourites handy.
 * **Search** filters files by name.
-* Create / Rename / Save reject absolute paths, `..` traversal, drive letters and Windows-reserved
-  names, and refuse to touch the plugin's own `__`-prefixed metadata files.
+* Create / Rename / Save reject absolute paths, `..` traversal, drive letters, `:` in any path
+  component (Windows silently drops a `C:` inside a name) and Windows-reserved names, and refuse to
+  touch the plugin's own `__`-prefixed metadata files.
 
 ### 6. Wildcard Usage Stats
 
@@ -190,15 +206,17 @@ Search the *contents* of every wildcard file at once (capped at 500 results, lon
   or a `__$var__` used without ever being set. It uses the *real* resolver, so aliases and
   case-insensitive names resolve exactly as they will during generation.
 * **Audit All Wildcard Files** — walks the whole collection and reports unresolved nested
-  references, empty files, duplicate values and broken aliases. On a healthy collection it prints a
-  one-line summary instead of a wall of text.
+  references, `__$var:file__` capture pools that point at nothing, empty files, duplicate values,
+  case-only variants of the same value (one artist listed as `Frances Macdonald` and
+  `Frances MacDonald` would be drawn twice as often) and broken aliases. On a healthy collection it
+  prints a one-line summary instead of a wall of text.
 
 ---
 
 ## Testing
 
 ```bash
-python -m pytest          # from the repo root: 139 tests
+python -m pytest          # from the repo root: 161 tests
 ```
 
 You can also run it from inside `tests/`. No Wan2GP install is required — the tests stub the Gradio
@@ -206,8 +224,10 @@ and `shared.*` imports and exercise the real `expander`, `linter`, `ai`, `charac
 `plugin` modules. CI runs the suite on Windows and Linux, on Python 3.10 and 3.13.
 
 The suite includes collection-wide integrity checks that fail the build if anyone
-re-introduces a broken nested reference, an uppercase path, a duplicate value, trailing whitespace, a
-non-UTF-8 file, or a documentation example that points at a wildcard that does not exist.
+re-introduces a broken nested reference, a capture pool that points at nothing, an uppercase path, a
+duplicate or case-variant value, trailing whitespace, a non-UTF-8 file, or a documentation example
+that points at a wildcard that does not exist. The collection floors are pinned to the real numbers
+(3,017 files, 727 aliases), so a bulk delete fails the build instead of passing quietly.
 
 ### Optional: the real Wan2GP loader
 
@@ -247,6 +267,7 @@ and names every failed check.
 | `__name__` turned into nothing | The file exists but has no usable lines (comments only). The auditor flags these as empty files. |
 | Old prompt with `__camera_shot__` stopped working | It should not — legacy names resolve through `aliases.py`. If one is genuinely missing, run **Audit All Wildcard Files** to see the broken alias. |
 | Values only work on Windows (e.g. in Colab they don't) | Paths are all lowercase and lookups are case-insensitive, so this should not happen any more; the integrity test enforces it. |
+| `__nsfw/positions__` returns a short list instead of the folder's files | By design: when both `positions.txt` and `positions/` exist, the file wins. Reference the folder's files as `__nsfw/positions/<file>__`. |
 | **Generate with local LLM** says the host API is not exposed | The plugin could not reach Wan2GP's prompt-enhancer runtime — usually because Wan2GP is older than the plugin expects. Use **Compose offline (no LLM)** instead. |
 | AI generation is slow or errors on the first try | The model is loading. Use **Load model now** and watch the status box; the error is reported verbatim. |
 | Usage stats stay at zero | Stats are disabled while generating previews and are flushed on tab change / exit. Give it a moment, or click **Show Top 50 Used Wildcards** to force a flush. |
@@ -254,6 +275,61 @@ and names every failed check.
 ---
 
 ## Changelog
+
+### v1.7.2 — Engine correctness, deduped collection, honest index
+
+* **Engine / capture ordering**: the passes now repeat until the text stops changing. A later pass can
+  produce syntax an earlier one owns, so a `__$var=value__` **inside a referenced file**, and a
+  `__$var:{a|b}/pool__` whose pool name only exists *after* the variant is chosen, both used to be
+  left as literal `__$var__` text even though the value had already been stored — the README promised
+  the opposite.
+* **Engine / runaway cycles**: `DEPTH_LIMIT` bounds nesting depth, not fan-out — a file with *k*
+  references per line cost roughly *k*^10 substitutions (minutes of a frozen UI, with no error). Every
+  top-level expansion now draws from a fixed work budget, and a substitution that cannot be expanded
+  is skipped instead of being re-expanded by the next pass, which is what made the text explode.
+  Legitimate nested prompts are unaffected: 200 references in a single prompt still expand in 0.04 s
+  with nothing left literal, while the worst-case cycle is now capped at ~130 KB and 0.5 s.
+* **Engine / file over directory**: five pools ship both `x.txt` and `x/` (`body/ears`,
+  `nsfw/positions`, `nsfw/panties`, `nsfw/sex-acts`, `clothing/period/victorian/female`). The file now
+  wins. Before, the glob fallback or-ed both paths, so the file was also pooled through the directory
+  and drawn twice, and `__clothing/period/victorian/female__` silently returned *male* attire.
+* **Engine / path safety**: the partial-name glob fallback now refuses `..` segments, so a prompt that
+  tries to climb out of the collection cannot pull a `.txt` file that sits next to it. The UI
+  validator already refused it; prompt text never went through that validator.
+* **Engine / encoding**: files are read as `utf-8-sig` with `errors="replace"`. A BOM used to survive
+  `strip()`, so a file whose first line was `# comment` served the comment as a value; and one cp1252
+  file aborted the whole generation with `UnicodeDecodeError` while the audit called the collection
+  healthy.
+* **Engine / adjacent references**: the reference name class is non-greedy, so two references written
+  back to back expand as two references instead of being read as one unresolvable name and leaking
+  into the prompt as literal text.
+* **Data**: 119 case/Unicode-variant duplicate lines removed across 19 files — the same artist,
+  nationality, colour or phrase listed twice in two spellings (`Frances Macdonald` /
+  `Frances MacDonald`) meant that value was drawn twice as often as every other entry in its pool.
+  The collection now audits at 0 unresolved references, 0 exact duplicates, 0 case variants.
+* **Linter**: the collection audit also checks `__$var:file__` capture pools inside files (it only
+  looked at `__name__` references), and reports case-insensitive duplicates as a distinct class.
+* **AI generator**: markdown replies are cleaned before saving — `**bold**`, `*emphasis*` and table
+  rows (`| sunset |`, `| --- |`) no longer end up inside wildcard files and every prompt drawn from them.
+* **UI robustness**: an emptied Gradio number field arrives as `None` and used to raise `TypeError`
+  inside `seed >= 0` / `int(count)`; numeric handlers now fall back to their field defaults. A
+  foreign or hand-edited `__favorites__.json` / `__templates__.json` / `__stats__.json` is ignored
+  instead of breaking the tab (previously `AttributeError` on ★ Toggle, `TypeError` on Show Top 50).
+* **Safety**: `:` is now rejected in *every* path component, not just at the start. On Windows
+  `sub/C:name` is a drive-relative name whose colon the OS drops, so the write landed in a
+  differently-named file and slipped past the reserved-metadata rule.
+* **Safety**: `__templates__.json` is written atomically (temp file + `os.replace`) and reports
+  failure, so a crash mid-save can no longer truncate every saved template; a failed save also leaves
+  no temp file behind. Favourites, stats and character profiles already worked this way.
+* **Docs**: `wildcards/__index__.txt` now catalogs the 348 folders below the second level (only
+  top-level subfolders were described before, so four fifths of the deeper pools were invisible in
+  the index), documents that the per-folder counts are recursive, and states the format it actually
+  uses.
+* **Hygiene**: `wildcards/__favorites__.json` and `wildcards/__templates__.json` are gitignored next
+  to `__stats__.json` — all three are per-machine runtime state, not collection data.
+* **Tests**: 161 tests (139 before). New regression tests cover every fix above; the collection floors
+  were tightened to the real numbers (3,017 files, 727 aliases, 78 folders) and a vacuous
+  "module loaded" assertion plus a dead conftest option were removed.
 
 ### v1.7.1 — Case-insensitive lookup fixed on Linux
 

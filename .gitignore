@@ -11,3 +11,9 @@ tests/__pycache__/
 # Never commit these: they are per-machine usage data, not collection data.
 wildcards/__stats__.json
 __stats__.json
+# Same for the other per-machine stores the plugin writes next to the
+# collection: favourites and saved prompt templates.
+wildcards/__favorites__.json
+wildcards/__templates__.json
+__favorites__.json
+__templates__.json

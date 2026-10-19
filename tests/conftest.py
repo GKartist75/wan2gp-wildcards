@@ -55,5 +55,3 @@ if "wp" not in sys.modules:
     # expander.load_wildcard_lines; disable it so a test run can never write
     # __stats__.json into the real collection.
     sys.modules["plugin"]._stats_enabled = False
-
-collect_ignore_glob = ["__init__.py"]

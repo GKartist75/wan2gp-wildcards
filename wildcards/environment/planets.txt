@@ -21,7 +21,6 @@ planet
 pulsar planet
 rocky planet
 super-Earth
-super-earth
 terrestrial planet
 ultra-hot jupiter
 vapor-rich planet

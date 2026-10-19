@@ -145,7 +145,6 @@ gryphons
 ogres
 orcs
 phylakes
-trolls
 unicorns
 witches
 wizards

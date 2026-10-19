@@ -234,7 +234,6 @@ David Driskell
 Paula Modersohn-Becker
 Amedeo Modigliani
 Hilma AF Klint
-Hilma af Klint
 Chris Ware
 Marius Borgeaud
 Charles Demuth
@@ -278,7 +277,6 @@ Pieter Bruegel The Elder
 Bert Stern
 Georges Rouault
 Frances Macdonald
-Frances MacDonald
 Hannah Höch
 David Firth
 Ossip Zadkine

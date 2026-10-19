@@ -29,7 +29,6 @@ Monochrome color palette
 NEC PC-Engine color palette
 Nintendo Game Boy Advance color palette
 Nintendo Game Boy Color palette
-Nintendo Game Boy color palette
 Sega Game Gear color palette
 Sega Genesis color palette
 Sega Master System color palette

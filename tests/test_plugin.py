@@ -4,6 +4,7 @@ create_ui() itself needs a running Gradio app; everything that does real work
 lives at module level so it can be tested here without a browser.
 """
 import inspect
+import json
 import os
 import sys
 
@@ -200,6 +201,85 @@ def test_stats_context_restores_nested_values():
             assert plugin._tls_stats_track.value is True
         assert plugin._tls_stats_track.value is False
     assert plugin._tls_stats_track.value is True
+
+
+# ── numeric field coercion ─────────────────────────────────────────────────
+
+def test_as_int_falls_back_for_a_cleared_field():
+    # Gradio passes None through for an emptied gr.Number, which used to raise
+    # TypeError in `seed_val >= 0` / `int(count)` inside the handlers.
+    assert plugin._as_int(None, -1) == -1
+    assert plugin._as_int("", 6) == 6
+    assert plugin._as_int("   ", 24) == 24
+    assert plugin._as_int("nonsense", 24) == 24
+    assert plugin._as_int("7", 1) == 7
+    assert plugin._as_int(7.9, 1) == 7
+
+
+def test_as_float_falls_back_for_a_cleared_field():
+    assert plugin._as_float(None, 0.85) == 0.85
+    assert plugin._as_float("", 0.85) == 0.85
+    assert plugin._as_float("0.5", 0.85) == 0.5
+
+
+# ── runtime stores: shape validation + atomic writes ───────────────────────
+
+def test_stores_ignore_a_wrong_shaped_file(wc):
+    # A foreign/hand-edited store used to make ★ Toggle raise AttributeError and
+    # made Show Top 50 raise TypeError.
+    (wc / "__favorites__.json").write_text("{}", encoding="utf-8")
+    (wc / "__templates__.json").write_text("[1, 2]", encoding="utf-8")
+    (wc / "__stats__.json").write_text('{"a": "3", "b": "junk"}', encoding="utf-8")
+    assert plugin._load_favorites() == []
+    assert plugin._load_templates() == {}
+    assert plugin._load_stats() == {"a": 3}
+
+
+def test_stores_read_valid_shapes(wc):
+    (wc / "__favorites__.json").write_text('["a/b.txt"]', encoding="utf-8")
+    (wc / "__templates__.json").write_text('{"hero": "a __camera/shot__"}', encoding="utf-8")
+    assert plugin._load_favorites() == ["a/b.txt"]
+    assert plugin._load_templates() == {"hero": "a __camera/shot__"}
+
+
+def test_save_templates_writes_atomically_and_reports_failure(wc, monkeypatch):
+    plugin._save_templates({"one": "value"})
+    assert plugin._load_templates() == {"one": "value"}
+
+    def broken_mkstemp(*args, **kwargs):
+        raise OSError("disk full")
+
+    monkeypatch.setattr(plugin.tempfile, "mkstemp", broken_mkstemp)
+    with pytest.raises(OSError):
+        plugin._save_templates({"one": "value", "two": "other"})
+    # The previous store survived intact: a failed save cannot truncate it, and
+    # no half-written temp file is left in the collection.
+    assert json.loads((wc / plugin.TEMPLATES_FILE).read_text(encoding="utf-8")) == {"one": "value"}
+    assert list(wc.glob("*.tmp")) == []
+
+
+def test_usage_stats_track_expansions_and_flush_once(wc, monkeypatch):
+    # conftest disables the tracker so a test run cannot write into the real
+    # collection; enable it here against a private dir and prove the buffering.
+    (wc / "pool.txt").write_text("value\n", encoding="utf-8")
+    plugin._stats_enabled = True
+    with plugin._stats_lock:
+        plugin._stats_pending.clear()
+    saved = {}
+    monkeypatch.setattr(plugin, "_load_stats", lambda: {})
+    monkeypatch.setattr(plugin, "_save_stats", lambda stats: saved.update(stats))
+    try:
+        expander.load_wildcard_lines("pool")   # goes through the patched wrapper
+        expander.load_wildcard_lines("pool")
+        with plugin.stats_context(False):
+            expander.load_wildcard_lines("pool")   # preview: must not count
+        plugin.flush_stats()
+    finally:
+        plugin._stats_enabled = False
+        with plugin._stats_lock:
+            plugin._stats_pending.clear()
+    assert saved == {"pool.txt": 2}
+    assert plugin._stats_pending == {}   # flushed, not left buffered
 
 
 # ── Wan2GP integration surface ─────────────────────────────────────────────

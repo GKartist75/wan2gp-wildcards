@@ -219,6 +219,13 @@ def test_build_llm_from_plugin_reads_requested_globals():
     assert llm.available() is True
 
 
+def test_parse_entries_strips_markdown_emphasis_and_tables():
+    # Models answer in bold or in tables; `**`, `*` and `|` used to be saved
+    # into the wildcard file and echoed into every prompt drawing from it.
+    raw = "**golden hour**\n- *soft rim light*\n| sunset |\n| --- |\n| dawn | red sky |\n"
+    assert ai.parse_entries(raw) == ["golden hour", "soft rim light", "sunset", "dawn, red sky"]
+
+
 def test_build_llm_from_plugin_without_globals_is_unavailable():
     class EmptyPlugin:
         pass
